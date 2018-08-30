@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <title>hwshen WebGL &mdash; code05 </title>
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+  <!--  ************** Fragment Shader ************* -->
+  <script id="shader-fs" type="x-shader/x-fragment">
+    precision mediump float;
+
+void main(void) {
+        gl_FragColor = vec4(1,0,0,1);
+    }
+</script>
+
+  <!--  ************** Vertex Shader ************* -->
+  <script id="shader-vs" type="x-shader/x-vertex">
+
+    attribute vec3 aVertexPosition;
+
+
+    void main(void) {
+
+      gl_Position = vec4(aVertexPosition, 1.0);
+
+    }
+</script>
+
+  <script type="text/javascript" src="JS/shaders_setup.js"></script>
+  <script type="text/javascript" src="JS/code05.js"></script>
+  <script type="text/javascript" src="JS/code05-csv.js"></script>
+
+</head>
+
+<body onload="webGLStart();">
+
+  <canvas id="code05-canvas" style="border:none;"width="700"height="700"></canvas>
+
+  <h4> Background:  </h4>
+  <button  onclick="BG(1,0,0)"> Red</button>
+  <button  onclick="BG(0,1,0)"> Green</button>
+  <button  onclick="BG(0,0,1)"> Blue</button>
+  <button  onclick="BG(0.5,0.5,0.5)"> Grey</button>
+  <button  onclick="BG(0,0,0)"> Black</button>
+  <button  onclick="BG(1,1,1)"> White</button>
+
+  <h4>
+      - Click on the left mouse button and move the coursor to rotate
+    </h4>
+
+  <button  onclick="redraw()"> Reset Postions </button>
+  <button  onclick="csv_draw_bars()"> Draw Bars </button>
+
+  <!-- courtesy:
+ http://mounirmesselmeni.github.io/2012/11/20/reading-csv-file-with-javascript-and-html5-file-api/  -->
+  <div>
+    <form class="form-horizontal well">
+      <legend>
+        <h3>
+          <div id="title">HTML5 File API</div>
+        </h3>
+      </legend>
+      <fieldset>
+        <label for="csvFileInput"> <strong>CSV File:</strong>
+          </label>
+        <input type="file" id="csvFileInput" onchange="handleFiles(this.files)"
+          accept=".csv">
+
+
+
+
+
+
+
+        </div>
+  </fieldset>
+  </form>
+  <div id="output">
+  </div>
+  </div>
+
+
+  <br>
+  <br>
+  <footer>
+    <center>
+      <p>&copy; Han-Wei Shen@OSU WebGL Examples 2016</p>
+    </center>
+  </footer>
+
+  <!-- Le javascript
+    ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script type="text/javascript" src="JS/csv/read-csv.js"></script>
+
+  <br/>
+
+
+
+</body>
+
+</html>
