@@ -38,9 +38,11 @@
 
 <body onload="webGLStart();">
 
+  <h1>Flower Graph</h2>
+
   <canvas id="code05-canvas" style="border:none;"width="700"height="700"></canvas>
 
-  <h4> Background:  </h4>
+  <h2>Graph Background</h2>
   <button  onclick="BG(1,0,0)"> Red</button>
   <button  onclick="BG(0,1,0)"> Green</button>
   <button  onclick="BG(0,0,1)"> Blue</button>
@@ -48,21 +50,23 @@
   <button  onclick="BG(0,0,0)"> Black</button>
   <button  onclick="BG(1,1,1)"> White</button>
 
-  <h4>
-      - Click on the left mouse button and move the coursor to rotate
-    </h4>
+  <h2>Graph Controls</h2>
 
-  <button  onclick="redraw()"> Reset Postions </button>
-  <button  onclick="csv_draw_bars()"> Draw Bars </button>
+  <button>Setossa Averages</button>
+  <button>Versicolor Averages</button>
+  <button>Virginica Averages</button>
+  <button>Draw All</button> 
+  <button onclick="redraw()">Reset Postions</button>
+  <button onclick="csv_draw_bars()">Draw Bars</button>
 
   <!-- courtesy:
  http://mounirmesselmeni.github.io/2012/11/20/reading-csv-file-with-javascript-and-html5-file-api/  -->
   <div>
     <form class="form-horizontal well">
       <legend>
-        <h3>
-          <div id="title">HTML5 File API</div>
-        </h3>
+        <h2>
+          <div id="title">Graph Data Import</div>
+        </h2>
       </legend>
       <fieldset>
         <label for="csvFileInput"> <strong>CSV File:</strong></label>
