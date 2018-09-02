@@ -15,7 +15,6 @@ function initGL(canvas) {
   }
 }
 
-
 ///////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
@@ -37,14 +36,13 @@ function createBarVertices(avgs) {
   var width;
   min = Number(avgs[0]);
   max = Number(avgs[0]);
+
   // find min and max
   for (var i = 0; i < num_bars; i++) {
-    console.log("val = " + avgs[i]);
     if (Number(avgs[i]) < min) min = Number(avgs[i]);
     if (Number(avgs[i]) > max) max = Number(avgs[i]);
   }
   width = max - min;
-  console.log("min = " + min + " max = " + max);
 
   var v_margin = 0.25;
   var h = 2 / (3 * num_bars + 1);
@@ -72,22 +70,17 @@ function createBarVertices(avgs) {
   }
 
   initBuffers();
-
   drawScene();
-
-
 }
 
 ////////////////    Initialize VBO  ////////////////////////
 
 function initBuffers() {
-
   squareVertexPositionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
   squareVertexPositionBuffer.itemSize = 3;
   squareVertexPositionBuffer.numItems = num_vertices;
-
   squareVertexIndexBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareVertexIndexBuffer);
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
@@ -95,24 +88,16 @@ function initBuffers() {
   squareVertexIndexBuffer.numItems = num_indices;
 }
 
-
 ///////////////////////////////////////////////////////////////////////
 
 function drawScene() {
-
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
   gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-  // draw elementary arrays - triangle indices
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareVertexIndexBuffer);
-
   gl.drawElements(gl.TRIANGLES, num_indices, gl.UNSIGNED_SHORT, 0);
-
 }
-
 
 ///////////////////////////////////////////////////////////////
 
@@ -120,30 +105,21 @@ function webGLStart() {
   var canvas = document.getElementById("code05-canvas");
   initGL(canvas);
   initShaders();
-
   shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
   gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
-
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
-
 }
 
 function BG(red, green, blue) {
-
   gl.clearColor(red, green, blue, 1.0);
   drawScene();
-
 }
-
 
 function redraw() {
   drawScene();
 }
 
-
 function geometry(type) {
-
   draw_type = type;
   drawScene();
-
 }
