@@ -10,10 +10,10 @@
   <script id="shader-fs" type="x-shader/x-fragment">
     precision mediump float;
 
-void main(void) {
+    void main(void) {
         gl_FragColor = vec4(1,0,0,1);
     }
-</script>
+  </script>
 
   <!--  ************** Vertex Shader ************* -->
   <script id="shader-vs" type="x-shader/x-vertex">
@@ -26,10 +26,12 @@ void main(void) {
       gl_Position = vec4(aVertexPosition, 1.0);
 
     }
-</script>
+  </script>
 
   <script type="text/javascript" src="shader_setup.js"></script>
+
   <script type="text/javascript" src="lab01.js"></script>
+
   <script type="text/javascript" src="render-csv.js"></script>
 
 </head>
@@ -63,16 +65,12 @@ void main(void) {
         </h3>
       </legend>
       <fieldset>
-        <label for="csvFileInput"> <strong>CSV File:</strong>
-          </label>
-        <input type="file" id="csvFileInput" onchange="handleFiles(this.files)"
-          accept=".csv">
-
-        </div>
-  </fieldset>
-  </form>
-  <div id="output">
-  </div>
+        <label for="csvFileInput"> <strong>CSV File:</strong></label>
+        <input type="file" id="csvFileInput" onchange="handleFiles(this.files)" accept=".csv"></input>
+      </fieldset>
+    </form>
+    <div id="output">
+    </div>
   </div>
   <br>
   <br>
@@ -86,8 +84,6 @@ void main(void) {
     ================================================== -->
   <!-- Placed at the end of the document so the pages load faster -->
   <script type="text/javascript" src="read-csv.js"></script>
-
-  <br/>
 
 </body>
 
