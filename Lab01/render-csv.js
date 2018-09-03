@@ -62,15 +62,17 @@ function averageData(speciesCollection) {
 }
 
 function csv_draw_bars(species) {
-  if (!has_avgs) {
-    var speciesCollection = parseAndSumData();
-    this.avgs = averageData(speciesCollection);
-    has_avgs = true;
-  }
-  if (species !== undefined) {
-    console.log("Drawing Chart");
-    createBarVertices(this.avgs[species]["avgs"]);
-  } else {
-    // TODO: implement multichart
+  if (has_data) {
+    if (!has_avgs) {
+      var speciesCollection = parseAndSumData();
+      this.avgs = averageData(speciesCollection);
+      has_avgs = true;
+    }
+    if (species !== undefined) {
+      console.log("Drawing Chart");
+      createBarVertices(this.avgs[species]["avgs"]);
+    } else {
+      // TODO: implement multichart
+    }
   }
 }
