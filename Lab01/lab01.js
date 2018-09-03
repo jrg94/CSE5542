@@ -102,7 +102,7 @@ function drawScene() {
 ///////////////////////////////////////////////////////////////
 
 function webGLStart() {
-  var canvas = document.getElementById("code05-canvas");
+  var canvas = document.getElementById("lab01-canvas");
   initGL(canvas);
   initShaders();
   shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");

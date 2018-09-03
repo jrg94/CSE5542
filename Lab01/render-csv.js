@@ -1,7 +1,7 @@
 var has_data = false;
 var data;
 var has_avgs = false;
-var avgs = [];
+var avgs = {};
 
 function set_data(lines) {
   data = lines;
@@ -58,13 +58,18 @@ function averageData(speciesCollection) {
     }
   }
   console.log(speciesCollection);
+  return speciesCollection;
 }
 
 function csv_draw_bars(species) {
   if (!has_avgs) {
     var speciesCollection = parseAndSumData();
-    avgs = averageData(speciesCollection);
+    this.avgs = averageData(speciesCollection);
     has_avgs = true;
   }
-  createBarVertices(avgs);
+  if (species !== undefined) {
+    createBarVertices(this.avgs[species]["avgs"]);
+  } else {
+    // TODO: implement multichart
+  }
 }
