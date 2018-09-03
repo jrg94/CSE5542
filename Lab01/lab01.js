@@ -31,15 +31,22 @@ function createBarVertices(speciesCollection, species) {
   clearCanvas();
 
   if (species !== undefined) {
-    var avgs = speciesCollection[species]["avgs"];
+    var speciesData = speciesCollection["species"][species];
+    var avgs = speciesData["avgs"];
     var num_bars = avgs.length;
-    var width = speciesCollection[species]["avgRange"];
-    var min = speciesCollection[species]["minAvg"];
-    var max = speciesCollection[species]["maxAvg"];
+    var width = speciesData["avgRange"];
+    var min = speciesData["minAvg"];
+    var max = speciesData["maxAvg"];
     createBarVerticesPerSpecies(avgs, width, min, max, num_bars);
   } else {
-    // TODO: Create array of averages
-    // TODO: Get length
+    var num_avgs = speciesCollection[Object.keys(speciesCollection)[0]]["avgs"].length;
+    var avgs = [];
+    for (var i = 0; i < num_avgs; i++) {
+      for (const species of Object.keys(speciesCollection)) {
+        avgs.push(speciesCollection[species]["avgs"][i]);
+      }
+    }
+    var num_bars = avgs.length;
     var width = speciesCollection["avgRange"];
     var min = speciesCollection["minAvg"];
     var max = speciesCollection["maxAvg"];
