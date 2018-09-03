@@ -68,6 +68,7 @@ function csv_draw_bars(species) {
     has_avgs = true;
   }
   if (species !== undefined) {
+    console.log("Drawing Chart");
     createBarVertices(this.avgs[species]["avgs"]);
   } else {
     // TODO: implement multichart
