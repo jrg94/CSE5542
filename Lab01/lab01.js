@@ -28,6 +28,8 @@ var num_vertices;
 var num_indices;
 
 function createBarVertices(avgs) {
+  clearCanvas();
+
   var num_bars = avgs.length;
   num_vertices = num_bars * 4;
   num_indices = num_bars * 6;
@@ -115,8 +117,9 @@ function BG(red, green, blue) {
   drawScene();
 }
 
-function redraw() {
-  drawScene();
+function clearCanvas() {
+  vertices = [];
+  indices = [];
 }
 
 function geometry(type) {
