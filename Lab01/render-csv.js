@@ -4,7 +4,9 @@ var has_avgs = false;
 var avgs = {};
 const SPECIES = "species"
 const AVGS = "avgs";
-const DATA = "data"
+const DATA = "data";
+const SUMS = "sums";
+const COUNT = "count";
 
 function set_data(lines) {
   data = lines;
@@ -36,12 +38,12 @@ function parseAndSumData() {
       if (currSpecies !== prevSpecies) {
         prevSpecies = currSpecies;
         speciesData[currSpecies] = {};
-        speciesData[currSpecies]["sums"] = [0, 0, 0, 0];
-        speciesData[currSpecies]["count"] = 0;
+        speciesData[currSpecies][SUMS] = [0, 0, 0, 0];
+        speciesData[currSpecies][COUNT] = 0;
       }
-      speciesData[currSpecies]["count"] += 1;
+      speciesData[currSpecies][COUNT] += 1;
       for (var col = 1; col < data[row].length; col++) {
-        speciesData[currSpecies]["sums"][col - 1] += Number(data[row][col]);
+        speciesData[currSpecies][SUMS][col - 1] += Number(data[row][col]);
       }
     }
   }
