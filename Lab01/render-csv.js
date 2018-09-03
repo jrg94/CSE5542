@@ -1,8 +1,6 @@
 var has_data = false;
 var data;
 var has_avgs = false;
-var sums = [];
-var species = {};
 var avgs = [];
 
 function set_data(lines) {
@@ -26,19 +24,21 @@ function set_data(lines) {
  * }
  */
 function parseAndSumData() {
-  speciesCollection = {};
+  var speciesCollection = {};
   var prevSpecies = "";
   for (var row = 1; row < data.length; row++) {
     var currSpecies = data[row][0];
-    for (var col = 1; col < data[row].length; col++) {
+    if (currSpecies !== "") {
       if (currSpecies !== prevSpecies) {
         prevSpecies = currSpecies;
         speciesCollection[currSpecies] = {};
         speciesCollection[currSpecies]["sums"] = [0, 0, 0, 0];
         speciesCollection[currSpecies]["count"] = 0;
       }
-      speciesCollection[currSpecies]["sums"][col - 1] += Number(data[row][col]);
       speciesCollection[currSpecies]["count"] += 1;
+      for (var col = 1; col < data[row].length; col++) {
+        speciesCollection[currSpecies]["sums"][col - 1] += Number(data[row][col]);
+      }
     }
   }
   console.log(speciesCollection);
@@ -48,22 +48,22 @@ function parseAndSumData() {
 /**
  * Produces a set of averages from a set of sums.
  */
-function averageData(sumSets, speciesDict) {
-  for (var row = 0; row < sumSets.length; row ++) {
-    for (var col = 0; col < sumSets[row].length; col++) {
-      sumSets[row][col] = sumSets[row][col] / (speciesDict);
+function averageData(speciesCollection) {
+  for (const species of Object.keys(speciesCollection)) {
+    speciesCollection[species]["avgs"] = [0, 0, 0, 0];
+    for (var i = 0; i < speciesCollection[species]["sums"].length; i++) {
+      count = speciesCollection[species]["count"];
+      avg = speciesCollection[species]["sums"][i] / count;
+      speciesCollection[species]["avgs"][i] = avg;
     }
   }
-  console.log("Set of averages: " + sumSets);
-  return sumSets;
+  console.log(speciesCollection);
 }
 
 function csv_draw_bars(species) {
   if (!has_avgs) {
-    var tuple = parseAndSumData();
-    sums = tuple[0];
-    species = tuple[1];
-    avgs = averageData(sums, species);
+    var speciesCollection = parseAndSumData();
+    avgs = averageData(speciesCollection);
     has_avgs = true;
   }
   createBarVertices(avgs);
