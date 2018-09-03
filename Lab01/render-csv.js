@@ -61,18 +61,45 @@ function averageData(speciesCollection) {
   return speciesCollection;
 }
 
+function analyzeData(speciesCollection) {
+  for (const species of Object.keys(speciesCollection)) {
+    var speciesData = speciesCollection[species];
+    var speciesAvgs = speciesData["avgs"];
+    speciesData["minAvg"] = 0;
+    speciesData["maxAvg"] = 0;
+    speciesData["avgRange"] = 0;
+
+    // Declare working variables
+    var min, max, range;
+    min = Number(speciesAvgs[0]);
+    max = Number(speciesAvgs[0]);
+
+    // Gets min average, max average, and average range
+    for (var i = 0; i < speciesAvgs.length; i++) {
+      if (Number(speciesAvgs[i]) < min) {
+        min = Number(speciesAvgs[i]);
+      }
+      if (Number(speciesAvgs[i]) > max) {
+        max = Number(speciesAvgs[i]);
+      }
+    }
+    range = max - min;
+
+    // Store data back into object
+    speciesData["minAvg"] = min;
+    speciesData["maxAvg"] = max;
+    speciesData["avgRange"] = range;
+  }
+  return speciesCollection;
+}
+
 function csv_draw_bars(species) {
   if (has_data) {
     if (!has_avgs) {
-      var speciesCollection = parseAndSumData();
-      this.avgs = averageData(speciesCollection);
+      this.avgs = analyzeData(averageData(parseAndSumData()));
       has_avgs = true;
     }
-    if (species !== undefined) {
-      console.log("Drawing Chart");
-      createBarVertices(this.avgs[species]["avgs"]);
-    } else {
-      // TODO: implement multichart
-    }
+    console.log(this.avgs);
+    createBarVertices(this.avgs, species);
   }
 }

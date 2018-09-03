@@ -27,24 +27,17 @@ var indices = [];
 var num_vertices;
 var num_indices;
 
-function createBarVertices(avgs) {
+function createBarVertices(speciesCollection, species) {
   clearCanvas();
 
+  var avgs = speciesCollection[species]["avgs"];
   var num_bars = avgs.length;
   num_vertices = num_bars * 4;
   num_indices = num_bars * 6;
 
-  var min, max;
-  var width;
-  min = Number(avgs[0]);
-  max = Number(avgs[0]);
-
-  // find min and max
-  for (var i = 0; i < num_bars; i++) {
-    if (Number(avgs[i]) < min) min = Number(avgs[i]);
-    if (Number(avgs[i]) > max) max = Number(avgs[i]);
-  }
-  width = max - min;
+  var width = speciesCollection[species]["avgRange"];
+  var min = speciesCollection[species]["minAvg"];
+  var max = speciesCollection[species]["maxAvg"];
 
   var v_margin = 0.25;
   var h = 2 / (3 * num_bars + 1);
