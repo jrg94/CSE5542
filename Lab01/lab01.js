@@ -31,6 +31,7 @@ function createBarVertices(speciesCollection, species) {
   clearCanvas();
 
   var speciesData = speciesCollection["species"];
+  var collectionData = speciesCollection["data"];
   if (species !== undefined) {
     var currSpeciesData = speciesData[species];
     var avgs = currSpeciesData["avgs"];
@@ -48,9 +49,9 @@ function createBarVertices(speciesCollection, species) {
       }
     }
     var num_bars = avgs.length;
-    var width = speciesCollection["avgRange"];
-    var min = speciesCollection["minAvg"];
-    var max = speciesCollection["maxAvg"];
+    var width = collectionData["avgRange"];
+    var min = collectionData["minAvg"];
+    var max = collectionData["maxAvg"];
     createBarVerticesPerSpecies(avgs, width, min, max, num_bars);
   }
 
