@@ -128,8 +128,8 @@ function csv_draw_bars(species) {
     if (!has_avgs) {
       this.avgs = analyzeData(averageData(parseAndSumData()));
       has_avgs = true;
+      console.log(this.avgs);
     }
-    console.log(this.avgs);
     createBarVertices(this.avgs, species);
   }
 }
