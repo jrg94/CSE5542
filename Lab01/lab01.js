@@ -37,8 +37,13 @@ function createBarVertices(speciesCollection, species) {
     var min = speciesCollection[species]["minAvg"];
     var max = speciesCollection[species]["maxAvg"];
     createBarVerticesPerSpecies(avgs, width, min, max, num_bars);
-  } else {      
-    // Do nothing
+  } else {
+    // TODO: Create array of averages
+    // TODO: Get length
+    var width = speciesCollection["avgRange"];
+    var min = speciesCollection["minAvg"];
+    var max = speciesCollection["maxAvg"];
+    createBarVerticiesPerSpecies(avgs, width, min, max, num_bars);
   }
 
   initBuffers();
