@@ -79,8 +79,9 @@ function averageData(speciesCollection) {
  */
 function analyzeData(speciesCollection) {
   var superset = [];
-  for (const species of Object.keys(speciesCollection)) {
-    var currSpeciesData = speciesCollection["species"][species];
+  var speciesData = speciesCollection[SPECIES];
+  for (const species of Object.keys(speciesData)) {
+    var currSpeciesData = speciesData[species];
     var speciesAvgs = currSpeciesData["avgs"];
     currSpeciesData["minAvg"] = 0;
     currSpeciesData["maxAvg"] = 0;
@@ -96,9 +97,10 @@ function analyzeData(speciesCollection) {
     superset.push(analysis[1]);
   }
   var supersetAnalysis = minMaxRange(superset);
-  speciesCollection[DATA]["minAvg"] = supersetAnalysis[0];
-  speciesCollection[DATA]["maxAvg"] = supersetAnalysis[1];
-  speciesCollection[DATA]["avgRange"] = supersetAnalysis[2];
+  var collectionData = speciesCollection[DATA];
+  collectionData["minAvg"] = supersetAnalysis[0];
+  collectionData["maxAvg"] = supersetAnalysis[1];
+  collectionData["avgRange"] = supersetAnalysis[2];
   return speciesCollection;
 }
 
