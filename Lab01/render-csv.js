@@ -2,7 +2,7 @@ var has_data = false;
 var data;
 var has_avgs = false;
 var avgs = {};
-const SPECIES = "species"
+const SPECIES = "species";
 const AVGS = "avgs";
 const DATA = "data";
 const SUMS = "sums";
@@ -11,6 +11,13 @@ const COUNT = "count";
 function set_data(lines) {
   data = lines;
   has_data = true;
+}
+
+function initSpeciesCollection() {
+  var speciesCollection = {};
+  speciesCollection[SPECIES] = {};
+  speciesCollection[DATA] = {};
+  return speciesCollection;
 }
 
 /**
@@ -29,7 +36,7 @@ function set_data(lines) {
  * }
  */
 function parseAndSumData() {
-  var speciesCollection = {SPECIES: {}, DATA: {}};
+  var speciesCollection = initSpeciesCollection();
   var speciesData = speciesCollection[SPECIES];
   var prevSpecies = "";
   for (var row = 1; row < data.length; row++) {
@@ -54,13 +61,13 @@ function parseAndSumData() {
  * Produces a set of averages from a set of sums.
  */
 function averageData(speciesCollection) {
-  speciesData = speciesCollection["species"];
+  speciesData = speciesCollection[SPECIES];
   for (const species of Object.keys(speciesData)) {
-    speciesData[species]["avgs"] = [0, 0, 0, 0];
-    for (var i = 0; i < speciesData[species]["sums"].length; i++) {
-      count = speciesData[species]["count"];
-      avg = speciesData[species]["sums"][i] / count;
-      speciesData[species]["avgs"][i] = avg;
+    speciesData[species][AVGS] = [0, 0, 0, 0];
+    for (var i = 0; i < speciesData[species][SUMS].length; i++) {
+      count = speciesData[species][COUNT];
+      avg = speciesData[species][SUMS][i] / count;
+      speciesData[species][AVGS][i] = avg;
     }
   }
   return speciesCollection;
@@ -73,25 +80,25 @@ function averageData(speciesCollection) {
 function analyzeData(speciesCollection) {
   var superset = [];
   for (const species of Object.keys(speciesCollection)) {
-    var speciesData = speciesCollection["species"][species];
-    var speciesAvgs = speciesData["avgs"];
-    speciesData["minAvg"] = 0;
-    speciesData["maxAvg"] = 0;
-    speciesData["avgRange"] = 0;
+    var currSpeciesData = speciesCollection["species"][species];
+    var speciesAvgs = currSpeciesData["avgs"];
+    currSpeciesData["minAvg"] = 0;
+    currSpeciesData["maxAvg"] = 0;
+    currSpeciesData["avgRange"] = 0;
 
     var analysis = minMaxRange(speciesAvgs);
 
     // Store data back into object
-    speciesData["minAvg"] = analysis[0];
-    speciesData["maxAvg"] = analysis[1];
-    speciesData["avgRange"] = analysis[2];
+    currSpeciesData["minAvg"] = analysis[0];
+    currSpeciesData["maxAvg"] = analysis[1];
+    currSpeciesData["avgRange"] = analysis[2];
     superset.push(analysis[0]);
     superset.push(analysis[1]);
   }
   var supersetAnalysis = minMaxRange(superset);
-  speciesCollection["data"]["minAvg"] = supersetAnalysis[0];
-  speciesCollection["data"]["maxAvg"] = supersetAnalysis[1];
-  speciesCollection["data"]["avgRange"] = supersetAnalysis[2];
+  speciesCollection[DATA]["minAvg"] = supersetAnalysis[0];
+  speciesCollection[DATA]["maxAvg"] = supersetAnalysis[1];
+  speciesCollection[DATA]["avgRange"] = supersetAnalysis[2];
   return speciesCollection;
 }
 
