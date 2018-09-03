@@ -41,7 +41,6 @@ function parseAndSumData() {
       }
     }
   }
-  console.log(speciesCollection);
   return speciesCollection;
 }
 
@@ -57,10 +56,13 @@ function averageData(speciesCollection) {
       speciesCollection[species]["avgs"][i] = avg;
     }
   }
-  console.log(speciesCollection);
   return speciesCollection;
 }
 
+/**
+ * Produces a min, max, and range for the set of
+ * averages for each species.
+ */
 function analyzeData(speciesCollection) {
   for (const species of Object.keys(speciesCollection)) {
     var speciesData = speciesCollection[species];
@@ -69,28 +71,33 @@ function analyzeData(speciesCollection) {
     speciesData["maxAvg"] = 0;
     speciesData["avgRange"] = 0;
 
-    // Declare working variables
-    var min, max, range;
-    min = Number(speciesAvgs[0]);
-    max = Number(speciesAvgs[0]);
-
-    // Gets min average, max average, and average range
-    for (var i = 0; i < speciesAvgs.length; i++) {
-      if (Number(speciesAvgs[i]) < min) {
-        min = Number(speciesAvgs[i]);
-      }
-      if (Number(speciesAvgs[i]) > max) {
-        max = Number(speciesAvgs[i]);
-      }
-    }
-    range = max - min;
+    var analysis = minMaxRange(speciesAvgs);
 
     // Store data back into object
-    speciesData["minAvg"] = min;
-    speciesData["maxAvg"] = max;
-    speciesData["avgRange"] = range;
+    speciesData["minAvg"] = analysis[0];
+    speciesData["maxAvg"] = analysis[1];
+    speciesData["avgRange"] = analysis[2];
   }
   return speciesCollection;
+}
+
+function minMaxRange(dataSet) {
+  // Declare working variables
+  var min, max, range;
+  min = Number(dataSet[0]);
+  max = Number(dataSet[0]);
+
+  // Gets min average, max average, and average range
+  for (var i = 0; i < dataSet.length; i++) {
+    if (Number(dataSet[i]) < min) {
+      min = Number(dataSet[i]);
+    }
+    if (Number(dataSet[i]) > max) {
+      max = Number(dataSet[i]);
+    }
+  }
+  range = max - min;
+  return [min, max, range];
 }
 
 function csv_draw_bars(species) {

@@ -30,22 +30,32 @@ var num_indices;
 function createBarVertices(speciesCollection, species) {
   clearCanvas();
 
-  var avgs = speciesCollection[species]["avgs"];
-  var num_bars = avgs.length;
+  if (species !== undefined) {
+    var avgs = speciesCollection[species]["avgs"];
+    var num_bars = avgs.length;
+    var width = speciesCollection[species]["avgRange"];
+    var min = speciesCollection[species]["minAvg"];
+    var max = speciesCollection[species]["maxAvg"];
+    createBarVerticesPerSpecies(avgs, width, min, max, num_bars);
+  } else {      
+    // Do nothing
+  }
+
+  initBuffers();
+  drawScene();
+}
+
+function createBarVerticesPerSpecies(avgs, width, min, max, num_bars) {
   num_vertices = num_bars * 4;
   num_indices = num_bars * 6;
-
-  var width = speciesCollection[species]["avgRange"];
-  var min = speciesCollection[species]["minAvg"];
-  var max = speciesCollection[species]["maxAvg"];
 
   var v_margin = 0.25;
   var h = 2 / (3 * num_bars + 1);
   for (var i = 0; i < num_bars; i++) {
 
-    vertices.push(-1 + (3 * i + 1) * h);
-    vertices.push(-1 + v_margin);
-    vertices.push(0.0);
+    vertices.push(-1 + (3 * i + 1) * h); // x
+    vertices.push(-1 + v_margin); // y
+    vertices.push(0.0);  // z
     vertices.push(-1 + (3 * i + 3) * h);
     vertices.push(-1 + v_margin);
     vertices.push(0.0);
@@ -63,9 +73,6 @@ function createBarVertices(speciesCollection, species) {
     indices.push(2 + 4 * i);
     indices.push(3 + 4 * i);
   }
-
-  initBuffers();
-  drawScene();
 }
 
 ////////////////    Initialize VBO  ////////////////////////
