@@ -30,27 +30,28 @@ var num_indices;
 function createBarVertices(speciesCollection, species) {
   clearCanvas();
 
+  var speciesData = speciesCollection["species"];
   if (species !== undefined) {
-    var speciesData = speciesCollection["species"][species];
-    var avgs = speciesData["avgs"];
+    var currSpeciesData = speciesData[species];
+    var avgs = currSpeciesData["avgs"];
     var num_bars = avgs.length;
-    var width = speciesData["avgRange"];
-    var min = speciesData["minAvg"];
-    var max = speciesData["maxAvg"];
+    var width = currSpeciesData["avgRange"];
+    var min = currSpeciesData["minAvg"];
+    var max = currSpeciesData["maxAvg"];
     createBarVerticesPerSpecies(avgs, width, min, max, num_bars);
   } else {
-    var num_avgs = speciesCollection[Object.keys(speciesCollection)[0]]["avgs"].length;
+    var num_avgs = speciesData[Object.keys(speciesData)[0]]["avgs"].length;
     var avgs = [];
     for (var i = 0; i < num_avgs; i++) {
-      for (const species of Object.keys(speciesCollection)) {
-        avgs.push(speciesCollection[species]["avgs"][i]);
+      for (const species of Object.keys(speciesData)) {
+        avgs.push(speciesData[species]["avgs"][i]);
       }
     }
     var num_bars = avgs.length;
     var width = speciesCollection["avgRange"];
     var min = speciesCollection["minAvg"];
     var max = speciesCollection["maxAvg"];
-    createBarVerticiesPerSpecies(avgs, width, min, max, num_bars);
+    createBarVerticesPerSpecies(avgs, width, min, max, num_bars);
   }
 
   initBuffers();
