@@ -28,19 +28,20 @@ function set_data(lines) {
  */
 function parseAndSumData() {
   var speciesCollection = {SPECIES: {}, DATA: {}};
+  var speciesData = speciesCollection[SPECIES];
   var prevSpecies = "";
   for (var row = 1; row < data.length; row++) {
     var currSpecies = data[row][0];
     if (currSpecies !== "") {
       if (currSpecies !== prevSpecies) {
         prevSpecies = currSpecies;
-        speciesCollection[SPECIES][currSpecies] = {};
-        speciesCollection[SPECIES][currSpecies]["sums"] = [0, 0, 0, 0];
-        speciesCollection[SPECIES][currSpecies]["count"] = 0;
+        speciesData[currSpecies] = {};
+        speciesData[currSpecies]["sums"] = [0, 0, 0, 0];
+        speciesData[currSpecies]["count"] = 0;
       }
-      speciesCollection[SPECIES][currSpecies]["count"] += 1;
+      speciesData[currSpecies]["count"] += 1;
       for (var col = 1; col < data[row].length; col++) {
-        speciesCollection[SPECIES][currSpecies]["sums"][col - 1] += Number(data[row][col]);
+        speciesData[currSpecies]["sums"][col - 1] += Number(data[row][col]);
       }
     }
   }
