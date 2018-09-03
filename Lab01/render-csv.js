@@ -15,43 +15,34 @@ function set_data(lines) {
  *
  * species, sepal length, sepal width, petal length, petal width
  *
- * Produces a set of sums in the form of:
+ * Produces an object of the form:
  *
- * [
- *   [
- *      sepal length sum,
- *      sepal width sum,
- *      petal length sum,
- *      petal width sum
- *   ]
- * ]
- *
- * With a set of species meta data in the form of:
- *
- * {species: count, species: count, ... }
- *
- * Overall, the function returns an array of the form:
- *
- * [sum sets, species dict]
+ * {
+ *   species: {
+ *     sums: [],
+ *     count: 0
+ *   },
+ *   ...
+ * }
  */
 function parseAndSumData() {
-  sumSets = {};
+  speciesCollection = {};
   var prevSpecies = "";
   for (var row = 1; row < data.length; row++) {
     var currSpecies = data[row][0];
     for (var col = 1; col < data[row].length; col++) {
       if (currSpecies !== prevSpecies) {
         prevSpecies = currSpecies;
-        sumSets[currSpecies] = {};
-        sumSets[currSpecies]["sums"] = [0, 0, 0, 0];
-        sumSets[currSpecies]["count"] = 0;
+        speciesCollection[currSpecies] = {};
+        speciesCollection[currSpecies]["sums"] = [0, 0, 0, 0];
+        speciesCollection[currSpecies]["count"] = 0;
       }
-      sumSets[currSpecies]["sums"][col - 1] += Number(data[row][col]);
-      sumSets[currSpecies]["count"] += 1;
+      speciesCollection[currSpecies]["sums"][col - 1] += Number(data[row][col]);
+      speciesCollection[currSpecies]["count"] += 1;
     }
   }
-  console.log(sumSets);
-  return sumSets;
+  console.log(speciesCollection);
+  return speciesCollection;
 }
 
 /**
