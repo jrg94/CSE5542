@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <title>Lab01 &mdash; Jeremy Grifski</title>
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+  <!--  ************** Fragment Shader ************* -->
+  <script id="shader-fs" type="x-shader/x-fragment">
+    precision mediump float;
+
+    void main(void) {
+        gl_FragColor = vec4(1,0,0,1);
+    }
+  </script>
+
+  <!--  ************** Vertex Shader ************* -->
+  <script id="shader-vs" type="x-shader/x-vertex">
+
+    attribute vec3 aVertexPosition;
+
+
+    void main(void) {
+
+      gl_Position = vec4(aVertexPosition, 1.0);
+
+    }
+  </script>
+
+  <script type="text/javascript" src="shader_setup.js"></script>
+
+  <script type="text/javascript" src="lab01.js"></script>
+
+  <script type="text/javascript" src="render-csv.js"></script>
+
+</head>
+
+<body onload="webGLStart();">
+
+  <h1>Flower Graph</h2>
+
+  <canvas id="lab01-canvas" style="border-style: solid;"width="700"; height="700"></canvas>
+  <table style="width:700px;">
+    <tr>
+      <th>Sepal Length</th>
+      <th>Sepal Width</th>
+      <th>Petal Length</th>
+      <th>Petal Width</th>
+    </tr>
+  </table>
+
+  <h2>Graph Background</h2>
+  <button  onclick="BG(1,0,0)"> Red</button>
+  <button  onclick="BG(0,1,0)"> Green</button>
+  <button  onclick="BG(0,0,1)"> Blue</button>
+  <button  onclick="BG(0.5,0.5,0.5)"> Grey</button>
+  <button  onclick="BG(0,0,0)"> Black</button>
+  <button  onclick="BG(1,1,1)"> White</button>
+
+  <h2>Graph Controls</h2>
+
+  <button onclick="csv_draw_bars('setosa')">Setosa Averages</button>
+  <button onclick="csv_draw_bars('versicolor')">Versicolor Averages</button>
+  <button onclick="csv_draw_bars('virginica')">Virginica Averages</button>
+  <button onclick="csv_draw_bars()">Draw All</button>
+
+  <!-- courtesy:
+ http://mounirmesselmeni.github.io/2012/11/20/reading-csv-file-with-javascript-and-html5-file-api/  -->
+  <div>
+    <form class="form-horizontal well">
+      <legend>
+        <h2>
+          <div id="title">Graph Data Import</div>
+        </h2>
+      </legend>
+      <fieldset>
+        <label for="csvFileInput"> <strong>CSV File:</strong></label>
+        <input type="file" id="csvFileInput" onchange="handleFiles(this.files)" accept=".csv"></input>
+      </fieldset>
+    </form>
+    <div id="output">
+    </div>
+  </div>
+  <br>
+  <br>
+  <footer>
+    <center>
+      <p>&copy; Jeremy Grifski 2018</p>
+    </center>
+  </footer>
+
+  <!-- Le javascript
+    ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script type="text/javascript" src="read-csv.js"></script>
+
+</body>
+
+</html>
