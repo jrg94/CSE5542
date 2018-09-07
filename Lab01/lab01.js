@@ -1,6 +1,5 @@
 var gl;
 var shaderProgram;
-var draw_type = 2;
 
 //////////// Init OpenGL Context etc. ///////////////
 
@@ -64,7 +63,7 @@ function createBarVertices(speciesCollection, species) {
 function createBarVerticesPerSpecies(avgs, width, min, max, num_bars) {
   num_vertices = num_bars * 4;
   num_indices = num_bars * 6;
-  num_colors = num_bars;
+  num_colors = num_bars * 4;
 
   var v_margin = 0.25;
   var h = 2 / (3 * num_bars + 1);
@@ -90,10 +89,13 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars) {
     indices.push(2 + 4 * i);
     indices.push(3 + 4 * i);
 
-    colors.push(1); // R
-    colors.push(0); // G
-    colors.push(0); // B
-    colors.push(1); // A
+    for (var j = 0; j < 4; j++) {
+      colors.push(1); // R
+      colors.push(0); // G
+      colors.push(0); // B
+      colors.push(1); // A
+    }
+
   }
   console.log(colors);
   console.log(num_colors);
@@ -114,6 +116,7 @@ function initBuffers() {
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
   squareVertexColorBuffer.itemSize = 4; // RGBA four components
   squareVertexColorBuffer.numItems = num_colors;
+  console.log(squareVertexColorBuffer);
   // Fragment index buffer
   squareVertexIndexBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareVertexIndexBuffer);
