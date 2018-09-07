@@ -90,10 +90,10 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars) {
     indices.push(2 + 4 * i);
     indices.push(3 + 4 * i);
 
-    colors.push(1.0); // R
-    colors.push(0.0); // G
-    colors.push(0.0); // B
-    colors.push(1.0); // A
+    colors.push(1); // R
+    colors.push(0); // G
+    colors.push(0); // B
+    colors.push(1); // A
   }
   console.log(colors);
   console.log(num_colors);
@@ -113,7 +113,7 @@ function initBuffers() {
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
   squareVertexColorBuffer.itemSize = 4; // RGBA four components
-  squareVertexColorBuffer.numItems = num_colors; 
+  squareVertexColorBuffer.numItems = num_colors;
   // Fragment index buffer
   squareVertexIndexBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareVertexIndexBuffer);
@@ -162,9 +162,4 @@ function clearCanvas() {
   vertices = [];
   indices = [];
   colors = [];
-}
-
-function geometry(type) {
-  draw_type = type;
-  drawScene();
 }
