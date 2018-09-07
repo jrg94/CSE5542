@@ -121,8 +121,12 @@ function webGLStart() {
   var canvas = document.getElementById("lab01-canvas");
   initGL(canvas);
   initShaders();
+  // Vertex attribute
   shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
   gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+  // Color attribute
+  shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
+  gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
 }
 

@@ -11,7 +11,7 @@ var vertexShaderSrc = `
 
 var fragmentShaderSrc = `
   precision mediump float;
-  verying vec4 vColor;
+  varying vec4 vColor;
 
   void main(void) {
     gl_FragColor = vColor;
