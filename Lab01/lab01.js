@@ -96,6 +96,7 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars) {
     colors.push(1.0); // A
   }
   console.log(colors);
+  console.log(num_colors);
 }
 
 ////////////////    Initialize VBO  ////////////////////////
@@ -112,7 +113,7 @@ function initBuffers() {
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
   squareVertexColorBuffer.itemSize = 4; // RGBA four components
-  squareVertexColorBuffer.numItems = num_colors; // four colors
+  squareVertexColorBuffer.numItems = num_colors; 
   // Fragment index buffer
   squareVertexIndexBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareVertexIndexBuffer);
