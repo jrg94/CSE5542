@@ -89,16 +89,14 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars) {
     indices.push(2 + 4 * i);
     indices.push(3 + 4 * i);
 
+    // Need one color per vertex
     for (var j = 0; j < 4; j++) {
       colors.push(1); // R
       colors.push(0); // G
       colors.push(0); // B
       colors.push(1); // A
     }
-
   }
-  console.log(colors);
-  console.log(num_colors);
 }
 
 ////////////////    Initialize VBO  ////////////////////////
