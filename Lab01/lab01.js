@@ -24,8 +24,10 @@ var squareVertexIndexBuffer;
 
 var vertices = [];
 var indices = [];
+var colors = [];
 var num_vertices;
 var num_indices;
+var num_colors;
 
 function createBarVertices(speciesCollection, species) {
   clearCanvas();
@@ -62,6 +64,7 @@ function createBarVertices(speciesCollection, species) {
 function createBarVerticesPerSpecies(avgs, width, min, max, num_bars) {
   num_vertices = num_bars * 4;
   num_indices = num_bars * 6;
+  num_colors = num_bars;
 
   var v_margin = 0.25;
   var h = 2 / (3 * num_bars + 1);
@@ -86,17 +89,31 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars) {
     indices.push(0 + 4 * i);
     indices.push(2 + 4 * i);
     indices.push(3 + 4 * i);
+
+    colors.push(1.0); // R
+    colors.push(0.0); // G
+    colors.push(0.0); // B
+    colors.push(1.0); // A
   }
+  console.log(colors);
 }
 
 ////////////////    Initialize VBO  ////////////////////////
 
 function initBuffers() {
+  // Vertex position buffer
   squareVertexPositionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
   squareVertexPositionBuffer.itemSize = 3;
   squareVertexPositionBuffer.numItems = num_vertices;
+  // Vertex color buffer
+  squareVertexColorBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+  squareVertexColorBuffer.itemSize = 4; // RGBA four components
+  squareVertexColorBuffer.numItems = num_colors; // four colors
+  // Fragment index buffer
   squareVertexIndexBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareVertexIndexBuffer);
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
@@ -109,8 +126,13 @@ function initBuffers() {
 function drawScene() {
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  // Vertex position
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
   gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+  // Vertex color
+  gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
+  gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+  // Fragment index
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareVertexIndexBuffer);
   gl.drawElements(gl.TRIANGLES, num_indices, gl.UNSIGNED_SHORT, 0);
 }
@@ -138,6 +160,7 @@ function BG(red, green, blue) {
 function clearCanvas() {
   vertices = [];
   indices = [];
+  colors = [];
 }
 
 function geometry(type) {
