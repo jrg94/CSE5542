@@ -7,26 +7,12 @@
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 
   <!--  ************** Fragment Shader ************* -->
-  <script id="shader-fs" type="x-shader/x-fragment">
-    precision mediump float;
-
-    void main(void) {
-        gl_FragColor = vec4(1,0,0,1);
-    }
-  </script>
+  <script id="shader-fs" type="x-shader/x-fragment" src="shader.frag"></script>
 
   <!--  ************** Vertex Shader ************* -->
-  <script id="shader-vs" type="x-shader/x-vertex">
+  <script id="shader-vs" type="x-shader/x-vertex" src="shader.vert"></script>
 
-    attribute vec3 aVertexPosition;
-
-
-    void main(void) {
-
-      gl_Position = vec4(aVertexPosition, 1.0);
-
-    }
-  </script>
+  <script type="text/javascript" src ="shaders.js"></script>
 
   <script type="text/javascript" src="shader_setup.js"></script>
 
