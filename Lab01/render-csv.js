@@ -9,9 +9,9 @@ const SUMS = "sums";
 const COUNT = "count";
 const COLOR = "color";
 const COLORS = [
-  [1.0, 0.0, 0.0, 1.0],
-  [0.0, 1.0, 0.0, 1.0],
-  [0.0, 0.0, 1.0, 1.0]
+  [0.8, 0.1, 0.1, 1.0],
+  [0.1, 0.8, 0.1, 1.0],
+  [0.1, 0.1, 0.8, 1.0]
 ];
 
 function set_data(lines) {
