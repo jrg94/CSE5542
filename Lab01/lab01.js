@@ -71,19 +71,23 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
   num_indices = num_bars * 6;
   num_colors = num_bars * 4;
 
-  var v_margin = 0.25;
+  var v_margin = 0.1;
   var h = 2 / (3 * num_bars + 1);
   for (var i = 0; i < num_bars; i++) {
 
+    // Bottom left point
     vertices.push(-1 + (3 * i + 1) * h); // x
     vertices.push(-1 + v_margin); // y
-    vertices.push(0.0);  // z
+    vertices.push(0.0); // z
+    // Bottom right point
     vertices.push(-1 + (3 * i + 3) * h);
     vertices.push(-1 + v_margin);
     vertices.push(0.0);
+    // Top right point
     vertices.push(-1 + (3 * i + 3) * h);
     vertices.push(-1 + v_margin + (2 - 2 * v_margin) * (avgs[i] - min) / width);
     vertices.push(0.0);
+    // Top left point
     vertices.push(-1 + (3 * i + 1) * h);
     vertices.push(-1 + v_margin + (2 - 2 * v_margin) * (avgs[i] - min) / width);
     vertices.push(0.0);
@@ -153,7 +157,7 @@ function webGLStart() {
   // Color attribute
   shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
   gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
-  gl.clearColor(0.0, 0.0, 0.0, 1.0);
+  gl.clearColor(0.5, 0.5, 0.5, 1.0);
 }
 
 function BG(red, green, blue) {
