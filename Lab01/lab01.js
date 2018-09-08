@@ -36,7 +36,8 @@ function createBarVertices(speciesCollection, species) {
   if (species !== undefined) {
     var currSpeciesData = speciesData[species];
     var avgs = currSpeciesData["avgs"];
-    var barColors = currSpeciesData["color"].slice();
+    var barColors = [];
+    barColors.push(currSpeciesData["color"].slice())
     var num_bars = avgs.length;
     var width = currSpeciesData["avgRange"];
     var min = currSpeciesData["minAvg"];
@@ -50,11 +51,15 @@ function createBarVertices(speciesCollection, species) {
         avgs.push(speciesData[species]["avgs"][i]);
       }
     }
+    var barColors = [];
+    for (const species of Object.keys(speciesData)) {
+      barColors.push(speciesData[species]["color"].slice());
+    }
     var num_bars = avgs.length;
     var width = collectionData["avgRange"];
     var min = collectionData["minAvg"];
     var max = collectionData["maxAvg"];
-    createBarVerticesPerSpecies(avgs, width, min, max, num_bars);
+    createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors);
   }
 
   initBuffers();
@@ -92,7 +97,7 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
 
     // Need one color per vertex
     for (var j = 0; j < 4; j++) {
-      colors.push(...barColors);
+      colors.push(...barColors[i % barColors.length]);
     }
   }
 }
