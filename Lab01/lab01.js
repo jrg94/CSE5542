@@ -36,11 +36,12 @@ function createBarVertices(speciesCollection, species) {
   if (species !== undefined) {
     var currSpeciesData = speciesData[species];
     var avgs = currSpeciesData["avgs"];
+    var barColors = currSpeciesData["color"].slice();
     var num_bars = avgs.length;
     var width = currSpeciesData["avgRange"];
     var min = currSpeciesData["minAvg"];
     var max = currSpeciesData["maxAvg"];
-    createBarVerticesPerSpecies(avgs, width, min, max, num_bars);
+    createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors);
   } else {
     var num_avgs = speciesData[Object.keys(speciesData)[0]]["avgs"].length;
     var avgs = [];
@@ -60,7 +61,7 @@ function createBarVertices(speciesCollection, species) {
   drawScene();
 }
 
-function createBarVerticesPerSpecies(avgs, width, min, max, num_bars) {
+function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors) {
   num_vertices = num_bars * 4;
   num_indices = num_bars * 6;
   num_colors = num_bars * 4;
@@ -91,10 +92,7 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars) {
 
     // Need one color per vertex
     for (var j = 0; j < 4; j++) {
-      colors.push(1); // R
-      colors.push(0); // G
-      colors.push(0); // B
-      colors.push(1); // A
+      colors.push(...barColors);
     }
   }
 }
@@ -114,7 +112,6 @@ function initBuffers() {
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
   squareVertexColorBuffer.itemSize = 4; // RGBA four components
   squareVertexColorBuffer.numItems = num_colors;
-  console.log(squareVertexColorBuffer);
   // Fragment index buffer
   squareVertexIndexBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareVertexIndexBuffer);

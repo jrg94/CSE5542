@@ -7,6 +7,12 @@ const AVGS = "avgs";
 const DATA = "data";
 const SUMS = "sums";
 const COUNT = "count";
+const COLOR = "color";
+const COLORS = [
+  [1.0, 0.0, 0.0, 1.0],
+  [0.0, 1.0, 0.0, 1.0],
+  [0.0, 0.0, 1.0, 1.0]
+];
 
 function set_data(lines) {
   data = lines;
@@ -39,6 +45,7 @@ function parseAndSumData() {
   var speciesCollection = initSpeciesCollection();
   var speciesData = speciesCollection[SPECIES];
   var prevSpecies = "";
+  var colorIndex = 0;
   for (var row = 1; row < data.length; row++) {
     var currSpecies = data[row][0];
     if (currSpecies !== "") {
@@ -47,6 +54,8 @@ function parseAndSumData() {
         speciesData[currSpecies] = {};
         speciesData[currSpecies][SUMS] = [0, 0, 0, 0];
         speciesData[currSpecies][COUNT] = 0;
+        speciesData[currSpecies][COLOR] = COLORS[colorIndex % COLORS.length];
+        colorIndex += 1;
       }
       speciesData[currSpecies][COUNT] += 1;
       for (var col = 1; col < data[row].length; col++) {
