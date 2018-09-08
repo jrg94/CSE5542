@@ -1,7 +1,7 @@
 # CSE 5542 Lab 01 Directions
 
 To run this lab, double-click the HTML file to run the solution in
-your browser. Personally, I tested on Google Chrome.
+your browser. Personally, I tested on **Google Chrome** and **Windows 10**.
 
 With the solution open, scroll to the bottom and select `choose file`
 from the Graph Data Import section. From there, select your Iris data.
