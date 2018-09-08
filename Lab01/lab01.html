@@ -6,27 +6,7 @@
   <title>Lab01 &mdash; Jeremy Grifski</title>
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 
-  <!--  ************** Fragment Shader ************* -->
-  <script id="shader-fs" type="x-shader/x-fragment">
-    precision mediump float;
-
-    void main(void) {
-        gl_FragColor = vec4(1,0,0,1);
-    }
-  </script>
-
-  <!--  ************** Vertex Shader ************* -->
-  <script id="shader-vs" type="x-shader/x-vertex">
-
-    attribute vec3 aVertexPosition;
-
-
-    void main(void) {
-
-      gl_Position = vec4(aVertexPosition, 1.0);
-
-    }
-  </script>
+  <script type="text/javascript" src ="shaders.js"></script>
 
   <script type="text/javascript" src="shader_setup.js"></script>
 
@@ -64,6 +44,12 @@
   <button onclick="csv_draw_bars('versicolor')">Versicolor Averages</button>
   <button onclick="csv_draw_bars('virginica')">Virginica Averages</button>
   <button onclick="csv_draw_bars()">Draw All</button>
+
+  <h2>Graph Key</h2>
+
+  <span style="background-color: #CD1919; font-weight: bold;">Setosa Color</span>
+  <span style="background-color: #19CD19; font-weight: bold;">Versicolor Color</span>
+  <span style="background-color: #1919CD; font-weight: bold;">Virginica Color</span>
 
   <!-- courtesy:
  http://mounirmesselmeni.github.io/2012/11/20/reading-csv-file-with-javascript-and-html5-file-api/  -->

@@ -1,6 +1,5 @@
 var gl;
 var shaderProgram;
-var draw_type = 2;
 
 //////////// Init OpenGL Context etc. ///////////////
 
@@ -24,8 +23,10 @@ var squareVertexIndexBuffer;
 
 var vertices = [];
 var indices = [];
+var colors = [];
 var num_vertices;
 var num_indices;
+var num_colors;
 
 function createBarVertices(speciesCollection, species) {
   clearCanvas();
@@ -35,11 +36,13 @@ function createBarVertices(speciesCollection, species) {
   if (species !== undefined) {
     var currSpeciesData = speciesData[species];
     var avgs = currSpeciesData["avgs"];
+    var barColors = [];
+    barColors.push(currSpeciesData["color"].slice())
     var num_bars = avgs.length;
     var width = currSpeciesData["avgRange"];
     var min = currSpeciesData["minAvg"];
     var max = currSpeciesData["maxAvg"];
-    createBarVerticesPerSpecies(avgs, width, min, max, num_bars);
+    createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors);
   } else {
     var num_avgs = speciesData[Object.keys(speciesData)[0]]["avgs"].length;
     var avgs = [];
@@ -48,34 +51,43 @@ function createBarVertices(speciesCollection, species) {
         avgs.push(speciesData[species]["avgs"][i]);
       }
     }
+    var barColors = [];
+    for (const species of Object.keys(speciesData)) {
+      barColors.push(speciesData[species]["color"].slice());
+    }
     var num_bars = avgs.length;
     var width = collectionData["avgRange"];
     var min = collectionData["minAvg"];
     var max = collectionData["maxAvg"];
-    createBarVerticesPerSpecies(avgs, width, min, max, num_bars);
+    createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors);
   }
 
   initBuffers();
   drawScene();
 }
 
-function createBarVerticesPerSpecies(avgs, width, min, max, num_bars) {
+function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors) {
   num_vertices = num_bars * 4;
   num_indices = num_bars * 6;
+  num_colors = num_bars * 4;
 
-  var v_margin = 0.25;
+  var v_margin = 0.1;
   var h = 2 / (3 * num_bars + 1);
   for (var i = 0; i < num_bars; i++) {
 
+    // Bottom left point
     vertices.push(-1 + (3 * i + 1) * h); // x
     vertices.push(-1 + v_margin); // y
-    vertices.push(0.0);  // z
+    vertices.push(0.0); // z
+    // Bottom right point
     vertices.push(-1 + (3 * i + 3) * h);
     vertices.push(-1 + v_margin);
     vertices.push(0.0);
+    // Top right point
     vertices.push(-1 + (3 * i + 3) * h);
     vertices.push(-1 + v_margin + (2 - 2 * v_margin) * (avgs[i] - min) / width);
     vertices.push(0.0);
+    // Top left point
     vertices.push(-1 + (3 * i + 1) * h);
     vertices.push(-1 + v_margin + (2 - 2 * v_margin) * (avgs[i] - min) / width);
     vertices.push(0.0);
@@ -86,17 +98,30 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars) {
     indices.push(0 + 4 * i);
     indices.push(2 + 4 * i);
     indices.push(3 + 4 * i);
+
+    // Need one color per vertex
+    for (var j = 0; j < 4; j++) {
+      colors.push(...barColors[i % barColors.length]);
+    }
   }
 }
 
 ////////////////    Initialize VBO  ////////////////////////
 
 function initBuffers() {
+  // Vertex position buffer
   squareVertexPositionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
   squareVertexPositionBuffer.itemSize = 3;
   squareVertexPositionBuffer.numItems = num_vertices;
+  // Vertex color buffer
+  squareVertexColorBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+  squareVertexColorBuffer.itemSize = 4; // RGBA four components
+  squareVertexColorBuffer.numItems = num_colors;
+  // Fragment index buffer
   squareVertexIndexBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareVertexIndexBuffer);
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
@@ -109,8 +134,13 @@ function initBuffers() {
 function drawScene() {
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  // Vertex position
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
   gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+  // Vertex color
+  gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
+  gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+  // Fragment index
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareVertexIndexBuffer);
   gl.drawElements(gl.TRIANGLES, num_indices, gl.UNSIGNED_SHORT, 0);
 }
@@ -121,9 +151,13 @@ function webGLStart() {
   var canvas = document.getElementById("lab01-canvas");
   initGL(canvas);
   initShaders();
+  // Vertex attribute
   shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
   gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
-  gl.clearColor(0.0, 0.0, 0.0, 1.0);
+  // Color attribute
+  shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
+  gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
+  gl.clearColor(0.5, 0.5, 0.5, 1.0);
 }
 
 function BG(red, green, blue) {
@@ -134,9 +168,5 @@ function BG(red, green, blue) {
 function clearCanvas() {
   vertices = [];
   indices = [];
-}
-
-function geometry(type) {
-  draw_type = type;
-  drawScene();
+  colors = [];
 }
