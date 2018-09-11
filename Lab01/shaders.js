@@ -1,3 +1,4 @@
+// The vertex shader
 var vertexShaderSrc = `
   attribute vec3 aVertexPosition;
   attribute vec4 aVertexColor;
@@ -9,6 +10,7 @@ var vertexShaderSrc = `
   }
 `;
 
+// The fragment shader
 var fragmentShaderSrc = `
   precision mediump float;
   varying vec4 vColor;
