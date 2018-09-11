@@ -25,6 +25,7 @@ var vertices = [];
 var indices = [];
 var colors = [];
 var lineVertices = [];
+var lineColors = [];
 var num_vertices;
 var num_indices;
 var num_colors;
@@ -80,6 +81,7 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
   var l = 2 - v_margin * 2;
   var numLines = 5;
   var step = l / (numLines - 1);
+  var black = [1.0, 1.0, 1.0, 1.0];
   for (var i = 0; i < numLines; i++) {
     lineVertices.push(-1); // x1
     lineVertices.push(-1 + v_margin + i * step); // y1
@@ -88,9 +90,8 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
     lineVertices.push(-1 + v_margin + i * step); // y2
     lineVertices.push(0); // z2
 
-    var black = [1.0, 1.0, 1.0, 1.0];
-    colors.push(black);
-    colors.push(black);
+    lineColors.push(black);
+    lineColors.push(black);
   }
 
   for (var i = 0; i < num_bars; i++) {
