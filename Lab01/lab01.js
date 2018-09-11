@@ -24,6 +24,7 @@ var squareVertexIndexBuffer;
 var vertices = [];
 var indices = [];
 var colors = [];
+var lineVertices = [];
 var num_vertices;
 var num_indices;
 var num_colors;
@@ -71,8 +72,20 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
   num_indices = num_bars * 6;
   num_colors = num_bars * 4;
 
-  var v_margin = 0.1;
+  var v_margin = 0.25;
+  var pad = v_margin / 2;
   var h = 2 / (3 * num_bars + 1);
+
+  var numLines = 5;
+  for (var i = 0; i < numLines; i++) {
+    lineVertices.push(-1); // x1
+    lineVertices.push(-1 + v_margin + i * width / numLines); // y1
+    lineVertices.push(0); // z1
+    lineVertices.push(1); // x2
+    lineVertices.push(-1 + v_margin + i * width / numLines); // y2
+    lineVertices.push(0); // z2
+  }
+
   for (var i = 0; i < num_bars; i++) {
 
     // Bottom left point
@@ -85,11 +98,11 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
     vertices.push(0.0);
     // Top right point
     vertices.push(-1 + (3 * i + 3) * h);
-    vertices.push(-1 + v_margin + (2 - 2 * v_margin) * (avgs[i] - min) / width);
+    vertices.push(-1 + v_margin + (2 - 2 * v_margin) * (avgs[i] - min + pad) / (width + pad));
     vertices.push(0.0);
     // Top left point
     vertices.push(-1 + (3 * i + 1) * h);
-    vertices.push(-1 + v_margin + (2 - 2 * v_margin) * (avgs[i] - min) / width);
+    vertices.push(-1 + v_margin + (2 - 2 * v_margin) * (avgs[i] - min + pad) / (width + pad));
     vertices.push(0.0);
 
     indices.push(0 + 4 * i);
