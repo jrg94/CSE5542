@@ -35,11 +35,11 @@ function initGL(canvas) {
 }
 
 /**
- * Generates graph vertices and indices given a data species
+ * Draws graph vertices and indices given a data species
  * and an optional species.
  *
- * @param {Object} speciesCollection an dictionary of species data
- * @param {String} species a species string
+ * @param {object} speciesCollection an dictionary of species data
+ * @param {string} species a species string
  */
 function createBarVertices(speciesCollection, species) {
   clearCanvas();
@@ -79,6 +79,17 @@ function createBarVertices(speciesCollection, species) {
   drawScene();
 }
 
+/**
+ * Generates vertices, colors, and indices given some set of averages
+ * and its associated metadata.
+ *
+ * @param {!Array<number>} avgs a list of averages for a data set
+ * @param {number} width the range of the averages
+ * @param {number} min the smallest value in averages
+ * @param {number} max the largest value in averages
+ * @param {number} num_bars the number of bars to graph
+ * @param {!Array<!Array<number>>} barColors a list of bar colors given as RGBA lists
+ */
 function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors) {
   num_vertices = num_bars * 4;
   num_indices = num_bars * 6;
@@ -155,8 +166,9 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
   }
 }
 
-////////////////    Initialize VBO  ////////////////////////
-
+/**
+ * Initializes the set of buffers for drawing.
+ */
 function initBuffers() {
   // Vertex position buffer
   squareVertexPositionBuffer = gl.createBuffer();
