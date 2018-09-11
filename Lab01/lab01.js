@@ -1,8 +1,28 @@
 var gl;
 var shaderProgram;
 
-//////////// Init OpenGL Context etc. ///////////////
+// Global buffer objects
+var squareVertexPositionBuffer;
+var squareVertexColorBuffer;
+var squareVertexIndexBuffer;
+var squareLineVertexPositionBuffer;
+var squareLineVertexColorBuffer;
 
+// Global collections
+var vertices = [];
+var indices = [];
+var colors = [];
+var lineVertices = [];
+var lineColors = [];
+
+// Global counts
+var num_vertices;
+var num_indices;
+var num_colors;
+
+/**
+ * Initializes the GL object given a canvas.
+ */
 function initGL(canvas) {
   try {
     gl = canvas.getContext("experimental-webgl");
@@ -14,24 +34,13 @@ function initGL(canvas) {
   }
 }
 
-///////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-
-var squareVertexPositionBuffer;
-var squareVertexColorBuffer;
-var squareVertexIndexBuffer;
-var squareLineVertexPositionBuffer;
-var squareLineVertexColorBuffer;
-
-var vertices = [];
-var indices = [];
-var colors = [];
-var lineVertices = [];
-var lineColors = [];
-var num_vertices;
-var num_indices;
-var num_colors;
-
+/**
+ * Draws graph vertices and indices given a data species
+ * and an optional species.
+ *
+ * @param {object} speciesCollection an dictionary of species data
+ * @param {string} species a species string
+ */
 function createBarVertices(speciesCollection, species) {
   clearCanvas();
 
@@ -70,6 +79,17 @@ function createBarVertices(speciesCollection, species) {
   drawScene();
 }
 
+/**
+ * Generates vertices, colors, and indices given some set of averages
+ * and its associated metadata.
+ *
+ * @param {!Array<number>} avgs a list of averages for a data set
+ * @param {number} width the range of the averages
+ * @param {number} min the smallest value in averages
+ * @param {number} max the largest value in averages
+ * @param {number} num_bars the number of bars to graph
+ * @param {!Array<!Array<number>>} barColors a list of bar colors given as RGBA lists
+ */
 function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors) {
   num_vertices = num_bars * 4;
   num_indices = num_bars * 6;
@@ -146,8 +166,9 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
   }
 }
 
-////////////////    Initialize VBO  ////////////////////////
-
+/**
+ * Initializes the set of buffers for drawing.
+ */
 function initBuffers() {
   // Vertex position buffer
   squareVertexPositionBuffer = gl.createBuffer();
@@ -181,8 +202,9 @@ function initBuffers() {
   squareLineVertexColorBuffer.numItems = lineColors.length / 4;
 }
 
-///////////////////////////////////////////////////////////////////////
-
+/**
+ * Draws the scene using the existing buffers.
+ */
 function drawScene() {
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -207,8 +229,9 @@ function drawScene() {
   gl.drawElements(gl.TRIANGLES, num_indices, gl.UNSIGNED_SHORT, 0);
 }
 
-///////////////////////////////////////////////////////////////
-
+/**
+ * Initializes the canvas for drawing.
+ */
 function webGLStart() {
   var canvas = document.getElementById("lab01-canvas");
   initGL(canvas);
@@ -222,11 +245,20 @@ function webGLStart() {
   gl.clearColor(0.5, 0.5, 0.5, 1.0);
 }
 
+/**
+ * Sets the background color of the canvas.
+ * @param {number} red the value of red between 0 and 1
+ * @param {number} green the value of green between 0 and 1
+ * @param {number} blue the value of blue between 0 and 1
+ */
 function BG(red, green, blue) {
   gl.clearColor(red, green, blue, 1.0);
   drawScene();
 }
 
+/**
+ * Clears the canvas by clearing out all the collections.
+ */
 function clearCanvas() {
   vertices = [];
   indices = [];

@@ -2,6 +2,8 @@ var has_data = false;
 var data;
 var has_avgs = false;
 var avgs = {};
+
+// Species object constants
 const SPECIES = "species";
 const AVGS = "avgs";
 const DATA = "data";
@@ -14,11 +16,18 @@ const COLORS = [
   [0.1, 0.1, 0.8, 1.0]
 ];
 
+/**
+ * Sets the global variable for use in this file.
+ * @param {!Array<!Array<number>>} lines the collection of species data
+ */
 function set_data(lines) {
   data = lines;
   has_data = true;
 }
 
+/**
+ * Generates the skeleton of the species collection.
+ */
 function initSpeciesCollection() {
   var speciesCollection = {};
   speciesCollection[SPECIES] = {};
@@ -35,10 +44,19 @@ function initSpeciesCollection() {
  *
  * {
  *   species: {
- *     sums: [],
- *     count: 0
- *   },
+ *     setosa: {
+ *       sums: [],
+ *       avgs: [],
+ *       count: 0,
+ *       range: 0,
+ *     },
  *   ...
+ *   },
+ *   data: {
+ *     range: 0,
+ *     minAvg: 0,
+ *     maxAvg: 0
+ *   }
  * }
  */
 function parseAndSumData() {
@@ -68,6 +86,8 @@ function parseAndSumData() {
 
 /**
  * Produces a set of averages from a set of sums.
+ *
+ * @param {object} speciesCollection a collection of species data
  */
 function averageData(speciesCollection) {
   speciesData = speciesCollection[SPECIES];
@@ -85,6 +105,8 @@ function averageData(speciesCollection) {
 /**
  * Produces a min, max, and range for the set of
  * averages for each species.
+ *
+ * @param {object} speciesCollection a collection of species data
  */
 function analyzeData(speciesCollection) {
   var superset = [];
@@ -113,6 +135,10 @@ function analyzeData(speciesCollection) {
   return speciesCollection;
 }
 
+/**
+ * Computers the min, max, and range of a data set.
+ * @param {!Array<number>} dataSet a data set
+ */
 function minMaxRange(dataSet) {
   // Declare working variables
   var min, max, range;
@@ -132,6 +158,10 @@ function minMaxRange(dataSet) {
   return [min, max, range];
 }
 
+/**
+ * Renders the csv data from the species data object.
+ * @param {object} species a large collection of species data
+ */
 function csv_draw_bars(species) {
   if (has_data) {
     if (!has_avgs) {

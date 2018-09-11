@@ -1,5 +1,7 @@
+/**
+ * Initializes the shaders given in shaders.js.
+ */
 function initShaders() {
-
   shaderProgram = gl.createProgram();
 
   var vertexShader = gl.createShader(gl.VERTEX_SHADER);
@@ -19,5 +21,4 @@ function initShaders() {
   }
 
   gl.useProgram(shaderProgram);
-
 }
