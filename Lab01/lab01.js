@@ -92,9 +92,12 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
     lineVertices.push(-1 + v_margin + i * step); // y2
     lineVertices.push(0); // z2
 
-    lineColors.push(black.slice());
-    lineColors.push(black.slice());
+    lineColors.push(...black);
+    lineColors.push(...black);
   }
+
+  console.log(lineVertices);
+  console.log(lineColors);
 
   for (var i = 0; i < num_bars; i++) {
 
@@ -154,14 +157,14 @@ function initBuffers() {
   squareLineVertexPositionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, squareLineVertexPositionBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(lineVertices), gl.STATIC_DRAW);
-  squareVertexPositionBuffer.itemSize = 3;
-  squareVertexPositionBuffer.numItems = lineVertices.length / 3;
+  squareLineVertexPositionBuffer.itemSize = 3;
+  squareLineVertexPositionBuffer.numItems = lineVertices.length / 3;
   // Line vertex color buffer
   squareLineVertexColorBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, squareLineVertexColorBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(lineColors), gl.STATIC_DRAW);
-  squareVertexColorBuffer.itemSize = 4; // RGBA four components
-  squareVertexColorBuffer.numItems = lineColors.length / 4;
+  squareLineVertexColorBuffer.itemSize = 4; // RGBA four components
+  squareLineVertexColorBuffer.numItems = lineColors.length / 4;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -186,7 +189,7 @@ function drawScene() {
   gl.bindBuffer(gl.ARRAY_BUFFER, squareLineVertexColorBuffer);
   gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareLineVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
   // Draw lines
-  gl.drawArrays(gl.drawLines, 0, lineVertices.length / 3);
+  gl.drawArrays(gl.LINES, 0, lineVertices.length / 3);
 }
 
 ///////////////////////////////////////////////////////////////
