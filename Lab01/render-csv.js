@@ -2,6 +2,8 @@ var has_data = false;
 var data;
 var has_avgs = false;
 var avgs = {};
+
+// Species object constants
 const SPECIES = "species";
 const AVGS = "avgs";
 const DATA = "data";
@@ -14,11 +16,18 @@ const COLORS = [
   [0.1, 0.1, 0.8, 1.0]
 ];
 
+/**
+ * Sets the global variable for use in this file.
+ * @param {!Array<!Array<number>>} lines the collection of species data
+ */
 function set_data(lines) {
   data = lines;
   has_data = true;
 }
 
+/**
+ * Generates the skeleton of the species collection.
+ */
 function initSpeciesCollection() {
   var speciesCollection = {};
   speciesCollection[SPECIES] = {};
@@ -35,10 +44,19 @@ function initSpeciesCollection() {
  *
  * {
  *   species: {
- *     sums: [],
- *     count: 0
- *   },
+ *     setosa: {
+ *       sums: [],
+ *       avgs: [],
+ *       count: 0,
+ *       range: 0,
+ *     },
  *   ...
+ *   },
+ *   data: {
+ *     range: 0,
+ *     minAvg: 0,
+ *     maxAvg: 0
+ *   }
  * }
  */
 function parseAndSumData() {
