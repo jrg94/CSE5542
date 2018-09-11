@@ -90,8 +90,8 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
     lineVertices.push(-1 + v_margin + i * step); // y2
     lineVertices.push(0); // z2
 
-    lineColors.push(black);
-    lineColors.push(black);
+    lineColors.push(black.slice());
+    lineColors.push(black.slice());
   }
 
   for (var i = 0; i < num_bars; i++) {
@@ -148,6 +148,18 @@ function initBuffers() {
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
   squareVertexIndexBuffer.itemsize = 1;
   squareVertexIndexBuffer.numItems = num_indices;
+  // Line vertex position buffer
+  squareVertexPositionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(lineVertices), gl.STATIC_DRAW);
+  squareVertexPositionBuffer.itemSize = 3;
+  squareVertexPositionBuffer.numItems = lineVertices.length / 3;
+  // Line vertex color buffer
+  squareVertexColorBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(lineColors), gl.STATIC_DRAW);
+  squareVertexColorBuffer.itemSize = 4; // RGBA four components
+  squareVertexColorBuffer.numItems = lineColors.length / 4;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -190,4 +202,6 @@ function clearCanvas() {
   vertices = [];
   indices = [];
   colors = [];
+  lineVertices = [];
+  lineColors = [];
 }
