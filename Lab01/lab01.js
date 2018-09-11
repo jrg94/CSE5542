@@ -172,15 +172,6 @@ function initBuffers() {
 function drawScene() {
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-  // Vertex position
-  gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
-  gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-  // Vertex color
-  gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
-  gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
-  // Fragment index
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareVertexIndexBuffer);
-  gl.drawElements(gl.TRIANGLES, num_indices, gl.UNSIGNED_SHORT, 0);
 
   // Line Vertex Position
   gl.bindBuffer(gl.ARRAY_BUFFER, squareLineVertexPositionBuffer);
@@ -190,6 +181,16 @@ function drawScene() {
   gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareLineVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
   // Draw lines
   gl.drawArrays(gl.LINES, 0, lineVertices.length / 3);
+
+  // Vertex position
+  gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
+  gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+  // Vertex color
+  gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
+  gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+  // Fragment index
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareVertexIndexBuffer);
+  gl.drawElements(gl.TRIANGLES, num_indices, gl.UNSIGNED_SHORT, 0);
 }
 
 ///////////////////////////////////////////////////////////////
