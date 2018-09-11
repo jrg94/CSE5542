@@ -202,8 +202,9 @@ function initBuffers() {
   squareLineVertexColorBuffer.numItems = lineColors.length / 4;
 }
 
-///////////////////////////////////////////////////////////////////////
-
+/**
+ * Draws the scene using the existing buffers.
+ */
 function drawScene() {
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -228,8 +229,9 @@ function drawScene() {
   gl.drawElements(gl.TRIANGLES, num_indices, gl.UNSIGNED_SHORT, 0);
 }
 
-///////////////////////////////////////////////////////////////
-
+/**
+ * Initializes the canvas for drawing.
+ */
 function webGLStart() {
   var canvas = document.getElementById("lab01-canvas");
   initGL(canvas);
@@ -243,11 +245,20 @@ function webGLStart() {
   gl.clearColor(0.5, 0.5, 0.5, 1.0);
 }
 
+/**
+ * Sets the background color of the canvas.
+ * @param {number} red the value of red between 0 and 1
+ * @param {number} green the value of green between 0 and 1
+ * @param {number} blue the value of blue between 0 and 1
+ */
 function BG(red, green, blue) {
   gl.clearColor(red, green, blue, 1.0);
   drawScene();
 }
 
+/**
+ * Clears the canvas by clearing out all the collections.
+ */
 function clearCanvas() {
   vertices = [];
   indices = [];
