@@ -76,15 +76,20 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
   var pad = v_margin / 2;
   var h = 2 / (3 * num_bars + 1);
 
+  // Vertical space occupied by graph
+  var l = 2 - v_margin * 2;
   var numLines = 5;
+  var step = l / (numLines - 1);
   for (var i = 0; i < numLines; i++) {
     lineVertices.push(-1); // x1
-    lineVertices.push(-1 + v_margin + i * width / numLines); // y1
+    lineVertices.push(-1 + v_margin + i * step); // y1
     lineVertices.push(0); // z1
     lineVertices.push(1); // x2
-    lineVertices.push(-1 + v_margin + i * width / numLines); // y2
+    lineVertices.push(-1 + v_margin + i * step); // y2
     lineVertices.push(0); // z2
   }
+
+  console.log(lineVertices);
 
   for (var i = 0; i < num_bars; i++) {
 
