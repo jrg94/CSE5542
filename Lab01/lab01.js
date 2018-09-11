@@ -96,6 +96,19 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
     lineColors.push(...black);
   }
 
+  for (var i = 0; i < 4; i++) {
+    lineVertices.push(-1 + i * 2 / 4); // x1
+    lineVertices.push(-1); // y1
+    lineVertices.push(0); // z1
+
+    lineVertices.push(-1 + i * 2 / 4); // x1
+    lineVertices.push(1); // y1
+    lineVertices.push(0); // z1
+
+    lineColors.push(...black);
+    lineColors.push(...black);
+  }
+
   for (var i = 0; i < num_bars; i++) {
 
     // Bottom left point
