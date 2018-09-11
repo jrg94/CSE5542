@@ -178,9 +178,15 @@ function drawScene() {
   // Fragment index
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareVertexIndexBuffer);
   gl.drawElements(gl.TRIANGLES, num_indices, gl.UNSIGNED_SHORT, 0);
+
   // Line Vertex Position
-  gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
-  gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+  gl.bindBuffer(gl.ARRAY_BUFFER, squareLineVertexPositionBuffer);
+  gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareLineVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+  // Line Vertex Color Buffer
+  gl.bindBuffer(gl.ARRAY_BUFFER, squareLineVertexColorBuffer);
+  gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareLineVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+  // Draw lines
+  gl.drawArrays(gl.drawLines, 0, lineVertices.length / 3);
 }
 
 ///////////////////////////////////////////////////////////////
