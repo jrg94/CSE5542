@@ -20,7 +20,8 @@ Source credit goes to Dr. Han-Wei Shen who provided the template code via their
 
 Changes to these templates included:
 
-1. Moving shaders out of HTML and into a shaders.js file.
+1. Moving shaders out of HTML and into a [`shaders.js`][8] file.
+2. Reworking global fields into passable object
 
 [1]: https://github.com/jrg94/CSE5542/blob/master/Lab01/sample-graph.JPG
 [2]: http://www.cse.ohio-state.edu/~shen.94/5542
@@ -29,3 +30,4 @@ Changes to these templates included:
 [5]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/code05-csv.js
 [6]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/read-csv.js
 [7]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/shaders_setup_5.js
+[8]: https://github.com/jrg94/CSE5542/blob/master/Lab01/shaders.js
