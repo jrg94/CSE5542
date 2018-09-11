@@ -84,6 +84,8 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
   var numLines = 8;
   var step = l / (numLines - 1);
   var black = [0.0, 0.0, 0.0, 1.0];
+
+  // Generates horizontal lines
   for (var i = 0; i < numLines; i++) {
     lineVertices.push(-1); // x1
     lineVertices.push(-1 + v_margin + i * step); // y1
@@ -96,6 +98,7 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
     lineColors.push(...black);
   }
 
+  // Generates vertical lines
   for (var i = 0; i < 4; i++) {
     lineVertices.push(-1 + i * 2 / 4); // x1
     lineVertices.push(-1); // y1
@@ -109,6 +112,7 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
     lineColors.push(...black);
   }
 
+  // Generates bars
   for (var i = 0; i < num_bars; i++) {
 
     // Bottom left point
