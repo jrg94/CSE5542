@@ -86,6 +86,8 @@ function parseAndSumData() {
 
 /**
  * Produces a set of averages from a set of sums.
+ *
+ * @param {object} speciesCollection a collection of species data
  */
 function averageData(speciesCollection) {
   speciesData = speciesCollection[SPECIES];
@@ -103,6 +105,8 @@ function averageData(speciesCollection) {
 /**
  * Produces a min, max, and range for the set of
  * averages for each species.
+ *
+ * @param {object} speciesCollection a collection of species data
  */
 function analyzeData(speciesCollection) {
   var superset = [];
@@ -131,6 +135,10 @@ function analyzeData(speciesCollection) {
   return speciesCollection;
 }
 
+/**
+ * Computers the min, max, and range of a data set.
+ * @param {!Array<number>} dataSet a data set
+ */
 function minMaxRange(dataSet) {
   // Declare working variables
   var min, max, range;
@@ -150,6 +158,10 @@ function minMaxRange(dataSet) {
   return [min, max, range];
 }
 
+/**
+ * Renders the csv data from the species data object.
+ * @param {object} species a large collection of species data
+ */
 function csv_draw_bars(species) {
   if (has_data) {
     if (!has_avgs) {
