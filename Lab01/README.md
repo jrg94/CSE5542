@@ -12,7 +12,11 @@ menu to begin plotting data. That's it!
 
 The solution should render as follows:
 
-![Sample Graph](https://github.com/jrg94/CSE5542/blob/master/Lab01/sample-graph.JPG)
+![Sample Graph](1)
 
 Source credit goes to Dr. Han-Wei Shen who provided the template code via their 
-[OSU course website](http://www.cse.ohio-state.edu/~shen.94/5542). Namely, [`code05.html`](http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/code05.html).
+[OSU course website][2]. Namely, [`code05.html`][3].
+
+[1]: https://github.com/jrg94/CSE5542/blob/master/Lab01/sample-graph.JPG
+[2]: http://www.cse.ohio-state.edu/~shen.94/5542
+[3]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/code05.html
