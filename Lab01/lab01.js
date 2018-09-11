@@ -81,7 +81,7 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
 
   // Vertical space occupied by graph
   var l = 2 - v_margin * 2;
-  var numLines = 5;
+  var numLines = 8;
   var step = l / (numLines - 1);
   var black = [0.0, 0.0, 0.0, 1.0];
   for (var i = 0; i < numLines; i++) {
