@@ -83,7 +83,7 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
   var l = 2 - v_margin * 2;
   var numLines = 5;
   var step = l / (numLines - 1);
-  var black = [1.0, 1.0, 1.0, 1.0];
+  var black = [0.0, 0.0, 0.0, 1.0];
   for (var i = 0; i < numLines; i++) {
     lineVertices.push(-1); // x1
     lineVertices.push(-1 + v_margin + i * step); // y1
