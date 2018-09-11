@@ -87,9 +87,11 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
     lineVertices.push(1); // x2
     lineVertices.push(-1 + v_margin + i * step); // y2
     lineVertices.push(0); // z2
-  }
 
-  console.log(lineVertices);
+    var black = [1.0, 1.0, 1.0, 1.0];
+    colors.push(black);
+    colors.push(black);
+  }
 
   for (var i = 0; i < num_bars; i++) {
 
