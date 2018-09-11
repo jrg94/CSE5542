@@ -1,8 +1,28 @@
 var gl;
 var shaderProgram;
 
-//////////// Init OpenGL Context etc. ///////////////
+// Global buffer objects
+var squareVertexPositionBuffer;
+var squareVertexColorBuffer;
+var squareVertexIndexBuffer;
+var squareLineVertexPositionBuffer;
+var squareLineVertexColorBuffer;
 
+// Global collections
+var vertices = [];
+var indices = [];
+var colors = [];
+var lineVertices = [];
+var lineColors = [];
+
+// Global counts
+var num_vertices;
+var num_indices;
+var num_colors;
+
+/**
+ * Initializes the GL object given a canvas.
+ */
 function initGL(canvas) {
   try {
     gl = canvas.getContext("experimental-webgl");
@@ -14,24 +34,13 @@ function initGL(canvas) {
   }
 }
 
-///////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-
-var squareVertexPositionBuffer;
-var squareVertexColorBuffer;
-var squareVertexIndexBuffer;
-var squareLineVertexPositionBuffer;
-var squareLineVertexColorBuffer;
-
-var vertices = [];
-var indices = [];
-var colors = [];
-var lineVertices = [];
-var lineColors = [];
-var num_vertices;
-var num_indices;
-var num_colors;
-
+/**
+ * Generates graph vertices and indices given a data species
+ * and an optional species.
+ *
+ * @param {Object} speciesCollection an dictionary of species data
+ * @param {String} species a species string
+ */
 function createBarVertices(speciesCollection, species) {
   clearCanvas();
 
