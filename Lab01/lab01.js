@@ -20,10 +20,14 @@ function initGL(canvas) {
 var squareVertexPositionBuffer;
 var squareVertexColorBuffer;
 var squareVertexIndexBuffer;
+var squareLineVertexPositionBuffer;
+var squareLineVertexColorBuffer;
 
 var vertices = [];
 var indices = [];
 var colors = [];
+var lineVertices = [];
+var lineColors = [];
 var num_vertices;
 var num_indices;
 var num_colors;
@@ -71,8 +75,44 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
   num_indices = num_bars * 6;
   num_colors = num_bars * 4;
 
-  var v_margin = 0.1;
+  var v_margin = 0.25;
+  var pad = v_margin / 2;
   var h = 2 / (3 * num_bars + 1);
+
+  // Vertical space occupied by graph
+  var l = 2 - v_margin * 2;
+  var numLines = 8;
+  var step = l / (numLines - 1);
+  var black = [0.0, 0.0, 0.0, 1.0];
+
+  // Generates horizontal lines
+  for (var i = 0; i < numLines; i++) {
+    lineVertices.push(-1); // x1
+    lineVertices.push(-1 + v_margin + i * step); // y1
+    lineVertices.push(0); // z1
+    lineVertices.push(1); // x2
+    lineVertices.push(-1 + v_margin + i * step); // y2
+    lineVertices.push(0); // z2
+
+    lineColors.push(...black);
+    lineColors.push(...black);
+  }
+
+  // Generates vertical lines
+  for (var i = 0; i < 4; i++) {
+    lineVertices.push(-1 + i * 2 / 4); // x1
+    lineVertices.push(-1); // y1
+    lineVertices.push(0); // z1
+
+    lineVertices.push(-1 + i * 2 / 4); // x1
+    lineVertices.push(1); // y1
+    lineVertices.push(0); // z1
+
+    lineColors.push(...black);
+    lineColors.push(...black);
+  }
+
+  // Generates bars
   for (var i = 0; i < num_bars; i++) {
 
     // Bottom left point
@@ -85,11 +125,11 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
     vertices.push(0.0);
     // Top right point
     vertices.push(-1 + (3 * i + 3) * h);
-    vertices.push(-1 + v_margin + (2 - 2 * v_margin) * (avgs[i] - min) / width);
+    vertices.push(-1 + v_margin + (2 - 2 * v_margin) * (avgs[i] - min + pad) / (width + pad));
     vertices.push(0.0);
     // Top left point
     vertices.push(-1 + (3 * i + 1) * h);
-    vertices.push(-1 + v_margin + (2 - 2 * v_margin) * (avgs[i] - min) / width);
+    vertices.push(-1 + v_margin + (2 - 2 * v_margin) * (avgs[i] - min + pad) / (width + pad));
     vertices.push(0.0);
 
     indices.push(0 + 4 * i);
@@ -127,6 +167,18 @@ function initBuffers() {
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
   squareVertexIndexBuffer.itemsize = 1;
   squareVertexIndexBuffer.numItems = num_indices;
+  // Line vertex position buffer
+  squareLineVertexPositionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, squareLineVertexPositionBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(lineVertices), gl.STATIC_DRAW);
+  squareLineVertexPositionBuffer.itemSize = 3;
+  squareLineVertexPositionBuffer.numItems = lineVertices.length / 3;
+  // Line vertex color buffer
+  squareLineVertexColorBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, squareLineVertexColorBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(lineColors), gl.STATIC_DRAW);
+  squareLineVertexColorBuffer.itemSize = 4; // RGBA four components
+  squareLineVertexColorBuffer.numItems = lineColors.length / 4;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -134,6 +186,16 @@ function initBuffers() {
 function drawScene() {
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+  // Line Vertex Position
+  gl.bindBuffer(gl.ARRAY_BUFFER, squareLineVertexPositionBuffer);
+  gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareLineVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+  // Line Vertex Color Buffer
+  gl.bindBuffer(gl.ARRAY_BUFFER, squareLineVertexColorBuffer);
+  gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareLineVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+  // Draw lines
+  gl.drawArrays(gl.LINES, 0, lineVertices.length / 3);
+
   // Vertex position
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
   gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -169,4 +231,6 @@ function clearCanvas() {
   vertices = [];
   indices = [];
   colors = [];
+  lineVertices = [];
+  lineColors = [];
 }
