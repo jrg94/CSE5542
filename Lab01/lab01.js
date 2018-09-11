@@ -20,6 +20,8 @@ function initGL(canvas) {
 var squareVertexPositionBuffer;
 var squareVertexColorBuffer;
 var squareVertexIndexBuffer;
+var squareLineVertexPositionBuffer;
+var squareLineVertexColorBuffer;
 
 var vertices = [];
 var indices = [];
@@ -149,14 +151,14 @@ function initBuffers() {
   squareVertexIndexBuffer.itemsize = 1;
   squareVertexIndexBuffer.numItems = num_indices;
   // Line vertex position buffer
-  squareVertexPositionBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
+  squareLineVertexPositionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, squareLineVertexPositionBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(lineVertices), gl.STATIC_DRAW);
   squareVertexPositionBuffer.itemSize = 3;
   squareVertexPositionBuffer.numItems = lineVertices.length / 3;
   // Line vertex color buffer
-  squareVertexColorBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
+  squareLineVertexColorBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, squareLineVertexColorBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(lineColors), gl.STATIC_DRAW);
   squareVertexColorBuffer.itemSize = 4; // RGBA four components
   squareVertexColorBuffer.numItems = lineColors.length / 4;
@@ -176,6 +178,9 @@ function drawScene() {
   // Fragment index
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareVertexIndexBuffer);
   gl.drawElements(gl.TRIANGLES, num_indices, gl.UNSIGNED_SHORT, 0);
+  // Line Vertex Position
+  gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
+  gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 }
 
 ///////////////////////////////////////////////////////////////
