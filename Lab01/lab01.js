@@ -96,9 +96,6 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
     lineColors.push(...black);
   }
 
-  console.log(lineVertices);
-  console.log(lineColors);
-
   for (var i = 0; i < num_bars; i++) {
 
     // Bottom left point
