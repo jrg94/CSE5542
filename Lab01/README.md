@@ -1,7 +1,11 @@
 # CSE 5542 Lab 01 Directions
 
-To run this lab, double-click the HTML file to run the solution in
-your browser. Personally, I tested on **Google Chrome** and **Windows 10**.
+Since all this code is hosted on GitHub, you can run this solution
+using the [Raw Git tool][9]
+
+Alternatively, you can open the solution locally by double-clicking the 
+HTML file to run the solution in your browser. Personally, 
+I tested on **Google Chrome** and **Windows 10**.
 
 With the solution open, scroll to the bottom and select `choose file`
 from the Graph Data Import section. From there, select your Iris data.
@@ -31,3 +35,4 @@ Changes to these templates included:
 [6]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/read-csv.js
 [7]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/shaders_setup_5.js
 [8]: https://github.com/jrg94/CSE5542/blob/master/Lab01/shaders.js
+[9]: https://rawgit.com/jrg94/cse5542/master/Lab01/lab01.html
