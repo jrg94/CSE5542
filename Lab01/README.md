@@ -1,7 +1,7 @@
 # CSE 5542 Lab 01 Directions
 
 Since all this code is hosted on GitHub, you can run this solution
-using the [Raw Git tool][9].
+using the [RawGit tool][9].
 
 Alternatively, you can open the solution locally by double-clicking the 
 HTML file to run the solution in your browser. Personally, 
