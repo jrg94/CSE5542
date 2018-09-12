@@ -27,6 +27,8 @@ Changes to these templates included:
 1. Moving shaders out of HTML and into a [`shaders.js`][8] file.
 2. Reworking global fields into passable object
 
+Solution is freely available under the MIT license.
+
 [1]: https://github.com/jrg94/CSE5542/blob/master/Lab01/sample-graph.JPG
 [2]: http://www.cse.ohio-state.edu/~shen.94/5542
 [3]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/code05.html
