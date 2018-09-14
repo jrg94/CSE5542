@@ -37,4 +37,4 @@ Solution is freely available under the MIT license.
 [6]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/read-csv.js
 [7]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/shaders_setup_5.js
 [8]: https://github.com/jrg94/CSE5542/blob/master/Lab01/shaders.js
-[9]: https://cdn.rawgit.com/jrg94/CSE5542/v1.0.0/Lab01/lab01.html
+[9]: https://cdn.rawgit.com/jrg94/CSE5542/v1.1.0/Lab01/lab01.html
