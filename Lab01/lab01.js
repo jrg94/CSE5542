@@ -119,6 +119,25 @@ function drawHorizontalLine(i, v_margin, step, color) {
 }
 
 /**
+ * Adds line vertices and colors to their respective collections.
+ *
+ * @param {number} i the line index
+ * @param {!Array<number>} color an RGBA array of color values
+ */
+function drawVerticalLine(i, color) {
+  lineVertices.push(-1 + i * 2 / 4); // x1
+  lineVertices.push(-1); // y1
+  lineVertices.push(0); // z1
+
+  lineVertices.push(-1 + i * 2 / 4); // x1
+  lineVertices.push(1); // y1
+  lineVertices.push(0); // z1
+
+  lineColors.push(...color);
+  lineColors.push(...color);
+}
+
+/**
  * Generates vertices, colors, and indices given some set of averages
  * and its associated metadata.
  *
@@ -152,16 +171,7 @@ function createGraphVerticesPerSpecies(avgs, width, min, max, num_bars, barColor
 
   // Generates vertical lines
   for (var i = 0; i < 4; i++) {
-    lineVertices.push(-1 + i * 2 / 4); // x1
-    lineVertices.push(-1); // y1
-    lineVertices.push(0); // z1
-
-    lineVertices.push(-1 + i * 2 / 4); // x1
-    lineVertices.push(1); // y1
-    lineVertices.push(0); // z1
-
-    lineColors.push(...black);
-    lineColors.push(...black);
+    drawVerticalLine(i, black);
   }
 
   // Generates bars
