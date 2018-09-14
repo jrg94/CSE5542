@@ -138,6 +138,51 @@ function drawVerticalLine(i, color) {
 }
 
 /**
+ * Adds bar vertices to their respective collections
+ *
+ * TODO: Refactor this list of parameters
+ *
+ * @param {number} h height
+ * @param {number} v_margin the vertical margin in NDC
+ * @param {number} i the index of the bar
+ * @param {!Array<number>} avgs a list of averages
+ * @param {number} min the smallest average
+ * @param {number} pad some padding
+ * @param {number} width the range between min and max
+ * @param {!Array<!Array<numbers>>} barColors a collection of colors
+ */
+function drawBar(h, v_margin, i, avgs, min, pad, width, barColors) {
+  // Bottom left point
+  vertices.push(-1 + (3 * i + 1) * h); // x
+  vertices.push(-1 + v_margin); // y
+  vertices.push(0.0); // z
+  // Bottom right point
+  vertices.push(-1 + (3 * i + 3) * h);
+  vertices.push(-1 + v_margin);
+  vertices.push(0.0);
+  // Top right point
+  vertices.push(-1 + (3 * i + 3) * h);
+  vertices.push(-1 + v_margin + (2 - 2 * v_margin) * (avgs[i] - min + pad) / (width + pad));
+  vertices.push(0.0);
+  // Top left point
+  vertices.push(-1 + (3 * i + 1) * h);
+  vertices.push(-1 + v_margin + (2 - 2 * v_margin) * (avgs[i] - min + pad) / (width + pad));
+  vertices.push(0.0);
+
+  indices.push(0 + 4 * i);
+  indices.push(1 + 4 * i);
+  indices.push(2 + 4 * i);
+  indices.push(0 + 4 * i);
+  indices.push(2 + 4 * i);
+  indices.push(3 + 4 * i);
+
+  // Need one color per vertex
+  for (var j = 0; j < 4; j++) {
+    colors.push(...barColors[i % barColors.length]);
+  }
+}
+
+/**
  * Generates vertices, colors, and indices given some set of averages
  * and its associated metadata.
  *
@@ -163,7 +208,7 @@ function createGraphVerticesPerSpecies(avgs, width, min, max, num_bars, barColor
   var step = l / (numLines - 1);
   var black = [0.0, 0.0, 0.0, 1.0];
 
-  // Generates horizontal lines
+  // Generates horizontal lines and text
   for (var i = 0; i < numLines; i++) {
     drawText(i, max, numLines, pad);
     drawHorizontalLine(i, v_margin, step, black);
@@ -176,35 +221,7 @@ function createGraphVerticesPerSpecies(avgs, width, min, max, num_bars, barColor
 
   // Generates bars
   for (var i = 0; i < num_bars; i++) {
-
-    // Bottom left point
-    vertices.push(-1 + (3 * i + 1) * h); // x
-    vertices.push(-1 + v_margin); // y
-    vertices.push(0.0); // z
-    // Bottom right point
-    vertices.push(-1 + (3 * i + 3) * h);
-    vertices.push(-1 + v_margin);
-    vertices.push(0.0);
-    // Top right point
-    vertices.push(-1 + (3 * i + 3) * h);
-    vertices.push(-1 + v_margin + (2 - 2 * v_margin) * (avgs[i] - min + pad) / (width + pad));
-    vertices.push(0.0);
-    // Top left point
-    vertices.push(-1 + (3 * i + 1) * h);
-    vertices.push(-1 + v_margin + (2 - 2 * v_margin) * (avgs[i] - min + pad) / (width + pad));
-    vertices.push(0.0);
-
-    indices.push(0 + 4 * i);
-    indices.push(1 + 4 * i);
-    indices.push(2 + 4 * i);
-    indices.push(0 + 4 * i);
-    indices.push(2 + 4 * i);
-    indices.push(3 + 4 * i);
-
-    // Need one color per vertex
-    for (var j = 0; j < 4; j++) {
-      colors.push(...barColors[i % barColors.length]);
-    }
+    drawBar(h, v_margin, i, avgs, min, pad, width, barColors);
   }
 }
 
