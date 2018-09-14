@@ -110,9 +110,10 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
   for (var i = 0; i < numLines; i++) {
     var yValue = i * max / (numLines - 1);
     var yValueTrunc = Math.round(yValue * 100) / 100
-    var yPad = pad * ctx.canvas.height;
-    var yIncrement = i / numLines * (ctx.canvas.height - yPad);
-    var yLocation = ctx.canvas.height - yIncrement - yPad;
+    var yPad = pad * ctx.canvas.height * 2;
+    var yDrawingHeight = ctx.canvas.height - yPad
+    var yIncrement = i / (numLines - 1) * yDrawingHeight;
+    var yLocation = yDrawingHeight + yPad / 2 - yIncrement;
     ctx.fillText(yValueTrunc, 10, yLocation);
 
     lineVertices.push(-1); // x1
