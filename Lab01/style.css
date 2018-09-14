@@ -2,6 +2,10 @@
     position: relative;
 }
 
+.graph {
+    border-style: solid;
+}
+
 #text {
     position: absolute;
     left: 0px;
