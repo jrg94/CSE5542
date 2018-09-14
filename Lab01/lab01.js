@@ -42,7 +42,7 @@ function initGL(canvas) {
  * @param {object} speciesCollection an dictionary of species data
  * @param {string} species a species string
  */
-function createBarVertices(speciesCollection, species) {
+function createGraphVertices(speciesCollection, species) {
   clearCanvas();
 
   var speciesData = speciesCollection["species"];
@@ -56,7 +56,7 @@ function createBarVertices(speciesCollection, species) {
     var width = currSpeciesData["avgRange"];
     var min = currSpeciesData["minAvg"];
     var max = currSpeciesData["maxAvg"];
-    createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors);
+    createGraphVerticesPerSpecies(avgs, width, min, max, num_bars, barColors);
   } else {
     var num_avgs = speciesData[Object.keys(speciesData)[0]]["avgs"].length;
     var avgs = [];
@@ -73,7 +73,7 @@ function createBarVertices(speciesCollection, species) {
     var width = collectionData["avgRange"];
     var min = collectionData["minAvg"];
     var max = collectionData["maxAvg"];
-    createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors);
+    createGraphVerticesPerSpecies(avgs, width, min, max, num_bars, barColors);
   }
 
   initBuffers();
@@ -129,7 +129,7 @@ function drawHorizontalLine(i, v_margin, step, color) {
  * @param {number} num_bars the number of bars to graph
  * @param {!Array<!Array<number>>} barColors a list of bar colors given as RGBA lists
  */
-function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors) {
+function createGraphVerticesPerSpecies(avgs, width, min, max, num_bars, barColors) {
   num_vertices = num_bars * 4;
   num_indices = num_bars * 6;
   num_colors = num_bars * 4;
