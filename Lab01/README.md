@@ -14,7 +14,7 @@ I've included a copy in this solution for your convenience.
 With the csv data loaded, choose any of the buttons from Graph Controls
 menu to begin plotting data. That's it!
 
-The solution should render as follows:
+The solution should render as follows (*text not included in screenshot*):
 
 ![Sample Graph][1]
 
