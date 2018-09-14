@@ -1,5 +1,6 @@
 var gl;
 var shaderProgram;
+var ctx;
 
 // Global buffer objects
 var squareVertexPositionBuffer;
@@ -107,6 +108,7 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
 
   // Generates horizontal lines
   for (var i = 0; i < numLines; i++) {
+    ctx.fillText(i * width / numLines, 10, 100 * i);
     lineVertices.push(-1); // x1
     lineVertices.push(-1 + v_margin + i * step); // y1
     lineVertices.push(0); // z1
@@ -234,6 +236,8 @@ function drawScene() {
  */
 function webGLStart() {
   var canvas = document.getElementById("lab01-canvas");
+  var textCanvas = document.getElementById("text");
+  ctx = textCanvas.getContext("2d");
   initGL(canvas);
   initShaders();
   // Vertex attribute
@@ -265,4 +269,5 @@ function clearCanvas() {
   colors = [];
   lineVertices = [];
   lineColors = [];
+  ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 }
