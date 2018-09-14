@@ -169,6 +169,6 @@ function csv_draw_bars(species) {
       has_avgs = true;
       console.log(this.avgs);
     }
-    createBarVertices(this.avgs, species);
+    createGraphVertices(this.avgs, species);
   }
 }
