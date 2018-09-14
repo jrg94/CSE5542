@@ -108,7 +108,13 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
 
   // Generates horizontal lines
   for (var i = 0; i < numLines; i++) {
-    ctx.fillText(i * width / numLines, 10, 100 * i);
+    var yValue = i * max / (numLines - 1);
+    var yValueTrunc = Math.round(yValue * 100) / 100
+    var yPad = pad * ctx.canvas.height;
+    var yIncrement = i / numLines * (ctx.canvas.height - yPad);
+    var yLocation = ctx.canvas.height - yIncrement - yPad;
+    ctx.fillText(yValueTrunc, 10, yLocation);
+
     lineVertices.push(-1); // x1
     lineVertices.push(-1 + v_margin + i * step); // y1
     lineVertices.push(0); // z1
