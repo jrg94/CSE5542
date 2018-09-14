@@ -81,6 +81,24 @@ function createBarVertices(speciesCollection, species) {
 }
 
 /**
+ * Adds text to a particular line on the canvas.
+ * 
+ * @param {number} i the line index
+ * @param {number} max the value of the line with the largest index
+ * @param {number} numLines the number of lines
+ * @param {number} pad the padding in NDC
+ */
+function drawText(i, max, numLines, pad) {
+  var yValue = i * max / (numLines - 1);
+  var yValueTrunc = Math.round(yValue * 100) / 100
+  var yPad = pad * ctx.canvas.height * 2;
+  var yDrawingHeight = ctx.canvas.height - yPad
+  var yIncrement = i / (numLines - 1) * yDrawingHeight;
+  var yLocation = yDrawingHeight + yPad / 2 - yIncrement;
+  ctx.fillText(yValueTrunc, 10, yLocation);
+}
+
+/**
  * Generates vertices, colors, and indices given some set of averages
  * and its associated metadata.
  *
@@ -108,13 +126,7 @@ function createBarVerticesPerSpecies(avgs, width, min, max, num_bars, barColors)
 
   // Generates horizontal lines
   for (var i = 0; i < numLines; i++) {
-    var yValue = i * max / (numLines - 1);
-    var yValueTrunc = Math.round(yValue * 100) / 100
-    var yPad = pad * ctx.canvas.height * 2;
-    var yDrawingHeight = ctx.canvas.height - yPad
-    var yIncrement = i / (numLines - 1) * yDrawingHeight;
-    var yLocation = yDrawingHeight + yPad / 2 - yIncrement;
-    ctx.fillText(yValueTrunc, 10, yLocation);
+    drawText(i, max, numLines, pad)
 
     lineVertices.push(-1); // x1
     lineVertices.push(-1 + v_margin + i * step); // y1
