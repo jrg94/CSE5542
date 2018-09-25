@@ -13,32 +13,15 @@ var lineVertexColorBuffer;
 var mvMatrix1;
 var mvMatrix2;
 var mvMatrix3;
-var Xtranslate = 0.0,
-  var Ytranslate = 0.0;
+var Xtranslate = 0.0;
+var Ytranslate = 0.0;
 
 // Stack
 var mvMatrixStack = [];
 
 // Mouse tracking
-var lastMouseX = 0,
-  var lastMouseY = 0;
-
-// Hierarchy
-var root = {
-  id = 1,
-  squareVertices = SQUARE,
-  lineVertices = AXES,
-  root = {
-    id = 2,
-    squareVertices = SQUARE,
-    lineVertices = AXES,
-    root = {
-      id = 3,
-      squareVertices = SQUARE,
-      lineVertices = AXES,
-    }
-  }
-};
+var lastMouseX = 0;
+var lastMouseY = 0;
 
 // Square vertices
 const SQUARE = [
@@ -55,6 +38,29 @@ const AXES = [
   0.0, 0.0, 0.0,
   0.0, 0.7, 0.0,
 ];
+
+// Hierarchy
+var shoulder = {
+  id: 1,
+  vertices: SQUARE,
+  axes: AXES
+  children: [
+    arm: {
+      id: 2,
+      vertices: SQUARE,
+      axes: AXES,
+      children: [
+        hand: {
+          id: 3,
+          vertices: SQUARE,
+          axis: AXES,
+        }
+      ]
+    }
+  ]
+};
+
+console.log(shoulder);
 
 function initGL(canvas) {
   try {
