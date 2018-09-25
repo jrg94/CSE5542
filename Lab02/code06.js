@@ -175,8 +175,10 @@ function drawSquare(matrix) {
   gl.drawArrays(gl.LINES, 0, lineVertexPositionBuffer.numItems);
 }
 
+/**
+ * Draws the scene
+ */
 function drawScene() {
-
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -354,7 +356,7 @@ function onKeyDown(event) {
 }
 
 function webGLStart() {
-  var canvas = document.getElementById("code04-canvas");
+  var canvas = document.getElementById("lab02-canvas");
   initGL(canvas);
   initShaders();
 
@@ -404,18 +406,21 @@ function backgroundColor(red, green, blue) {
   drawScene();
 }
 
+/**
+ * Resets the scene to it's original appearance.
+ */
 function redraw() {
-
+  // Clear all matrices
   mat4.identity(mvMatrix1);
   mat4.identity(mvMatrix2);
   mat4.identity(mvMatrix3);
 
+  // Transform all matrices
   mvMatrix1 = mat4.scale(mvMatrix1, [0.25, 0.25, 0.25]);
-
   mvMatrix2 = mat4.translate(mvMatrix2, [0.5, 0.5, 0.25]);
-
   mvMatrix3 = mat4.translate(mvMatrix3, [0.5, 0.5, 0]);
 
+  // Draw
   drawScene();
 }
 
