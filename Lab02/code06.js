@@ -3,7 +3,18 @@ var shaderProgram;
 var draw_type = 2;
 var which_object = 1;
 
-//////////// Init OpenGL Context etc. ///////////////
+// Buffers
+var squareVertexPositionBuffer;
+var squareVertexColorBuffer;
+var lineVertexPositionBuffer;
+var lineVertexColorBuffer;
+
+// Matrices
+var mvMatrix1;
+var mvMatrix2;
+var mvMatrix3;
+var Xtranslate = 0.0,
+var Ytranslate = 0.0;
 
 function initGL(canvas) {
   try {
@@ -16,19 +27,7 @@ function initGL(canvas) {
   }
 }
 
-
-///////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-
-var squareVertexPositionBuffer;
-var squareVertexColorBuffer;
-var lineVertexPositionBuffer;
-var lineVertexColorBuffer;
-
-////////////////    Initialize VBO  ////////////////////////
-
 function initBuffers() {
-
   squareVertexPositionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
 
@@ -67,28 +66,21 @@ function initBuffers() {
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
   squareVertexColorBuffer.itemSize = 4;
   squareVertexColorBuffer.numItems = 4;
-
-
 }
-
-///////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////
-
-
-var mvMatrix1, mvMatrix2, mvMatrix3;
-var Xtranslate = 0.0,
-  Ytranslate = 0.0;
 
 function setMatrixUniforms(matrix) {
   gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, matrix);
 }
 
+/**
+ * A helper function used to convert degrees to radians.
+ *
+ * @param {number} degrees the degrees of rotation
+ * @return {number} the number of degrees as radians
+ */
 function degToRad(degrees) {
   return degrees * Math.PI / 180;
 }
-
-///////////////////////////////////////////////////////
-
 
 function PushMatrix(stack, matrix) {
   var copy = mat4.create();
@@ -316,10 +308,8 @@ function webGLStart() {
 }
 
 function BG(red, green, blue) {
-
   gl.clearColor(red, green, blue, 1.0);
   drawScene();
-
 }
 
 function redraw() {
