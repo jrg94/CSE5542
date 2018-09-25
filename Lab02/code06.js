@@ -45,8 +45,15 @@ var root = new Node(1, SQUARE, AXES, [
     new Node(3, SQUARE, AXES, [])
   ])
 ])
-console.log(root);
 
+/**
+ * A scene graph node.
+ *
+ * @param {number} id an unique
+ * @param {!Array<number>} vertices a set of object vertices for this node
+ * @param {!Array<number>} axes a set of axes vertices for this node
+ * @param {!Array<!Node>} children a set of children nodes
+ */
 function Node(id, vertices, axes, children) {
   this.id = id;
   this.vertices = vertices;
