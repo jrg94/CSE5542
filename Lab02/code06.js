@@ -39,6 +39,14 @@ const AXES = [
   0.0, 0.7, 0.0,
 ];
 
+// Colors
+const COLORS = [
+  1.0, 0.0, 0.0, 1.0,
+  0.0, 1.0, 0.0, 1.0,
+  0.0, 0.0, 1.0, 1.0,
+  1.0, 0.0, 0.0, 1.0,
+];
+
 // Hierarchy
 var root = new Node(1, SQUARE, AXES, [
   new Node(2, SQUARE, AXES, [
@@ -72,49 +80,35 @@ function initGL(canvas) {
   }
 }
 
+/**
+ * Sets up the buffers for drawing.
+ */
 function initBuffers() {
+  // Square buffer
   squareVertexPositionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
-
-  // Squares
-  vertices = [
-    0.5, 0.5, 0.0,
-    -0.5, 0.5, 0.0,
-    -0.5, -0.5, 0.0,
-    0.5, -0.5, 0.0,
-  ];
-
-  // Lines
-  l_vertices = [
-    0.0, 0.0, 0.0,
-    0.7, 0.0, 0.0,
-    0.0, 0.0, 0.0,
-    0.0, 0.7, 0.0,
-  ];
-
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(SQUARE), gl.STATIC_DRAW);
   squareVertexPositionBuffer.itemSize = 3;
   squareVertexPositionBuffer.numItems = 4;
 
+  // Axes buffer
   lineVertexPositionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, lineVertexPositionBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(l_vertices), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(AXES), gl.STATIC_DRAW);
   lineVertexPositionBuffer.itemSize = 3;
   lineVertexPositionBuffer.numItems = 4;
 
+  // Color buffer
   squareVertexColorBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
-  var colors = [
-    1.0, 0.0, 0.0, 1.0,
-    0.0, 1.0, 0.0, 1.0,
-    0.0, 0.0, 1.0, 1.0,
-    1.0, 0.0, 0.0, 1.0,
-  ];
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(COLORS), gl.STATIC_DRAW);
   squareVertexColorBuffer.itemSize = 4;
   squareVertexColorBuffer.numItems = 4;
 }
 
+/**
+ * A helper function which sets matrix uniforms.
+ */
 function setMatrixUniforms(matrix) {
   gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, matrix);
 }
