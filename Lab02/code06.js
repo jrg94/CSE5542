@@ -16,6 +16,9 @@ var mvMatrix3;
 var Xtranslate = 0.0,
 var Ytranslate = 0.0;
 
+// Stack
+var mvMatrixStack = [];
+
 function initGL(canvas) {
   try {
     gl = canvas.getContext("experimental-webgl");
@@ -83,26 +86,29 @@ function degToRad(degrees) {
 }
 
 /**
- * A stack push function that is never used.
+ * A stack push function.
  *
  * @param {!Array<!Array<!Array<number>>>} stack a stack data structure
  * @param {!Array<!Array<number>} matrix a matrix
  */
-function PushMatrix(stack, matrix) {
+function pushMatrix(stack, matrix) {
   var copy = mat4.create();
   mat4.set(matrix, copy);
   stack.push(copy);
 }
 
-function PopMatrix(stack, copy) {
+/**
+ * A stack pop function.
+ *
+ * @param {!Array<!Array<!Array<number>>>} stack a stack data structure
+ * @param {!Array<!Array<number>} copy a matrix copy
+ */
+function popMatrix(stack, copy) {
   if (stack.length == 0) {
     throw "Invalid popMatrix!";
   }
   copy = stack.pop();
 }
-
-var mvMatrixStack = [];
-
 
 function draw_square(matrix) {
 
