@@ -105,13 +105,13 @@ function pushMatrix(stack, matrix) {
  * A stack pop function.
  *
  * @param {!Array<!Array<!Array<number>>>} stack a stack data structure
- * @param {!Array<!Array<number>} copy a matrix copy
+ * @return {!Array<!Array<number>} copy a matrix copy
  */
-function popMatrix(stack, copy) {
+function popMatrix(stack) {
   if (stack.length == 0) {
     throw "Invalid popMatrix!";
   }
-  copy = stack.pop();
+  return stack.pop();
 }
 
 /**
@@ -143,20 +143,20 @@ function drawScene() {
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  var Mstack = [];
+  var mStack = [];
   var model = mat4.create();
   mat4.identity(model);
 
   model = mat4.multiply(model, mvMatrix1);
   drawSquare(model);
 
-  Mstack.push(model);
+  mStack.push(model);
   console.log("push matrix");
 
   model = mat4.multiply(model, mvMatrix2);
   drawSquare(model);
 
-  model = Mstack.pop();
+  model = mStack.pop();
   model = mat4.multiply(model, mvMatrix3);
   drawSquare(model);
 }
