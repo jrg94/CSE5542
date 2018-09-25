@@ -14,14 +14,47 @@ var mvMatrix1;
 var mvMatrix2;
 var mvMatrix3;
 var Xtranslate = 0.0,
-var Ytranslate = 0.0;
+  var Ytranslate = 0.0;
 
 // Stack
 var mvMatrixStack = [];
 
 // Mouse tracking
 var lastMouseX = 0,
-var lastMouseY = 0;
+  var lastMouseY = 0;
+
+// Hierarchy
+var root = {
+  id = 1,
+  squareVertices = SQUARE,
+  lineVertices = AXES,
+  root = {
+    id = 2,
+    squareVertices = SQUARE,
+    lineVertices = AXES,
+    root = {
+      id = 3,
+      squareVertices = SQUARE,
+      lineVertices = AXES,
+    }
+  }
+};
+
+// Square vertices
+const SQUARE = [
+  0.5, 0.5, 0.0,
+  -0.5, 0.5, 0.0,
+  -0.5, -0.5, 0.0,
+  0.5, -0.5, 0.0,
+];
+
+// Line vertices
+const AXES = [
+  0.0, 0.0, 0.0,
+  0.7, 0.0, 0.0,
+  0.0, 0.0, 0.0,
+  0.0, 0.7, 0.0,
+];
 
 function initGL(canvas) {
   try {
@@ -38,6 +71,7 @@ function initBuffers() {
   squareVertexPositionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
 
+  // Squares
   vertices = [
     0.5, 0.5, 0.0,
     -0.5, 0.5, 0.0,
@@ -45,6 +79,7 @@ function initBuffers() {
     0.5, -0.5, 0.0,
   ];
 
+  // Lines
   l_vertices = [
     0.0, 0.0, 0.0,
     0.7, 0.0, 0.0,
