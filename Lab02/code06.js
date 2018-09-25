@@ -19,6 +19,10 @@ var Ytranslate = 0.0;
 // Stack
 var mvMatrixStack = [];
 
+// Mouse tracking
+var lastMouseX = 0,
+var lastMouseY = 0;
+
 function initGL(canvas) {
   try {
     gl = canvas.getContext("experimental-webgl");
@@ -157,15 +161,6 @@ function drawScene() {
   drawSquare(model);
 
 }
-
-
-///////////////////////////////////////////////////////////////
-
-var lastMouseX = 0,
-  lastMouseY = 0;
-
-
-///////////////////////////////////////////////////////////////
 
 function onDocumentMouseDown(event) {
   event.preventDefault();
