@@ -392,6 +392,13 @@ function webGLStart() {
   drawScene();
 }
 
+/**
+ * Changes the background color of the canvas.
+ *
+ * @param {number} red the color value of red (0 <= red <= 1)
+ * @param {number} green the color value of green (0 <= green <= 1)
+ * @param {number} blue the color valye of blue (0 <= blue <= 1)
+ */
 function BG(red, green, blue) {
   gl.clearColor(red, green, blue, 1.0);
   drawScene();
