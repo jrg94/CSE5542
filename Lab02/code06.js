@@ -178,6 +178,12 @@ function onDocumentMouseDown(event) {
   lastMouseY = mouseY;
 }
 
+/**
+ * A mouse event which manipulates the transformation matricies
+ * and draws the scene as the mouse is moved.
+ *
+ * @param event some mouse event
+ */
 function onDocumentMouseMove(event) {
   var mouseX = event.clientX;
   var mouseY = event.ClientY;
@@ -186,12 +192,21 @@ function onDocumentMouseMove(event) {
   var diffY = mouseY - lastMouseY;
 
   console.log("rotate" + degToRad(diffX / 5.0));
-  if (which_object == 1)
+
+  // Grandparent
+  if (which_object == 1) {
     mvMatrix1 = mat4.rotate(mvMatrix1, degToRad(diffX / 5.0), [0, 0, 1]);
-  if (which_object == 2)
+  }
+
+  // Parent
+  if (which_object == 2) {
     mvMatrix2 = mat4.rotate(mvMatrix2, degToRad(diffX / 5.0), [0, 0, 1]);
-  if (which_object == 3)
+  }
+
+  // Child
+  if (which_object == 3) {
     mvMatrix3 = mat4.rotate(mvMatrix3, degToRad(diffX / 5.0), [0, 0, 1]);
+  }
 
   lastMouseX = mouseX;
   lastMouseY = mouseY;
@@ -199,19 +214,43 @@ function onDocumentMouseMove(event) {
   drawScene();
 }
 
+/**
+ * A mouse event which removes all listeners when the mouse is
+ * not pressed down.
+ *
+ * @param event some mouse event
+ */
 function onDocumentMouseUp(event) {
   document.removeEventListener('mousemove', onDocumentMouseMove, false);
   document.removeEventListener('mouseup', onDocumentMouseUp, false);
   document.removeEventListener('mouseout', onDocumentMouseOut, false);
 }
 
+/**
+ * A mouse event which removes all listeners when the mouse is out
+ * of the canvas.
+ *
+ * @param event some mouse event
+ */
 function onDocumentMouseOut(event) {
   document.removeEventListener('mousemove', onDocumentMouseMove, false);
   document.removeEventListener('mouseup', onDocumentMouseUp, false);
   document.removeEventListener('mouseout', onDocumentMouseOut, false);
 }
 
-
+/**
+ * A keyboard event which manipulates the matrices for translation and
+ * scaling depending on the key pressed.
+ *
+ * H: translates the matrices by 0.1 on the local x-axis
+ * h: translates the matrices by -0.1 on the local x-axis
+ * V: translates the matrices by 0.1 on the local y-axis
+ * v: translates the matrices by -0.1. on the local y-axis
+ * S: scales the matrices by 1.05
+ * s: scales the matrices by 0.95
+ *
+ * @param event some keyboard event
+ */
 function onKeyDown(event) {
 
   console.log(event.keyCode);
