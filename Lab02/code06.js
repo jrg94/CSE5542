@@ -110,29 +110,29 @@ function popMatrix(stack, copy) {
   copy = stack.pop();
 }
 
-function draw_square(matrix) {
+/**
+ * Prepares the buffers to draw a square.
+ *
+ * @param {!Array<!Array<number>} matrix a matrix
+ */
+function drawSquare(matrix) {
 
   setMatrixUniforms(matrix);
 
+  // Prepares the square for transformation
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
   gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
   gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
   gl.drawArrays(gl.TRIANGLE_FAN, 0, squareVertexPositionBuffer.numItems);
 
-
+  // Prepares the axes for transformation
   gl.bindBuffer(gl.ARRAY_BUFFER, lineVertexPositionBuffer);
   gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, lineVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
   gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
   gl.drawArrays(gl.LINES, 0, lineVertexPositionBuffer.numItems);
-
-
 }
-
-
-
-///////////////////////////////////////////////////////////////////////
 
 function drawScene() {
 
@@ -144,17 +144,17 @@ function drawScene() {
   mat4.identity(model);
 
   model = mat4.multiply(model, mvMatrix1);
-  draw_square(model);
+  drawSquare(model);
 
   Mstack.push(model);
   console.log("push matrix");
 
   model = mat4.multiply(model, mvMatrix2);
-  draw_square(model);
+  drawSquare(model);
 
   model = Mstack.pop();
   model = mat4.multiply(model, mvMatrix3);
-  draw_square(model);
+  drawSquare(model);
 
 }
 
