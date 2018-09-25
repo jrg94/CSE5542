@@ -69,6 +69,9 @@ function Node(id, vertices, axes, children) {
   this.children = children;
 }
 
+/**
+ * Initializes the graphics context given some canvas.
+ */
 function initGL(canvas) {
   try {
     gl = canvas.getContext("experimental-webgl");
