@@ -159,9 +159,14 @@ function drawScene() {
   model = Mstack.pop();
   model = mat4.multiply(model, mvMatrix3);
   drawSquare(model);
-
 }
 
+/**
+ * A mouse event which begins tracking the mouse position when the
+ * user clicks the mouse down.
+ *
+ * @param event some mouse event
+ */
 function onDocumentMouseDown(event) {
   event.preventDefault();
   document.addEventListener('mousemove', onDocumentMouseMove, false);
@@ -169,10 +174,8 @@ function onDocumentMouseDown(event) {
   document.addEventListener('mouseout', onDocumentMouseOut, false);
   var mouseX = event.clientX;
   var mouseY = event.clientY;
-
   lastMouseX = mouseX;
   lastMouseY = mouseY;
-
 }
 
 function onDocumentMouseMove(event) {
