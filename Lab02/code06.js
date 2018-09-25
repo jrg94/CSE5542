@@ -43,7 +43,7 @@ const AXES = [
 var shoulder = {
   id: 1,
   vertices: SQUARE,
-  axes: AXES
+  axes: AXES,
   children: [
     arm: {
       id: 2,
@@ -54,6 +54,7 @@ var shoulder = {
           id: 3,
           vertices: SQUARE,
           axis: AXES,
+          children: []
         }
       ]
     }
