@@ -315,7 +315,6 @@ function onKeyDown(event) {
   }
   drawScene();
 }
-///////////////////////////////////////////////////////////////
 
 function webGLStart() {
   var canvas = document.getElementById("code04-canvas");
@@ -376,9 +375,13 @@ function redraw() {
   drawScene();
 }
 
-function obj(object_id) {
-
-  which_object = object_id;
+/**
+ * A helper function used by the UI to control which object
+ * is currently selected.
+ *
+ * @param {number} objectID the object id
+ */
+function obj(objectID) {
+  which_object = objectID;
   drawScene();
-
 }
