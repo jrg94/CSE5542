@@ -40,28 +40,19 @@ const AXES = [
 ];
 
 // Hierarchy
-var shoulder = {
-  id: 1,
-  vertices: SQUARE,
-  axes: AXES,
-  children: [
-    arm: {
-      id: 2,
-      vertices: SQUARE,
-      axes: AXES,
-      children: [
-        hand: {
-          id: 3,
-          vertices: SQUARE,
-          axis: AXES,
-          children: []
-        }
-      ]
-    }
-  ]
-};
+var root = new Node(1, SQUARE, AXES, [
+  new Node(2, SQUARE, AXES, [
+    new Node(3, SQUARE, AXES, [])
+  ])
+])
+console.log(root);
 
-console.log(shoulder);
+function Node(id, vertices, axes, children) {
+  this.id = id;
+  this.vertices = vertices;
+  this.axes = axes;
+  this.children = children;
+}
 
 function initGL(canvas) {
   try {
