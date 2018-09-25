@@ -82,6 +82,12 @@ function degToRad(degrees) {
   return degrees * Math.PI / 180;
 }
 
+/**
+ * A stack push function that is never used.
+ *
+ * @param {!Array<!Array<!Array<number>>>} stack a stack data structure
+ * @param {!Array<!Array<number>} matrix a matrix
+ */
 function PushMatrix(stack, matrix) {
   var copy = mat4.create();
   mat4.set(matrix, copy);
