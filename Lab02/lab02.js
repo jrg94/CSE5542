@@ -134,7 +134,7 @@ function generateHierarchy() {
   var root = new Node("body", SQUARE, AXES, [
     new Node("head", SQUARE, AXES, []),
     new Node("top-left-femur", SQUARE, AXES, [
-      //new Node("top-left-tibia", SQUARE, AXES, [])
+      new Node("top-left-tibia", SQUARE, AXES, [])
     ])
     /**
     new Node("middle-left-femur", SQUARE, AXES, [
@@ -412,16 +412,21 @@ function webGLStart() {
   document.addEventListener('mousedown', onDocumentMouseDown, false);
   document.addEventListener('keydown', onKeyDown, false);
 
-  initNode("body", null, null, [0.25, 0.25, 0.25]);
-  initNode("head", [0.5, 0.5, 0], null, null);
-  initNode("top-left-femur", [0.5, 0.5, 0], null, null);
+  transformHierarchy();
 
   console.log(root);
   drawScene();
 }
 
+function transformHierarchy() {
+  initNode("body", null, null, [0.25, 0.25, 0.25]);
+  initNode("head", [0.5, 0.5, 0], null, null);
+  initNode("top-left-femur", [0.5, 0.5, 0], null, null);
+}
+
 function initNode(id, translate, rotate, scale) {
   var node = root.search(id);
+  node.initMVMatrix();
   if (translate !== null) {
     node.translate(translate);
   }
@@ -449,15 +454,7 @@ function backgroundColor(red, green, blue) {
  * Resets the scene to it's original appearance.
  */
 function redraw() {
-  // Clear all matrices
-  mat4.identity(mvMatrix1);
-  mat4.identity(mvMatrix2);
-  mat4.identity(mvMatrix3);
-
-  // Transform all matrices
-  mvMatrix1 = mat4.scale(mvMatrix1, [0.25, 0.25, 0.25]);
-  mvMatrix2 = mat4.translate(mvMatrix2, [0.5, 0.5, 0.25]);
-  mvMatrix3 = mat4.translate(mvMatrix3, [0.5, 0.5, 0]);
+  transformHierarchy();
 
   // Draw
   drawScene();
