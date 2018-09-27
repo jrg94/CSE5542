@@ -72,6 +72,9 @@ function Node(id, vertices, axes, children) {
       console.log("Found leaf: " + id);
     } else {
       console.log("Found node: " + id);
+      children.forEach(function(node) {
+        node.traverse();
+      });
     }
   }
 }
