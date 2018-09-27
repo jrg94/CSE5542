@@ -62,12 +62,16 @@ function Node(id, vertices, axes, children) {
   this.mvMatrix = null;
   this.children = children;
   this.traverse = function(stack, model) {
+    model = mat4.multiply(model, this.mvMatrix);
+    drawSquare(model);
+    stack.push(model);
     if (!Array.isArray(children) || children.length == 0) {
-      console.log("Found leaf: " + id);
+      // Do nothing
     } else {
-      console.log("Found node: " + id);
+      // Traverse
       children.forEach(function(node) {
-        node.traverse();
+        node.traverse(stack, model);
+        model = stack.pop();
       });
     }
   }
@@ -215,19 +219,7 @@ function drawScene() {
   var mStack = [];
   var model = mat4.create();
   mat4.identity(model);
-
-  model = mat4.multiply(model, root.search(1).mvMatrix);
-  drawSquare(model);
-
-  mStack.push(model);
-  console.log("push matrix");
-
-  model = mat4.multiply(model, root.search(2).mvMatrix);
-  drawSquare(model);
-
-  model = mStack.pop();
-  model = mat4.multiply(model, root.search(3).mvMatrix);
-  drawSquare(model);
+  root.traverse(mStack, model);
 }
 
 /**
@@ -264,17 +256,17 @@ function onDocumentMouseMove(event) {
 
   // Grandparent
   if (which_object == 1) {
-    mvMatrix1 = mat4.rotate(mvMatrix1, degToRad(diffX / 5.0), [0, 0, 1]);
+    mvMatrix1 = mat4.rotate(root.search(1).mvMatrix, degToRad(diffX / 5.0), [0, 0, 1]);
   }
 
   // Parent
   if (which_object == 2) {
-    mvMatrix2 = mat4.rotate(mvMatrix2, degToRad(diffX / 5.0), [0, 0, 1]);
+    mvMatrix2 = mat4.rotate(root.search(2).mvMatrix, degToRad(diffX / 5.0), [0, 0, 1]);
   }
 
   // Child
   if (which_object == 3) {
-    mvMatrix3 = mat4.rotate(mvMatrix3, degToRad(diffX / 5.0), [0, 0, 1]);
+    mvMatrix3 = mat4.rotate(root.search(3).mvMatrix, degToRad(diffX / 5.0), [0, 0, 1]);
   }
 
   lastMouseX = mouseX;
