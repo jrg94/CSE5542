@@ -4,8 +4,13 @@ var vertexShaderSrc = `
   attribute vec4 aVertexColor;
   varying vec4 vColor;
 
+  uniform mat4 uMVMatrix;
+
   void main(void) {
-    gl_Position = vec4(aVertexPosition, 1.0);
+
+    gl_PointSize = 10.0;
+    gl_Position = uMVMatrix*vec4(aVertexPosition, 1.0);
+
     vColor = aVertexColor;
   }
 `;
