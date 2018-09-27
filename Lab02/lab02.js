@@ -61,6 +61,8 @@ function Node(id, vertices, axes, children) {
   this.axes = axes;
   this.mvMatrix = null;
   this.children = children;
+
+  // Implements the drawing feature
   this.traverse = function(stack, model) {
     model = mat4.multiply(model, this.mvMatrix);
     drawSquare(model);
@@ -75,6 +77,8 @@ function Node(id, vertices, axes, children) {
       });
     }
   }
+
+  // Implements a searching feature
   this.search = function(id) {
     var item = null;
     if (this.id === id) {
@@ -87,6 +91,11 @@ function Node(id, vertices, axes, children) {
       });
     }
     return item;
+  }
+
+  // Implements a rotation feature
+  this.rotate = function(diffX) {
+    this.mvMatrix = mat4.rotate(this.mvMatrix, degToRad(diffX / 5.0), [0, 0, 1]);
   }
 }
 
@@ -254,20 +263,7 @@ function onDocumentMouseMove(event) {
 
   console.log("rotate" + degToRad(diffX / 5.0));
 
-  // Grandparent
-  if (which_object == 1) {
-    mvMatrix1 = mat4.rotate(root.search(1).mvMatrix, degToRad(diffX / 5.0), [0, 0, 1]);
-  }
-
-  // Parent
-  if (which_object == 2) {
-    mvMatrix2 = mat4.rotate(root.search(2).mvMatrix, degToRad(diffX / 5.0), [0, 0, 1]);
-  }
-
-  // Child
-  if (which_object == 3) {
-    mvMatrix3 = mat4.rotate(root.search(3).mvMatrix, degToRad(diffX / 5.0), [0, 0, 1]);
-  }
+  root.search(which_object).rotate(diffX);
 
   lastMouseX = mouseX;
   lastMouseY = mouseY;
