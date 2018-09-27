@@ -216,17 +216,17 @@ function drawScene() {
   var model = mat4.create();
   mat4.identity(model);
 
-  model = mat4.multiply(model, mvMatrix1);
+  model = mat4.multiply(model, root.search(1).mvMatrix);
   drawSquare(model);
 
   mStack.push(model);
   console.log("push matrix");
 
-  model = mat4.multiply(model, mvMatrix2);
+  model = mat4.multiply(model, root.search(2).mvMatrix);
   drawSquare(model);
 
   model = mStack.pop();
-  model = mat4.multiply(model, mvMatrix3);
+  model = mat4.multiply(model, root.search(3).mvMatrix);
   drawSquare(model);
 }
 
