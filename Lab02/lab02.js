@@ -67,6 +67,13 @@ function Node(id, vertices, axes, children) {
   this.vertices = vertices;
   this.axes = axes;
   this.children = children;
+  this.traverse: function() {
+    if (!Array.isArray(children) || children.length == 0) {
+      console.log("Found leaf: " + id);
+    } else {
+      console.log("Found node: " + id);
+    }
+  }
 }
 
 /**
