@@ -1,7 +1,7 @@
 var gl;
 var shaderProgram;
 var draw_type = 2;
-var which_object = 1;
+var which_object = "body";
 
 // Buffers
 var squareVertexPositionBuffer;
@@ -80,6 +80,7 @@ function Node(id, vertices, axes, children) {
 
   // Implements a searching feature
   this.search = function(id) {
+    console.log("Searching for: " + id);
     var item = null;
     if (this.id === id) {
       console.log("Found: " + id);
@@ -96,18 +97,32 @@ function Node(id, vertices, axes, children) {
     return item;
   }
 
+  this.initMVMatrix = function() {
+    var mvMatrix = mat4.create();
+    this.mvMatrix = mat4.identity(mvMatrix);
+  }
+
   // Implements a translation feature
   this.translate = function(dir) {
+    if (this.mvMatrix === null) {
+      this.initMVMatrix();
+    }
     this.mvMatrix = mat4.translate(this.mvMatrix, dir);
   }
 
   // Implements a rotation feature
   this.rotate = function(diffX) {
+    if (this.mvMatrix === null) {
+      this.initMVMatrix();
+    }
     this.mvMatrix = mat4.rotate(this.mvMatrix, degToRad(diffX / 5.0), [0, 0, 1]);
   }
 
   // Implements a scaling feature
   this.scale = function(scale) {
+    if (this.mvMatrix === null) {
+      this.initMVMatrix();
+    }
     this.mvMatrix = mat4.scale(this.mvMatrix, scale);
   }
 }
@@ -119,8 +134,9 @@ function generateHierarchy() {
   var root = new Node("body", SQUARE, AXES, [
     new Node("head", SQUARE, AXES, []),
     new Node("top-left-femur", SQUARE, AXES, [
-      new Node("top-left-tibia", SQUARE, AXES, [])
-    ]),
+      //new Node("top-left-tibia", SQUARE, AXES, [])
+    ])
+    /**
     new Node("middle-left-femur", SQUARE, AXES, [
       new Node("middle-left-tibia", SQUARE, AXES, [])
     ]),
@@ -135,7 +151,7 @@ function generateHierarchy() {
     ]),
     new Node("bottom-right-femur", SQUARE, AXES, [
       new Node("bottom-right-tibia", SQUARE, AXES, [])
-    ])
+    ])*/
   ])
   console.log(root);
   return root;
@@ -396,27 +412,25 @@ function webGLStart() {
   document.addEventListener('mousedown', onDocumentMouseDown, false);
   document.addEventListener('keydown', onKeyDown, false);
 
-  var square1 = root.search("body");
-  var mvMatrix1 = mat4.create();
-  mat4.identity(mvMatrix1);
-  mvMatrix1 = mat4.scale(mvMatrix1, [0.25, 0.25, 0.25]);
-  square1.mvMatrix = mvMatrix1;
-
-  var square2 = root.search("head");
-  var mvMatrix2 = mat4.create();
-  mat4.identity(mvMatrix2);
-  mvMatrix1 = mat4.translate(mvMatrix1, [0.5, 0.5, 0]);
-  square2.mvMatrix = mvMatrix2;
-
-  var square3 = root.search("top-left-femur");
-  var mvMatrix3 = mat4.create();
-  mat4.identity(mvMatrix3);
-  mvMatrix3 = mat4.translate(mvMatrix3, [0.5, 0.5, 0]);
-  square3.mvMatrix = mvMatrix3;
+  initNode("body", null, null, [0.25, 0.25, 0.25]);
+  initNode("head", [0.5, 0.5, 0], null, null);
+  initNode("top-left-femur", [0.5, 0.5, 0], null, null);
 
   console.log(root);
-
   drawScene();
+}
+
+function initNode(id, translate, rotate, scale) {
+  var node = root.search(id);
+  if (translate !== null) {
+    node.translate(translate);
+  }
+  if (rotate !== null) {
+    node.rotate(rotate);
+  }
+  if (scale !== null) {
+    node.scale(scale);
+  }
 }
 
 /**
