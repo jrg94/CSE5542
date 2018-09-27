@@ -396,14 +396,12 @@ function webGLStart() {
   shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
   gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
 
-
   shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
   gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
 
   shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
   shaderProgram.whatever = 4;
   shaderProgram.whatever2 = 3;
-
 
   initBuffers();
 
@@ -413,17 +411,22 @@ function webGLStart() {
   document.addEventListener('keydown', onKeyDown, false);
 
   transformHierarchy();
-
-  console.log(root);
   drawScene();
 }
 
+/**
+ * Initializes the hierarchy by transforming all nodes.
+ */
 function transformHierarchy() {
   initNode("body", null, null, [0.25, 0.25, 0.25]);
-  initNode("head", [0.5, 0.5, 0], null, null);
+  initNode("head", [.75, 0, 0], null, [.5, .5, .5]);
   initNode("top-left-femur", [0.5, 0.5, 0], null, null);
+  initNode("top-left-tibia", null, null, null);
 }
 
+/**
+ * Sets some initial conditions for a node.
+ */
 function initNode(id, translate, rotate, scale) {
   var node = root.search(id);
   node.initMVMatrix();
@@ -455,8 +458,6 @@ function backgroundColor(red, green, blue) {
  */
 function redraw() {
   transformHierarchy();
-
-  // Draw
   drawScene();
 }
 
