@@ -50,7 +50,7 @@ var root = generateHierarchy();
 /**
  * A scene graph node.
  *
- * @param {number} id an unique
+ * @param {string} id an unique
  * @param {!Array<number>} vertices a set of object vertices for this node
  * @param {!Array<number>} axes a set of axes vertices for this node
  * @param {!Array<!Node>} children a set of children nodes
@@ -82,13 +82,16 @@ function Node(id, vertices, axes, children) {
   this.search = function(id) {
     var item = null;
     if (this.id === id) {
+      console.log("Found: " + id);
       item = this;
-    } else if (!Array.isArray(children) || children.length == 0) {
-      item = null;
     } else {
-      children.forEach(function(node) {
-        item = node.search(id);
-      });
+      for (var i = 0; i < children.length; i++) {
+        var temp = children[i].search(id);
+        if (temp !== null) {
+          item = temp;
+          break;
+        }
+      }
     }
     return item;
   }
@@ -113,9 +116,25 @@ function Node(id, vertices, axes, children) {
  * Generates an object hierarchy.
  */
 function generateHierarchy() {
-  var root = new Node(1, SQUARE, AXES, [
-    new Node(2, SQUARE, AXES, [
-      new Node(3, SQUARE, AXES, [])
+  var root = new Node("body", SQUARE, AXES, [
+    new Node("head", SQUARE, AXES, []),
+    new Node("top-left-femur", SQUARE, AXES, [
+      new Node("top-left-tibia", SQUARE, AXES, [])
+    ]),
+    new Node("middle-left-femur", SQUARE, AXES, [
+      new Node("middle-left-tibia", SQUARE, AXES, [])
+    ]),
+    new Node("bottom-left-femur", SQUARE, AXES, [
+      new Node("bottom-left-tibia", SQUARE, AXES, [])
+    ]),
+    new Node("top-right-femur", SQUARE, AXES, [
+      new Node("top-right-femur", SQUARE, AXES, [])
+    ]),
+    new Node("middle-right-femur", SQUARE, AXES, [
+      new Node("middle-right-tibia", SQUARE, AXES, [])
+    ]),
+    new Node("bottom-right-femur", SQUARE, AXES, [
+      new Node("bottom-right-tibia", SQUARE, AXES, [])
     ])
   ])
   console.log(root);
@@ -377,19 +396,19 @@ function webGLStart() {
   document.addEventListener('mousedown', onDocumentMouseDown, false);
   document.addEventListener('keydown', onKeyDown, false);
 
-  var square1 = root.search(1);
+  var square1 = root.search("body");
   var mvMatrix1 = mat4.create();
   mat4.identity(mvMatrix1);
   mvMatrix1 = mat4.scale(mvMatrix1, [0.25, 0.25, 0.25]);
   square1.mvMatrix = mvMatrix1;
 
-  var square2 = root.search(2);
+  var square2 = root.search("head");
   var mvMatrix2 = mat4.create();
   mat4.identity(mvMatrix2);
   mvMatrix1 = mat4.translate(mvMatrix1, [0.5, 0.5, 0]);
   square2.mvMatrix = mvMatrix2;
 
-  var square3 = root.search(3);
+  var square3 = root.search("top-left-femur");
   var mvMatrix3 = mat4.create();
   mat4.identity(mvMatrix3);
   mvMatrix3 = mat4.translate(mvMatrix3, [0.5, 0.5, 0]);
