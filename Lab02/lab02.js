@@ -93,6 +93,11 @@ function Node(id, vertices, axes, children) {
     return item;
   }
 
+  // Implements a translation feature
+  this.translate = function(dir) {
+    this.mvMatrix = mat4.translate(this.mvMatrix, dir);
+  }
+
   // Implements a rotation feature
   this.rotate = function(diffX) {
     this.mvMatrix = mat4.rotate(this.mvMatrix, degToRad(diffX / 5.0), [0, 0, 1]);
@@ -315,20 +320,10 @@ function onKeyDown(event) {
     case 72:
       if (event.shiftKey) {
         console.log('enter H');
-        if (which_object == 1)
-          mvMatrix1 = mat4.translate(mvMatrix1, [0.1, 0, 0]);
-        if (which_object == 2)
-          mvMatrix2 = mat4.translate(mvMatrix2, [0.1, 0, 0]);
-        if (which_object == 3)
-          mvMatrix3 = mat4.translate(mvMatrix3, [0.1, 0, 0]);
+        root.search(which_object).translate([0.1, 0, 0]);
       } else {
         console.log('enter h');
-        if (which_object == 1)
-          mvMatrix1 = mat4.translate(mvMatrix1, [-0.1, 0, 0]);
-        if (which_object == 2)
-          mvMatrix2 = mat4.translate(mvMatrix2, [-0.1, 0, 0]);
-        if (which_object == 3)
-          mvMatrix3 = mat4.translate(mvMatrix3, [-0.1, 0, 0]);
+        root.search(which_object).translate([-0.1, 0, 0]);
       }
       break;
     case 86:
