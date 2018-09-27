@@ -329,20 +329,10 @@ function onKeyDown(event) {
     case 86:
       if (event.shiftKey) {
         console.log('enter V');
-        if (which_object == 1)
-          mvMatrix1 = mat4.translate(mvMatrix1, [0.0, 0.1, 0]);
-        if (which_object == 2)
-          mvMatrix2 = mat4.translate(mvMatrix2, [0.0, 0.1, 0]);
-        if (which_object == 3)
-          mvMatrix3 = mat4.translate(mvMatrix3, [0.0, 0.1, 0]);
+        root.search(which_object).translate([0.0, 0.1, 0]);
       } else {
         console.log('enter v');
-        if (which_object == 1)
-          mvMatrix1 = mat4.translate(mvMatrix1, [0.0, -0.1, 0]);
-        if (which_object == 2)
-          mvMatrix2 = mat4.translate(mvMatrix2, [0.0, -0.1, 0]);
-        if (which_object == 3)
-          mvMatrix3 = mat4.translate(mvMatrix3, [0.0, -0.1, 0]);
+        root.search(which_object).translate([0.0, -0.1, 0]);
       }
       break;
     case 83:
