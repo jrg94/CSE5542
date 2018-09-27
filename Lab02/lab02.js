@@ -9,10 +9,7 @@ var squareVertexColorBuffer;
 var lineVertexPositionBuffer;
 var lineVertexColorBuffer;
 
-// Matrices
-var mvMatrix1;
-var mvMatrix2;
-var mvMatrix3;
+// Values
 var Xtranslate = 0.0;
 var Ytranslate = 0.0;
 
@@ -48,11 +45,7 @@ const COLORS = [
 ];
 
 // Hierarchy
-var root = new Node(1, SQUARE, AXES, [
-  new Node(2, SQUARE, AXES, [
-    new Node(3, SQUARE, AXES, [])
-  ])
-])
+var root = generateHierarchy();
 
 /**
  * A scene graph node.
@@ -66,8 +59,9 @@ function Node(id, vertices, axes, children) {
   this.id = id;
   this.vertices = vertices;
   this.axes = axes;
+  this.mvMatrix = null;
   this.children = children;
-  this.traverse = function() {
+  this.traverse = function(stack, model) {
     if (!Array.isArray(children) || children.length == 0) {
       console.log("Found leaf: " + id);
     } else {
@@ -77,9 +71,33 @@ function Node(id, vertices, axes, children) {
       });
     }
   }
+  this.search = function(id) {
+    var item = null;
+    if (this.id === id) {
+      item = this;
+    } else if (!Array.isArray(children) || children.length == 0) {
+      item = null;
+    } else {
+      children.forEach(function(node) {
+        item = node.search(id);
+      });
+    }
+    return item;
+  }
 }
 
-root.traverse();
+/**
+ * Generates an object hierarchy.
+ */
+function generateHierarchy() {
+  var root = new Node(1, SQUARE, AXES, [
+    new Node(2, SQUARE, AXES, [
+      new Node(3, SQUARE, AXES, [])
+    ])
+  ])
+  console.log(root);
+  return root;
+}
 
 /**
  * Initializes the graphics context given some canvas.
@@ -391,17 +409,25 @@ function webGLStart() {
   document.addEventListener('mousedown', onDocumentMouseDown, false);
   document.addEventListener('keydown', onKeyDown, false);
 
-  mvMatrix1 = mat4.create();
+  var square1 = root.search(1);
+  var mvMatrix1 = mat4.create();
   mat4.identity(mvMatrix1);
   mvMatrix1 = mat4.scale(mvMatrix1, [0.25, 0.25, 0.25]);
+  square1.mvMatrix = mvMatrix1;
 
-  mvMatrix2 = mat4.create();
+  var square2 = root.search(2);
+  var mvMatrix2 = mat4.create();
   mat4.identity(mvMatrix2);
   mvMatrix1 = mat4.translate(mvMatrix1, [0.5, 0.5, 0]);
+  square2.mvMatrix = mvMatrix2;
 
-  mvMatrix3 = mat4.create();
+  var square3 = root.search(3);
+  var mvMatrix3 = mat4.create();
   mat4.identity(mvMatrix3);
   mvMatrix3 = mat4.translate(mvMatrix3, [0.5, 0.5, 0]);
+  square3.mvMatrix = mvMatrix3;
+
+  console.log(root);
 
   drawScene();
 }
