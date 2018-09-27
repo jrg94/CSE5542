@@ -102,6 +102,11 @@ function Node(id, vertices, axes, children) {
   this.rotate = function(diffX) {
     this.mvMatrix = mat4.rotate(this.mvMatrix, degToRad(diffX / 5.0), [0, 0, 1]);
   }
+
+  // Implements a scaling feature
+  this.scale = function(scale) {
+    this.mvMatrix = mat4.scale(this.mvMatrix, scale);
+  }
 }
 
 /**
@@ -338,20 +343,10 @@ function onKeyDown(event) {
     case 83:
       if (event.shiftKey) {
         console.log('enter S');
-        if (which_object == 1)
-          mvMatrix1 = mat4.scale(mvMatrix1, [1.05, 1.05, 1.05]);
-        if (which_object == 2)
-          mvMatrix2 = mat4.scale(mvMatrix2, [1.05, 1.05, 1.05]);
-        if (which_object == 3)
-          mvMatrix3 = mat4.scale(mvMatrix3, [1.05, 1.05, 1.05]);
+        root.search(which_object).scale([1.05, 1.05, 1.05]);
       } else {
         console.log('enter s');
-        if (which_object == 1)
-          mvMatrix1 = mat4.scale(mvMatrix1, [0.95, 0.95, 0.95]);
-        if (which_object == 2)
-          mvMatrix2 = mat4.scale(mvMatrix2, [0.95, 0.95, 0.95]);
-        if (which_object == 3)
-          mvMatrix3 = mat4.scale(mvMatrix3, [0.95, 0.95, 0.95]);
+        root.search(which_object).scale([0.95, 0.95, 0.95]);
       }
       break;
   }
