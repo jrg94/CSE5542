@@ -80,10 +80,8 @@ function Node(id, vertices, axes, children) {
 
   // Implements a searching feature
   this.search = function(id) {
-    console.log("Searching for: " + id);
     var item = null;
     if (this.id === id) {
-      console.log("Found: " + id);
       item = this;
     } else {
       for (var i = 0; i < children.length; i++) {
@@ -111,11 +109,11 @@ function Node(id, vertices, axes, children) {
   }
 
   // Implements a rotation feature
-  this.rotate = function(diffX) {
+  this.rotate = function(theta) {
     if (this.mvMatrix === null) {
       this.initMVMatrix();
     }
-    this.mvMatrix = mat4.rotate(this.mvMatrix, degToRad(diffX / 5.0), [0, 0, 1]);
+    this.mvMatrix = mat4.rotateZ(this.mvMatrix, theta);
   }
 
   // Implements a scaling feature
@@ -304,9 +302,8 @@ function onDocumentMouseMove(event) {
   var diffX = mouseX - lastMouseX;
   var diffY = mouseY - lastMouseY;
 
-  console.log("rotate" + degToRad(diffX / 5.0));
-
-  root.search(which_object).rotate(diffX);
+  var theta = degToRad(diffX / 5.0)
+  root.search(which_object).rotate(theta);
 
   lastMouseX = mouseX;
   lastMouseY = mouseY;
@@ -421,7 +418,7 @@ function transformHierarchy() {
 
   initNode("head", [.75, 0, 0], null, [.5, .5, .5]);
 
-  initNode("top-left-femur", [0.35, .75, 0], null, [.20, .50, .35]);
+  initNode("top-left-femur", [0.35, .75, 0], degToRad(-45.0), [.20, .50, .35]);
   initNode("top-left-tibia", [0.0, 1.0, 0], null, null);
 
   initNode("middle-left-femur", [0.0, .75, 0], null, [.20, .50, .35]);
