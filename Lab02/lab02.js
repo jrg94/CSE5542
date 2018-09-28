@@ -419,8 +419,8 @@ function webGLStart() {
 function transformHierarchy() {
   initNode("body", null, null, [0.25, 0.25, 0.25]);
   initNode("head", [.75, 0, 0], null, [.5, .5, .5]);
-  initNode("top-left-femur", [0.5, 0.5, 0], null, null);
-  initNode("top-left-tibia", null, null, null);
+  initNode("top-left-femur", [0.35, .75, 0], null, [.20, .50, .35]);
+  initNode("top-left-tibia", [0.0, 1.0, 0], null, null);
 }
 
 /**
