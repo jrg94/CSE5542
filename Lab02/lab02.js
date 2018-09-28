@@ -424,20 +424,20 @@ function transformHierarchy() {
   initNode("top-left-femur", [0.35, .75, 0], null, [.20, .50, .35]);
   initNode("top-left-tibia", [0.0, 1.0, 0], null, null);
 
-  initNode("middle-left-femur", [0.35, .75, 0], null, [.20, .50, .35]);
+  initNode("middle-left-femur", [0.0, .75, 0], null, [.20, .50, .35]);
   initNode("middle-left-tibia", [0.0, 1.0, 0], null, null);
 
-  initNode("bottom-left-femur", [0.35, .75, 0], null, [.20, .50, .35]);
+  initNode("bottom-left-femur", [-0.35, .75, 0], null, [.20, .50, .35]);
   initNode("bottom-left-tibia", [0.0, 1.0, 0], null, null);
 
-  initNode("top-right-femur", [0.35, .75, 0], null, [.20, .50, .35]);
-  initNode("top-right-tibia", [0.0, 1.0, 0], null, null);
+  initNode("top-right-femur", [0.35, -.75, 0], null, [.20, .50, .35]);
+  initNode("top-right-tibia", [0.0, -1.0, 0], null, null);
 
-  initNode("middle-right-femur", [0.35, .75, 0], null, [.20, .50, .35]);
-  initNode("middle-right-tibia", [0.0, 1.0, 0], null, null);
+  initNode("middle-right-femur", [0.00, -.75, 0], null, [.20, .50, .35]);
+  initNode("middle-right-tibia", [0.0, -1.0, 0], null, null);
 
-  initNode("bottom-right-femur", [0.35, .75, 0], null, [.20, .50, .35]);
-  initNode("bottom-right-tibia", [0.0, 1.0, 0], null, null);
+  initNode("bottom-right-femur", [-0.35, -.75, 0], null, [.20, .50, .35]);
+  initNode("bottom-right-tibia", [0.0, -1.0, 0], null, null);
 }
 
 /**
