@@ -135,8 +135,7 @@ function generateHierarchy() {
     new Node("head", SQUARE, AXES, []),
     new Node("top-left-femur", SQUARE, AXES, [
       new Node("top-left-tibia", SQUARE, AXES, [])
-    ])
-    /**
+    ]),
     new Node("middle-left-femur", SQUARE, AXES, [
       new Node("middle-left-tibia", SQUARE, AXES, [])
     ]),
@@ -144,14 +143,14 @@ function generateHierarchy() {
       new Node("bottom-left-tibia", SQUARE, AXES, [])
     ]),
     new Node("top-right-femur", SQUARE, AXES, [
-      new Node("top-right-femur", SQUARE, AXES, [])
+      new Node("top-right-tibia", SQUARE, AXES, [])
     ]),
     new Node("middle-right-femur", SQUARE, AXES, [
       new Node("middle-right-tibia", SQUARE, AXES, [])
     ]),
     new Node("bottom-right-femur", SQUARE, AXES, [
       new Node("bottom-right-tibia", SQUARE, AXES, [])
-    ])*/
+    ])
   ])
   console.log(root);
   return root;
@@ -417,10 +416,28 @@ function webGLStart() {
  * Initializes the hierarchy by transforming all nodes.
  */
 function transformHierarchy() {
+  // Top level
   initNode("body", null, null, [0.25, 0.25, 0.25]);
+
   initNode("head", [.75, 0, 0], null, [.5, .5, .5]);
+
   initNode("top-left-femur", [0.35, .75, 0], null, [.20, .50, .35]);
   initNode("top-left-tibia", [0.0, 1.0, 0], null, null);
+
+  initNode("middle-left-femur", [0.35, .75, 0], null, [.20, .50, .35]);
+  initNode("middle-left-tibia", [0.0, 1.0, 0], null, null);
+
+  initNode("bottom-left-femur", [0.35, .75, 0], null, [.20, .50, .35]);
+  initNode("bottom-left-tibia", [0.0, 1.0, 0], null, null);
+
+  initNode("top-right-femur", [0.35, .75, 0], null, [.20, .50, .35]);
+  initNode("top-right-tibia", [0.0, 1.0, 0], null, null);
+
+  initNode("middle-right-femur", [0.35, .75, 0], null, [.20, .50, .35]);
+  initNode("middle-right-tibia", [0.0, 1.0, 0], null, null);
+
+  initNode("bottom-right-femur", [0.35, .75, 0], null, [.20, .50, .35]);
+  initNode("bottom-right-tibia", [0.0, 1.0, 0], null, null);
 }
 
 /**
