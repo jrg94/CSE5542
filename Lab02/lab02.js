@@ -66,14 +66,14 @@ function Node(id, vertices, axes, children) {
   this.traverse = function(stack, model) {
     model = mat4.multiply(model, this.mvMatrix);
     drawSquare(model);
-    stack.push(model);
     if (!Array.isArray(children) || children.length == 0) {
       // Do nothing
     } else {
       // Traverse
       children.forEach(function(node) {
+        pushMatrix(stack, model);
         node.traverse(stack, model);
-        model = stack.pop();
+        model = popMatrix(stack);
       });
     }
   }
@@ -269,10 +269,9 @@ function drawSquare(matrix) {
 function drawScene() {
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
   var mStack = [];
   var model = mat4.create();
-  mat4.identity(model);
+  model = mat4.identity(model);
   root.traverse(mStack, model);
 }
 
