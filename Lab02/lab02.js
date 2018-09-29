@@ -63,27 +63,20 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
   this.initRotation = initRotation;
   this.initScale = initScale;
   this.mMatrix = null;
-  this.mvMatrix = null;
-  this.pMatrix = null;
   this.children = children;
 
   // Implements the drawing feature
-  this.traverse = function(stack, model) {
-    mat4.perspective(60, 1.0, 0.1, 100, this.pMatrix);
-    vMatrix = mat4.lookAt([0,0,5], [0,0,0], [0,1,0], this.mvMatrix);
-    mat4.multiply(vMatrix, model, this.mvMatrix);
-    drawSquare(this.mvMatrix, this.pMatrix);
-    /**
-    if (!Array.isArray(children) || children.length == 0) {
-      // Do nothing
-    } else {
-      // Traverse
-      children.forEach(function(node) {
-        pushMatrix(stack, model);
-        node.traverse(stack, model);
-        model = popMatrix(stack);
-      });
-    }**/
+  this.traverse = function(stack, modelViewMatrix) {
+    pMatrix = mat4.perspective(60, 1.0, 0.1, 100);
+    vMatrix = mat4.lookAt([0, 0, 5], [0, 0, 0], [0, 1, 0], modelViewMatrix);
+    mat4.multiply(vMatrix, this.mMatrix, modelViewMatrix);
+    drawSquare(modelViewMatrix, pMatrix);
+
+    children.forEach(function(node) {
+      pushMatrix(stack, modelViewMatrix);
+      node.traverse(stack, modelViewMatrix);
+      modelViewMatrix = popMatrix(stack);
+    });
   }
 
   // Implements a searching feature
@@ -125,8 +118,6 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
     this.mvMatrix = mat4.identity(mvMatrix);
     var mMatrix = mat4.create();
     this.mMatrix = mat4.identity(mMatrix);
-    var pMatrix = mat4.create();
-    this.pMatrix = mat4.identity(pMatrix);
   }
 
   // Implements a translation feature
@@ -134,7 +125,7 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
     if (this.mvMatrix === null) {
       this.initMVMatrix();
     }
-    this.mMatrix = mat4.identity(this.mMatrix);
+    //this.mMatrix = mat4.identity(this.mMatrix);
     this.mMatrix = mat4.translate(this.mMatrix, dir);
   }
 
@@ -143,7 +134,7 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
     if (this.mvMatrix === null) {
       this.initMVMatrix();
     }
-    this.mMatrix = mat4.identity(this.mMatrix);
+    //this.mMatrix = mat4.identity(this.mMatrix);
     this.mMatrix = mat4.rotateZ(this.mMatrix, theta);
   }
 
@@ -152,7 +143,7 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
     if (this.mvMatrix === null) {
       this.initMVMatrix();
     }
-    this.mMatrix = mat4.identity(this.mMatrix);
+    //this.mMatrix = mat4.identity(this.mMatrix);
     this.mMatrix = mat4.scale(this.mMatrix, scale);
   }
 }
@@ -300,7 +291,8 @@ function drawScene() {
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   var mStack = [];
-  root.traverse(mStack, root.mMatrix);
+  var model = mat4.create();
+  root.traverse(mStack, model);
 }
 
 /**
