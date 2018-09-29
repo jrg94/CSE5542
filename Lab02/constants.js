@@ -49,5 +49,18 @@ const MAZE = [
   0.0, -5.0, 0.0,
   // Third tunnel north
   4.0, -5.0, 0.0,
-  4.0, 2.0, 0.0,
+  4.0, 1.0, 0.0,
+  // Fourth tunnel dead end
+  0.0, -5.0, 0.0,
+  0.0, -1.0, 0.0,
+  // Third tunnel turn
+  5.0, 3.0, 0.0,
+  -1.0, 3.0, 0.0,
+  // Fifth tunnel
+  5.0, 3.0, 0.0,
+  5.0, 0.0, 0.0,
+  // Fifth tunnel break
+  5.0, -2.0, 0.0,
+  5.0, -7.0, 0.0,
+  // Fifth tunnel dead end
 ];
