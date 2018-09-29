@@ -76,11 +76,10 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
 
   // Implements the drawing feature
   this.traverse = function(stack, model) {
+    model = mat4.multiply(model, this.mMatrix);
     var pMatrix = getProjectionMatrix();
     var vMatrix = getViewMatrix();
-    var mvMatrix = mat4.create();
-    model = mat4.multiply(model, this.mMatrix);
-    mat4.multiply(vMatrix, model, mvMatrix);
+    var mvMatrix = getModelViewMatrix(vMatrix, model);
     drawSquare(mvMatrix, pMatrix);
     children.forEach(function(node) {
       pushMatrix(stack, model);
@@ -166,6 +165,12 @@ function getProjectionMatrix() {
 function getViewMatrix() {
   var vMatrix = mat4.lookAt([0, 0, 5], coi, [0, 1, 0]);
   return vMatrix;
+}
+
+function getModelViewMatrix(viewMatrix, modelMatrix) {
+  var mvMatrix = mat4.create();
+  mvMatrix = mat4.multiply(viewMatrix, modelMatrix);
+  return mvMatrix;
 }
 
 /**
@@ -312,6 +317,8 @@ function drawSquare(mvMatrix, pMatrix) {
 }
 
 function drawMaze() {
+  var mvMatrix = mat4.create();
+  model = mat4.multiply(model, this.mMatrix);
   setMatrixUniforms(getStaticMVMatrix(), getPMatrix());
 }
 
