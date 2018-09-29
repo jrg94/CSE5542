@@ -16,6 +16,9 @@ var Ytranslate = 0.0;
 // Stack
 var mvMatrixStack = [];
 
+// Perspective Matrix
+var pMatrix = null;
+
 // Mouse tracking
 var lastMouseX = 0;
 var lastMouseY = 0;
@@ -218,8 +221,9 @@ function initBuffers() {
 /**
  * A helper function which sets matrix uniforms.
  */
-function setMatrixUniforms(matrix) {
-  gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, matrix);
+function setMatrixUniforms(mvMatrix) {
+  gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+  gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
 }
 
 /**
@@ -262,9 +266,9 @@ function popMatrix(stack) {
  *
  * @param {!Array<!Array<number>} matrix a matrix
  */
-function drawSquare(matrix) {
+function drawSquare(mvMatrix) {
 
-  setMatrixUniforms(matrix);
+  setMatrixUniforms(mvMatrix, pMatrix);
 
   // Prepares the square for transformation
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
@@ -416,6 +420,7 @@ function webGLStart() {
   gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
 
   shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
+  shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
   shaderProgram.whatever = 4;
   shaderProgram.whatever2 = 3;
 
@@ -425,6 +430,9 @@ function webGLStart() {
 
   document.addEventListener('mousedown', onDocumentMouseDown, false);
   document.addEventListener('keydown', onKeyDown, false);
+
+  pMatrix = mat4.create(pMatrix);
+  mat4.perspective(degToRad(60), 1.0, -10, 100, pMatrix);
 
   root.reset();
   drawScene();
