@@ -22,39 +22,6 @@ var mvMatrixStack = [];
 var lastMouseX = 0;
 var lastMouseY = 0;
 
-// Square vertices
-const SQUARE = [
-  0.5, 0.5, 0.0,
-  -0.5, 0.5, 0.0,
-  -0.5, -0.5, 0.0,
-  0.5, -0.5, 0.0,
-];
-
-// Line vertices
-const AXES = [
-  0.0, 0.0, 0.0,
-  0.7, 0.0, 0.0,
-  0.0, 0.0, 0.0,
-  0.0, 0.7, 0.0,
-];
-
-// Colors
-const COLORS = [
-  1.0, 0.0, 0.0, 1.0,
-  0.0, 1.0, 0.0, 1.0,
-  0.0, 0.0, 1.0, 1.0,
-  1.0, 0.0, 0.0, 1.0,
-];
-
-const MAZE = [
-  0.0, 1.0, 0.0,
-  1.0, 1.0, 0.0,
-  1.0, 1.0, 0.0,
-  1.0, 0.0, 0.0,
-  1.0, 0.0, 0.0,
-  1.0, -1.0, 0.0,
-];
-
 // Hierarchy
 var root = generateHierarchy();
 var coi = [0, 0, 0];
@@ -181,7 +148,7 @@ function getModelViewMatrix(viewMatrix, modelMatrix) {
  * Generates an object hierarchy.
  */
 function generateHierarchy() {
-  var root = new Node("body", SQUARE, AXES, [.25, 0, 0], null, [.5, .5, .5], [
+  var root = new Node("body", SQUARE, AXES, null, null, [.5, .5, .5], [
     new Node("head", SQUARE, AXES, [.75, 0, 0], null, [.5, .5, .5], []),
     new Node("top-left-femur", SQUARE, AXES, [0.35, .75, 0], degToRad(-45.0), [.20, .50, .35], [
       new Node("top-left-tibia", SQUARE, AXES, [0.0, 1.0, 0], degToRad(90), null, [])
