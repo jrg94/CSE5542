@@ -13,6 +13,12 @@ var lineVertexColorBuffer;
 var Xtranslate = 0.0;
 var Ytranslate = 0.0;
 
+// Stack
+var mvMatrixStack = [];
+
+// Perspective Matrix
+var pMatrix = null;
+
 // Mouse tracking
 var lastMouseX = 0;
 var lastMouseY = 0;
@@ -59,25 +65,13 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
   this.initTranslation = initTranslation;
   this.initRotation = initRotation;
   this.initScale = initScale;
-  this.mMatrix = null;
-  this.vMatrix = null;
   this.mvMatrix = null;
-  this.pMatrix = null;
   this.children = children;
-
-  this.printMatrices = function() {
-    console.log(this.id + "'s Model Matrix: " + this.mMatrix);
-    console.log(this.id + "'s View Matrix: " + this.vMatrix);
-    console.log(this.id + "'s ModelView Matrix: " + this.mvMatrix);
-    console.log(this.id + "'s Perspective Matrix: " + this.pMatrix);
-  }
 
   // Implements the drawing feature
   this.traverse = function(stack, model) {
-    //mat4.perspective(60, 1.0, -10, 100, this.pMatrix);
-    this.vMatrix = mat4.lookAt([0,0,5], [0,0,0], [0,1,0], this.mvMatrix);
-    model = mat4.multiply(this.vMatrix, this.mMatrix, this.mvMatrix)
-    drawSquare(this.mvMatrix, this.pMatrix);
+    model = mat4.multiply(model, this.mvMatrix);
+    drawSquare(model);
     if (!Array.isArray(children) || children.length == 0) {
       // Do nothing
     } else {
@@ -109,48 +103,49 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
 
   // Implements the reset feature
   this.reset = function() {
-    this.initMatrices();
-    this.transform(initTranslation, initRotation, initScale);
+    this.initMVMatrix();
+    console.log("Resetting: " + this.id);
+    if (this.initTranslation !== null) {
+      this.translate(this.initTranslation);
+    }
+    if (this.initRotation !== null) {
+      this.rotate(this.initRotation);
+    }
+    if (this.initScale !== null) {
+      this.scale(this.initScale);
+    }
     children.forEach(function(node) {
       node.reset();
     });
   }
 
-  this.initMatrices = function() {
-    this.mvMatrix = mat4.create();
-    this.vMatrix = mat4.create();
-    this.mMatrix = mat4.create();
-    this.pMatrix = mat4.create();
-  }
-
-  this.transform = function(dir, theta, scale) {
-    if (dir !== null) {
-      this.translate(dir);
-    }
-    if (theta !== null) {
-      this.rotate(theta);
-    }
-    if (scale !== null) {
-      this.scale(scale);
-    }
+  this.initMVMatrix = function() {
+    var mvMatrix = mat4.create();
+    this.mvMatrix = mat4.identity(mvMatrix);
   }
 
   // Implements a translation feature
   this.translate = function(dir) {
-    this.mMatrix = mat4.identity(this.mMatrix);
-    this.mMatrix = mat4.translate(this.mMatrix, dir);
+    if (this.mvMatrix === null) {
+      this.initMVMatrix();
+    }
+    this.mvMatrix = mat4.translate(this.mvMatrix, dir);
   }
 
   // Implements a rotation feature
   this.rotate = function(theta) {
-    this.mMatrix = mat4.identity(this.mMatrix);
-    this.mMatrix = mat4.rotateZ(this.mMatrix, theta);
+    if (this.mvMatrix === null) {
+      this.initMVMatrix();
+    }
+    this.mvMatrix = mat4.rotateZ(this.mvMatrix, theta);
   }
 
   // Implements a scaling feature
   this.scale = function(scale) {
-    this.mMatrix = mat4.identity(this.mMatrix);
-    this.mMatrix = mat4.scale(this.mMatrix, scale);
+    if (this.mvMatrix === null) {
+      this.initMVMatrix();
+    }
+    this.mvMatrix = mat4.scale(this.mvMatrix, scale);
   }
 }
 
@@ -179,6 +174,7 @@ function generateHierarchy() {
       new Node("bottom-right-tibia", SQUARE, AXES, [0.0, -1.0, 0], degToRad(-90), null, [])
     ])
   ])
+  console.log(root);
   return root;
 }
 
@@ -225,7 +221,7 @@ function initBuffers() {
 /**
  * A helper function which sets matrix uniforms.
  */
-function setMatrixUniforms(mvMatrix, pMatrix) {
+function setMatrixUniforms(mvMatrix) {
   gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
   gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
 }
@@ -270,7 +266,7 @@ function popMatrix(stack) {
  *
  * @param {!Array<!Array<number>} matrix a matrix
  */
-function drawSquare(mvMatrix, pMatrix) {
+function drawSquare(mvMatrix) {
 
   setMatrixUniforms(mvMatrix, pMatrix);
 
@@ -297,8 +293,8 @@ function drawScene() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   var mStack = [];
   var model = mat4.create();
+  model = mat4.identity(model);
   root.traverse(mStack, model);
-  console.log(root);
 }
 
 /**
@@ -425,6 +421,8 @@ function webGLStart() {
 
   shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
   shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
+  shaderProgram.whatever = 4;
+  shaderProgram.whatever2 = 3;
 
   initBuffers();
 
@@ -432,6 +430,9 @@ function webGLStart() {
 
   document.addEventListener('mousedown', onDocumentMouseDown, false);
   document.addEventListener('keydown', onKeyDown, false);
+
+  pMatrix = mat4.create(pMatrix);
+  mat4.perspective(degToRad(60), 1.0, -10, 100, pMatrix);
 
   root.reset();
   drawScene();
