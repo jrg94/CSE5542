@@ -8,6 +8,8 @@ var squareVertexPositionBuffer;
 var squareVertexColorBuffer;
 var lineVertexPositionBuffer;
 var lineVertexColorBuffer;
+var mazeVertexPositionBuffer;
+var mazeVertextColorBuffer;
 
 // Values
 var Xtranslate = 0.0;
@@ -45,11 +47,13 @@ const COLORS = [
 ];
 
 const MAZE = [
-  0.0, 0.9, 0.0,
-  0.9, 0.0, 0.0,
-  0.9, 0.0, 0.0,
-  0.0, 0.9, 0.0,
-]
+  0.0, 1.0, 0.0,
+  1.0, 1.0, 0.0,
+  1.0, 1.0, 0.0,
+  1.0, 0.0, 0.0,
+  1.0, 0.0, 0.0,
+  1.0, -1.0, 0.0,
+];
 
 // Hierarchy
 var root = generateHierarchy();
@@ -177,7 +181,7 @@ function getModelViewMatrix(viewMatrix, modelMatrix) {
  * Generates an object hierarchy.
  */
 function generateHierarchy() {
-  var root = new Node("body", SQUARE, AXES, null, null, null, [
+  var root = new Node("body", SQUARE, AXES, [.25, 0, 0], null, [.5, .5, .5], [
     new Node("head", SQUARE, AXES, [.75, 0, 0], null, [.5, .5, .5], []),
     new Node("top-left-femur", SQUARE, AXES, [0.35, .75, 0], degToRad(-45.0), [.20, .50, .35], [
       new Node("top-left-tibia", SQUARE, AXES, [0.0, 1.0, 0], degToRad(90), null, [])
@@ -198,7 +202,6 @@ function generateHierarchy() {
       new Node("bottom-right-tibia", SQUARE, AXES, [0.0, -1.0, 0], degToRad(-90), null, [])
     ])
   ])
-  console.log(root);
   return root;
 }
 
@@ -227,19 +230,27 @@ function initBuffers() {
   squareVertexPositionBuffer.itemSize = 3;
   squareVertexPositionBuffer.numItems = 4;
 
-  // Axes buffer
+  // Maze buffer
   mazeVertexPositionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, mazeVertexPositionBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(MAZE), gl.STATIC_DRAW);
   mazeVertexPositionBuffer.itemSize = 3;
-  mazeVertexPositionBuffer.numItems = 4;
+  mazeVertexPositionBuffer.numItems = MAZE.length / 3;
 
-  // Maze buffer
+  // Maze color buffer
+  mazeVertexColorBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, mazeVertexColorBuffer);
+  var colorArray = Array((MAZE.length / 3) * 4).fill(0)
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colorArray), gl.STATIC_DRAW);
+  mazeVertexColorBuffer.itemSize = 4;
+  mazeVertexColorBuffer.numItems = colorArray.length / 4;
+
+  // Line buffer
   lineVertexPositionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, lineVertexPositionBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(AXES), gl.STATIC_DRAW);
   lineVertexPositionBuffer.itemSize = 3;
-  lineVertexPositionBuffer.numItems = 4;
+  lineVertexPositionBuffer.numItems = AXES.length / 3;
 
   // Color buffer
   squareVertexColorBuffer = gl.createBuffer();
@@ -324,8 +335,8 @@ function drawMaze() {
 
   gl.bindBuffer(gl.ARRAY_BUFFER, mazeVertexPositionBuffer);
   gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, mazeVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-  gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
-  gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+  gl.bindBuffer(gl.ARRAY_BUFFER, mazeVertexColorBuffer);
+  gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, mazeVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
   gl.drawArrays(gl.LINES, 0, mazeVertexPositionBuffer.numItems);
 }
 
