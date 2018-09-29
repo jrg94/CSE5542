@@ -5,11 +5,11 @@ var vertexShaderSrc = `
   varying vec4 vColor;
 
   uniform mat4 uMVMatrix;
-  uniform mat4 uPMatrix;
+  uniform mat4 uPMatrix; 
 
   void main(void) {
 
-    gl_PointSize = 10.0;
+   gl_PointSize = 10.0;
 
     gl_Position = uPMatrix* uMVMatrix*vec4(aVertexPosition, 1.0);
 
