@@ -11,7 +11,7 @@ var vertexShaderSrc = `
 
     gl_PointSize = 10.0;
 
-    gl_Position = uPMatrix* uMVMatrix*vec4(aVertexPosition, 1.0);
+    gl_Position = uMVMatrix * vec4(aVertexPosition, 1.0);
 
     vColor = aVertexColor;
   }
