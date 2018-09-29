@@ -44,6 +44,13 @@ const COLORS = [
   1.0, 0.0, 0.0, 1.0,
 ];
 
+const MAZE = [
+  0.0, 0.9, 0.0,
+  0.9, 0.0, 0.0,
+  0.9, 0.0, 0.0,
+  0.0, 0.9, 0.0,
+]
+
 // Hierarchy
 var root = generateHierarchy();
 var coi = [0, 0, 0];
@@ -69,8 +76,8 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
 
   // Implements the drawing feature
   this.traverse = function(stack, model) {
-    var pMatrix = mat4.perspective(viewAngle, 1.0, 0.1, 100);
-    var vMatrix = mat4.lookAt([0, 0, 5], coi, [0, 1, 0]);
+    var pMatrix = getProjectionMatrix();
+    var vMatrix = getViewMatrix();
     var mvMatrix = mat4.create();
     model = mat4.multiply(model, this.mMatrix);
     mat4.multiply(vMatrix, model, mvMatrix);
@@ -151,6 +158,16 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
   }
 }
 
+function getProjectionMatrix() {
+  var pMatrix = mat4.perspective(viewAngle, 1.0, 0.1, 100);
+  return pMatrix;
+}
+
+function getViewMatrix() {
+  var vMatrix = mat4.lookAt([0, 0, 5], coi, [0, 1, 0]);
+  return vMatrix;
+}
+
 /**
  * Generates an object hierarchy.
  */
@@ -206,6 +223,13 @@ function initBuffers() {
   squareVertexPositionBuffer.numItems = 4;
 
   // Axes buffer
+  mazeVertexPositionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, mazeVertexPositionBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(MAZE), gl.STATIC_DRAW);
+  mazeVertexPositionBuffer.itemSize = 3;
+  mazeVertexPositionBuffer.numItems = 4;
+
+  // Maze buffer
   lineVertexPositionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, lineVertexPositionBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(AXES), gl.STATIC_DRAW);
@@ -285,6 +309,10 @@ function drawSquare(mvMatrix, pMatrix) {
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
   gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
   gl.drawArrays(gl.LINES, 0, lineVertexPositionBuffer.numItems);
+}
+
+function drawMaze() {
+  setMatrixUniforms(getStaticMVMatrix(), getPMatrix());
 }
 
 /**
