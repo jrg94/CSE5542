@@ -46,6 +46,8 @@ const COLORS = [
 
 // Hierarchy
 var root = generateHierarchy();
+var coi = [0, 0, 0];
+var viewAngle = 60;
 
 /**
  * A scene graph node.
@@ -67,8 +69,8 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
 
   // Implements the drawing feature
   this.traverse = function(stack, model) {
-    var pMatrix = mat4.perspective(60, 1.0, 0.1, 100);
-    var vMatrix = mat4.lookAt([0, 0, 5], [0, 0, 0], [0, 1, 0]);
+    var pMatrix = mat4.perspective(viewAngle, 1.0, 0.1, 100);
+    var vMatrix = mat4.lookAt([0, 0, 5], coi, [0, 1, 0]);
     var mvMatrix = mat4.create();
     model = mat4.multiply(model, this.mMatrix);
     mat4.multiply(vMatrix, model, mvMatrix);
@@ -392,6 +394,24 @@ function onKeyDown(event) {
       break;
     case 69:
       root.search(which_object).scale([1.05, 1.05, 1.05]);
+      break;
+    case 49:
+      coi[1] += .05;
+      break;
+    case 50:
+      coi[1] -= .05;
+      break;
+    case 51:
+      coi[0] -= .05;
+      break;
+    case 52:
+      coi[0] += .05;
+      break;
+    case 53:
+      viewAngle -= 1;
+      break;
+    case 54:
+      viewAngle += 1;
       break;
   }
   drawScene();
