@@ -253,9 +253,9 @@ function initBuffersByContext(
 /**
  * A helper function which sets matrix uniforms.
  */
-function setMatrixUniforms(mvMatrix, pMatrix) {
-  gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
-  gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
+function setMatrixUniforms(gc, mvMatrix, pMatrix) {
+  gc.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+  gc.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
 }
 
 /**
@@ -299,34 +299,37 @@ function popMatrix(stack) {
  * @param {!Array<!Array<number>} matrix a matrix
  */
 function drawSquare(mvMatrix, pMatrix) {
+  setMatrixUniforms(gl, mvMatrix, pMatrix);
+  drawSquareByContext(gl, glSquareVertexPositionBuffer, glSquareVertexColorBuffer, glLineVertexPositionBuffer);
+  // TODO: drawSquareByContext(map);
+}
 
-  setMatrixUniforms(mvMatrix, pMatrix);
-
+function drawSquareByContext(gc, squarePositionBuffer, squareColorBuffer, linePositionBuffer) {
   // Prepares the square for transformation
-  gl.bindBuffer(gl.ARRAY_BUFFER, glSquareVertexPositionBuffer);
-  gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, glSquareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-  gl.bindBuffer(gl.ARRAY_BUFFER, glSquareVertexColorBuffer);
-  gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, glSquareVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
-  gl.drawArrays(gl.TRIANGLE_FAN, 0, glSquareVertexPositionBuffer.numItems);
+  gc.bindBuffer(gc.ARRAY_BUFFER, glSquareVertexPositionBuffer);
+  gc.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squarePositionBuffer.itemSize, gc.FLOAT, false, 0, 0);
+  gc.bindBuffer(gc.ARRAY_BUFFER, glSquareVertexColorBuffer);
+  gc.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareColorBuffer.itemSize, gc.FLOAT, false, 0, 0);
+  gc.drawArrays(gc.TRIANGLE_FAN, 0, squarePositionBuffer.numItems);
 
   // Prepares the axes for transformation
-  gl.bindBuffer(gl.ARRAY_BUFFER, glLineVertexPositionBuffer);
-  gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, glLineVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-  gl.bindBuffer(gl.ARRAY_BUFFER, glSquareVertexColorBuffer);
-  gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, glSquareVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
-  gl.drawArrays(gl.LINES, 0, glLineVertexPositionBuffer.numItems);
+  gc.bindBuffer(gc.ARRAY_BUFFER, linePositionBuffer);
+  gc.vertexAttribPointer(shaderProgram.vertexPositionAttribute, linePositionBuffer.itemSize, gc.FLOAT, false, 0, 0);
+  gc.bindBuffer(gc.ARRAY_BUFFER, glSquareVertexColorBuffer);
+  gc.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareColorBuffer.itemSize, gc.FLOAT, false, 0, 0);
+  gc.drawArrays(gc.LINES, 0, linePositionBuffer.numItems);
 }
 
 function drawMaze() {
   drawMazeByContext(gl, glMazeVertexPositionBuffer, glMazeVertexColorBuffer);
-  //drawMazeByContext(map);
+  // TODO: drawMazeByContext(map);
 }
 
 function drawMazeByContext(gc, positionBuffer, colorBuffer) {
   var modelMatrix = mat4.create();
   modelMatrix = mat4.identity(modelMatrix);
   var mvMatrix = getModelViewMatrix(getViewMatrix(), modelMatrix);
-  setMatrixUniforms(mvMatrix, getProjectionMatrix());
+  setMatrixUniforms(gc, mvMatrix, getProjectionMatrix());
 
   gc.bindBuffer(gc.ARRAY_BUFFER, positionBuffer);
   gc.vertexAttribPointer(shaderProgram.vertexPositionAttribute, positionBuffer.itemSize, gc.FLOAT, false, 0, 0);
