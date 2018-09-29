@@ -71,4 +71,7 @@ const MAZE = [
   // Sixth tunnel main wall
   6.0, 3.0, 0.0,
   6.0, -7.0, 0.0,
+  // Third tunnel dead end
+  -1.0, 3.0, 0.0,
+  -1.0, 1.0, 0.0,
 ];
