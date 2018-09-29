@@ -62,13 +62,18 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
   this.initTranslation = initTranslation;
   this.initRotation = initRotation;
   this.initScale = initScale;
+  this.mMatrix = null;
   this.mvMatrix = null;
+  this.pMatrix = null;
   this.children = children;
 
   // Implements the drawing feature
   this.traverse = function(stack, model) {
-    model = mat4.multiply(model, this.mvMatrix);
-    drawSquare(model);
+    mat4.perspective(60, 1.0, 0.1, 100, this.pMatrix);
+    vMatrix = mat4.lookAt([0,0,5], [0,0,0], [0,1,0], this.mvMatrix);
+    mat4.multiply(vMatrix, model, this.mvMatrix);
+    drawSquare(this.mvMatrix, this.pMatrix);
+    /**
     if (!Array.isArray(children) || children.length == 0) {
       // Do nothing
     } else {
@@ -78,7 +83,7 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
         node.traverse(stack, model);
         model = popMatrix(stack);
       });
-    }
+    }**/
   }
 
   // Implements a searching feature
@@ -101,7 +106,6 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
   // Implements the reset feature
   this.reset = function() {
     this.initMVMatrix();
-    console.log("Resetting: " + this.id);
     if (this.initTranslation !== null) {
       this.translate(this.initTranslation);
     }
@@ -119,6 +123,10 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
   this.initMVMatrix = function() {
     var mvMatrix = mat4.create();
     this.mvMatrix = mat4.identity(mvMatrix);
+    var mMatrix = mat4.create();
+    this.mMatrix = mat4.identity(mMatrix);
+    var pMatrix = mat4.create();
+    this.pMatrix = mat4.identity(pMatrix);
   }
 
   // Implements a translation feature
@@ -126,7 +134,8 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
     if (this.mvMatrix === null) {
       this.initMVMatrix();
     }
-    this.mvMatrix = mat4.translate(this.mvMatrix, dir);
+    this.mMatrix = mat4.identity(this.mMatrix);
+    this.mMatrix = mat4.translate(this.mMatrix, dir);
   }
 
   // Implements a rotation feature
@@ -134,7 +143,8 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
     if (this.mvMatrix === null) {
       this.initMVMatrix();
     }
-    this.mvMatrix = mat4.rotateZ(this.mvMatrix, theta);
+    this.mMatrix = mat4.identity(this.mMatrix);
+    this.mMatrix = mat4.rotateZ(this.mMatrix, theta);
   }
 
   // Implements a scaling feature
@@ -142,7 +152,8 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
     if (this.mvMatrix === null) {
       this.initMVMatrix();
     }
-    this.mvMatrix = mat4.scale(this.mvMatrix, scale);
+    this.mMatrix = mat4.identity(this.mMatrix);
+    this.mMatrix = mat4.scale(this.mMatrix, scale);
   }
 }
 
@@ -218,8 +229,9 @@ function initBuffers() {
 /**
  * A helper function which sets matrix uniforms.
  */
-function setMatrixUniforms(matrix) {
-  gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, matrix);
+function setMatrixUniforms(mvMatrix, pMatrix) {
+  gl.uniformMatrix4fv(shaderProgram.mvMatrixUniform, false, mvMatrix);
+  gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
 }
 
 /**
@@ -262,9 +274,9 @@ function popMatrix(stack) {
  *
  * @param {!Array<!Array<number>} matrix a matrix
  */
-function drawSquare(matrix) {
+function drawSquare(mvMatrix, pMatrix) {
 
-  setMatrixUniforms(matrix);
+  setMatrixUniforms(mvMatrix, pMatrix);
 
   // Prepares the square for transformation
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
@@ -288,9 +300,7 @@ function drawScene() {
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   var mStack = [];
-  var model = mat4.create();
-  model = mat4.identity(model);
-  root.traverse(mStack, model);
+  root.traverse(mStack, root.mMatrix);
 }
 
 /**
@@ -416,8 +426,7 @@ function webGLStart() {
   gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
 
   shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
-  shaderProgram.whatever = 4;
-  shaderProgram.whatever2 = 3;
+  shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
 
   initBuffers();
 
