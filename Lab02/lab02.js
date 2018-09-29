@@ -66,16 +66,17 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
   this.children = children;
 
   // Implements the drawing feature
-  this.traverse = function(stack, modelViewMatrix) {
-    pMatrix = mat4.perspective(60, 1.0, 0.1, 100);
-    vMatrix = mat4.lookAt([0, 0, 5], [0, 0, 0], [0, 1, 0], modelViewMatrix);
-    mat4.multiply(vMatrix, this.mMatrix, modelViewMatrix);
-    drawSquare(modelViewMatrix, pMatrix);
-
+  this.traverse = function(stack, model) {
+    var pMatrix = mat4.perspective(60, 1.0, 0.1, 100);
+    var vMatrix = mat4.lookAt([0, 0, 5], [0, 0, 0], [0, 1, 0]);
+    var mvMatrix = mat4.create();
+    model = mat4.multiply(model, this.mMatrix);
+    mat4.multiply(vMatrix, model, mvMatrix);
+    drawSquare(mvMatrix, pMatrix);
     children.forEach(function(node) {
-      pushMatrix(stack, modelViewMatrix);
-      node.traverse(stack, modelViewMatrix);
-      modelViewMatrix = popMatrix(stack);
+      pushMatrix(stack, model);
+      node.traverse(stack, model);
+      model = popMatrix(stack);
     });
   }
 
@@ -152,7 +153,7 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
  * Generates an object hierarchy.
  */
 function generateHierarchy() {
-  var root = new Node("body", SQUARE, AXES, null, null, [0.25, 0.25, 0.25], [
+  var root = new Node("body", SQUARE, AXES, null, null, null, [
     new Node("head", SQUARE, AXES, [.75, 0, 0], null, [.5, .5, .5], []),
     new Node("top-left-femur", SQUARE, AXES, [0.35, .75, 0], degToRad(-45.0), [.20, .50, .35], [
       new Node("top-left-tibia", SQUARE, AXES, [0.0, 1.0, 0], degToRad(90), null, [])
@@ -292,6 +293,7 @@ function drawScene() {
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   var mStack = [];
   var model = mat4.create();
+  model = mat4.identity(model);
   root.traverse(mStack, model);
 }
 
