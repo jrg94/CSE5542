@@ -364,45 +364,34 @@ function onDocumentMouseOut(event) {
  * A keyboard event which manipulates the matrices for translation and
  * scaling depending on the key pressed.
  *
- * H: translates the matrices by 0.1 on the local x-axis
- * h: translates the matrices by -0.1 on the local x-axis
- * V: translates the matrices by 0.1 on the local y-axis
- * v: translates the matrices by -0.1. on the local y-axis
- * S: scales the matrices by 1.05
- * s: scales the matrices by 0.95
+ * d: translates the matrices by 0.1 on the local x-axis
+ * a: translates the matrices by -0.1 on the local x-axis
+ * w: translates the matrices by 0.1 on the local y-axis
+ * s: translates the matrices by -0.1. on the local y-axis
+ * e: scales the matrices by 1.05
+ * q: scales the matrices by 0.95
  *
  * @param event some keyboard event
  */
 function onKeyDown(event) {
-
-  console.log(event.keyCode);
   switch (event.keyCode) {
-    case 72:
-      if (event.shiftKey) {
-        console.log('enter H');
-        root.search(which_object).translate([0.1, 0, 0]);
-      } else {
-        console.log('enter h');
-        root.search(which_object).translate([-0.1, 0, 0]);
-      }
+    case 65:
+      root.search(which_object).translate([-0.1, 0, 0]);
       break;
-    case 86:
-      if (event.shiftKey) {
-        console.log('enter V');
-        root.search(which_object).translate([0.0, 0.1, 0]);
-      } else {
-        console.log('enter v');
-        root.search(which_object).translate([0.0, -0.1, 0]);
-      }
+    case 68:
+      root.search(which_object).translate([0.1, 0, 0]);
+      break;
+    case 87:
+      root.search(which_object).translate([0.0, 0.1, 0]);
       break;
     case 83:
-      if (event.shiftKey) {
-        console.log('enter S');
-        root.search(which_object).scale([1.05, 1.05, 1.05]);
-      } else {
-        console.log('enter s');
-        root.search(which_object).scale([0.95, 0.95, 0.95]);
-      }
+      root.search(which_object).translate([0.0, -0.1, 0]);
+      break;
+    case 81:
+      root.search(which_object).scale([0.95, 0.95, 0.95]);
+      break;
+    case 69:
+      root.search(which_object).scale([1.05, 1.05, 1.05]);
       break;
   }
   drawScene();
