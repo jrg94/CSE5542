@@ -372,6 +372,12 @@ function onDocumentMouseOut(event) {
  * s: translates the matrices by -0.1. on the local y-axis
  * e: scales the matrices by 1.05
  * q: scales the matrices by 0.95
+ * 1: moves the camera up
+ * 2: moves the camera down
+ * 3: moves the camera left
+ * 4: moves the camera right
+ * 5: reduces the camera viewing angle
+ * 6: expands the camera viewing angle
  *
  * @param event some keyboard event
  */
