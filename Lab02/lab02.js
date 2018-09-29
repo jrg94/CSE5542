@@ -317,9 +317,16 @@ function drawSquare(mvMatrix, pMatrix) {
 }
 
 function drawMaze() {
-  var mvMatrix = mat4.create();
-  model = mat4.multiply(model, this.mMatrix);
-  setMatrixUniforms(getStaticMVMatrix(), getPMatrix());
+  var modelMatrix = mat4.create();
+  modelMatrix = mat4.identity(modelMatrix);
+  var mvMatrix = getModelViewMatrix(getViewMatrix(), modelMatrix);
+  setMatrixUniforms(mvMatrix, getProjectionMatrix());
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, mazeVertexPositionBuffer);
+  gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, mazeVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+  gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
+  gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+  gl.drawArrays(gl.LINES, 0, mazeVertexPositionBuffer.numItems);
 }
 
 /**
@@ -332,6 +339,7 @@ function drawScene() {
   var model = mat4.create();
   model = mat4.identity(model);
   root.traverse(mStack, model);
+  drawMaze();
 }
 
 /**
