@@ -172,7 +172,7 @@ function generateHierarchy() {
 /**
  * Initializes the graphics context given some canvas.
  */
-function initGL(canvas, mapCanvas) {
+function initGL(canvas) {
   try {
     gl = canvas.getContext("experimental-webgl");
     gl.viewportWidth = canvas.width;
@@ -468,8 +468,7 @@ function onKeyDown(event) {
 
 function webGLStart() {
   var canvas = document.getElementById("lab02-canvas");
-  var mapCanvas = document.getElementById("map");
-  initGL(canvas, mapCanvas);
+  initGL(canvas);
   initShaders();
 
   shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
