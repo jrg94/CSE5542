@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <title>Lab02 &mdash; Jeremy Grifski</title>
+
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+  <script type="text/javascript" src ="shaders.js"></script>
+
+  <script type="text/javascript" src="constants.js"></script>
+
+  <script type="text/javascript" src="shader_setup.js"></script>
+
+  <script type="text/javascript" src="lab02.js"></script>
+
+  <script type="text/javascript" src="glMatrix-0.9.5.min_1.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="style.css">
+
+</head>
+
+<body onload="webGLStart();">
+
+  <h1>Ant Maze</h2>
+
+  <div class="container">
+    <canvas id="lab02-canvas" class="graph" width="700" height="700"></canvas>
+  </div>
+
+  <h2>Geometry</h2>
+
+  <h3>Top Level</h3>
+  <button onclick="obj('body')">Body</button>
+
+  <h3>Tier 2</h3>
+  <button onclick="obj('head')">Head</button>
+  <button onclick="obj('top-left-femur')">Top Left Femur</button>
+  <button onclick="obj('middle-left-femur')">Middle Left Femur</button>
+  <button onclick="obj('bottom-left-femur')">Bottom Left Femur</button>
+  <button onclick="obj('top-right-femur')">Top Right Femur</button>
+  <button onclick="obj('middle-right-femur')">Middle Right Femur</button>
+  <button onclick="obj('bottom-right-femur')">Bottom Right Femur</button>
+
+  <h3>Tier 3</h3>
+  <button onclick="obj('top-left-tibia')">Top Left Tibia</button>
+  <button onclick="obj('middle-left-tibia')">Middle Left Tibia</button>
+  <button onclick="obj('bottom-left-tibia')">Bottom Left Tibia</button>
+  <button onclick="obj('top-right-tibia')">Top Right Tibia</button>
+  <button onclick="obj('middle-right-tibia')">Middle Right Tibia</button>
+  <button onclick="obj('bottom-right-tibia')">Bottom Right Tibia</button>
+
+
+  <h2>Graph Background</h2>
+  <button  onclick="backgroundColor(1,0,0)"> Red</button>
+  <button  onclick="backgroundColor(0,1,0)"> Green</button>
+  <button  onclick="backgroundColor(0,0,1)"> Blue</button>
+  <button  onclick="backgroundColor(0.5,0.5,0.5)"> Grey</button>
+  <button  onclick="backgroundColor(1,1,1)"> White</button>
+
+  <h2>Reset</h2>
+  <button onclick="redraw()"> Go Back! </button>
+
+  <footer>
+    <center>
+      <p>&copy; Jeremy Grifski 2018</p>
+    </center>
+  </footer>
+</body>
+
+</html>
