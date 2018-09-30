@@ -23,6 +23,10 @@ With the solution open, you can begin playing with the following controls:
 - 6: camera zoom out
 - left click + drag: rotation
 
+In addition, you can control each body part of the ant individually which
+is actually a load of fun. Feel free to detach a leg and watch it follow the
+body anyway.
+
 From there, you have all you need to navigate the maze.
 
 The solution should render as follows:
@@ -40,7 +44,7 @@ Changes to these templates included:
 
 Solution is freely available under the MIT license.
 
-[1]: https://github.com/jrg94/CSE5542/blob/master/Lab01/sample-graph.JPG
+[1]: https://github.com/jrg94/CSE5542/blob/master/Lab02/ant-maze.JPG
 [2]: http://www.cse.ohio-state.edu/~shen.94/5542
 [3]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/code05.html
 [4]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/code05.js
