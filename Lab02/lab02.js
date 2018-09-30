@@ -1,5 +1,4 @@
 var gl;
-var map;
 var shaderProgram;
 var draw_type = 2;
 var which_object = "body";
@@ -15,9 +14,6 @@ var glMazeVertexColorBuffer;
 // Values
 var Xtranslate = 0.0;
 var Ytranslate = 0.0;
-
-// Stack
-var mvMatrixStack = [];
 
 // Mouse tracking
 var lastMouseX = 0;
@@ -179,11 +175,8 @@ function generateHierarchy() {
 function initGL(canvas, mapCanvas) {
   try {
     gl = canvas.getContext("experimental-webgl");
-    map = mapCanvas.getContext("experimental-webgl");
     gl.viewportWidth = canvas.width;
     gl.viewportHeight = canvas.height;
-    map.viewportWidth = canvas.width;
-    map.viewportHeight = canvas.height;
   } catch (e) {}
   if (!gl) {
     alert("Could not initialise WebGL, sorry :-(");
@@ -301,7 +294,6 @@ function popMatrix(stack) {
 function drawSquare(mvMatrix, pMatrix) {
   setMatrixUniforms(gl, mvMatrix, pMatrix);
   drawSquareByContext(gl, glSquareVertexPositionBuffer, glSquareVertexColorBuffer, glLineVertexPositionBuffer);
-  // TODO: drawSquareByContext(map);
 }
 
 function drawSquareByContext(gc, squarePositionBuffer, squareColorBuffer, linePositionBuffer) {
@@ -322,7 +314,6 @@ function drawSquareByContext(gc, squarePositionBuffer, squareColorBuffer, linePo
 
 function drawMaze() {
   drawMazeByContext(gl, glMazeVertexPositionBuffer, glMazeVertexColorBuffer);
-  // TODO: drawMazeByContext(map);
 }
 
 function drawMazeByContext(gc, positionBuffer, colorBuffer) {
