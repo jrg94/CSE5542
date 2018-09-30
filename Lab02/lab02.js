@@ -333,8 +333,29 @@ function drawMazeByContext(gc, positionBuffer, colorBuffer) {
  * Draws the scene
  */
 function drawScene() {
+  // Main scene
+  gl.enable(gl.SCISSOR_TEST);
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+  gl.scissor(0, 0, gl.viewportWidth, gl.viewportHeight);
+  gl.clearColor(0.0, 0.0, 0.0, 1.0);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  draw();
+  gl.disable(gl.SCISSOR_TEST);
+
+  // Map
+  gl.enable(gl.SCISSOR_TEST);
+  var tempViewAngle = viewAngle;
+  viewAngle = 150;
+  gl.viewport(500, 500, gl.viewportWidth - 500, gl.viewportHeight - 500);
+  gl.scissor(500, 500, gl.viewportWidth - 500, gl.viewportHeight - 500);
+  gl.clearColor(0.0, 1.0, 1.0, 0.5);
+  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+  draw();
+  viewAngle = tempViewAngle;
+  gl.disable(gl.SCISSOR_TEST);
+}
+
+function draw() {
   var mStack = [];
   var model = mat4.create();
   model = mat4.identity(model);
