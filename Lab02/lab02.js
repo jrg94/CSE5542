@@ -94,25 +94,16 @@ function Node(id, vertices, axes, initTranslation = [0, 0, 0], initRotation = 0,
   // Implements a translation feature
   this.translate = function(dir) {
     sumLists(this.translation, dir);
-    children.forEach(function(node) {
-      node.translate(dir);
-    });
   }
 
   // Implements a rotation feature
   this.rotate = function(theta) {
     this.rotation += theta;
-    children.forEach(function(node) {
-      node.rotate(theta);
-    });
   }
 
   // Implements a scaling feature
   this.scale = function(scale) {
     productLists(this.scaling, scale);
-    children.forEach(function(node) {
-      node.scale(scale);
-    });
   }
 }
 
