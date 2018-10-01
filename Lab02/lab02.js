@@ -51,17 +51,21 @@ function Node(id, vertices, axes, initTranslation = [0, 0, 0], initRotation = 0,
     mat4.identity(mMatrix);
     mat4.translate(mMatrix, this.translation);
     mat4.rotateZ(mMatrix, this.rotation);
-    mat4.scale(mMatrix, this.scaling);
     model = mat4.multiply(model, mMatrix);
-    var pMatrix = getProjectionMatrix();
-    var vMatrix = getViewMatrix();
-    var mvMatrix = getModelViewMatrix(vMatrix, model);
-    drawSquare(mvMatrix, pMatrix);
+
     children.forEach(function(node) {
       pushMatrix(stack, model);
       node.traverse(stack, model);
       model = popMatrix(stack);
     });
+
+    mat4.identity(mMatrix);
+    mMatrix = mat4.scale(mMatrix, this.scaling);
+    model = mat4.multiply(model, mMatrix);
+    var pMatrix = getProjectionMatrix();
+    var vMatrix = getViewMatrix();
+    var mvMatrix = getModelViewMatrix(vMatrix, model);
+    drawSquare(mvMatrix, pMatrix);
   }
 
   // Implements a searching feature
@@ -104,6 +108,9 @@ function Node(id, vertices, axes, initTranslation = [0, 0, 0], initRotation = 0,
   // Implements a scaling feature
   this.scale = function(scale) {
     productLists(this.scaling, scale);
+    children.forEach(function(node) {
+      node.scale(scale);
+    });
   }
 }
 
@@ -140,24 +147,24 @@ function getModelViewMatrix(viewMatrix, modelMatrix) {
  */
 function generateHierarchy() {
   var root = new Node("body", SQUARE, AXES, undefined, undefined, [.5, .5, .5], [
-    new Node("head", SQUARE, AXES, [.75, 0, 0], undefined, [.5, .5, .5], []),
-    new Node("top-left-femur", SQUARE, AXES, [0.35, .75, 0], degToRad(-45.0), [.20, .50, .35], [
-      new Node("top-left-tibia", SQUARE, AXES, [0.0, 1.0, 0], degToRad(90))
+    new Node("head", SQUARE, AXES, [.35, 0, 0], undefined, [.25, .25, .25], []),
+    new Node("top-left-femur", SQUARE, AXES, [0.25, .32, 0], degToRad(-30.0), [.12, .30, 1.0], [
+      new Node("top-left-tibia", SQUARE, AXES, [-0.1, 0.2, 0], degToRad(60), [.12, .30, 1.0])
     ]),
-    new Node("middle-left-femur", SQUARE, AXES, [0.0, .75, 0], degToRad(-45.0), [.20, .50, .35], [
-      new Node("middle-left-tibia", SQUARE, AXES, [0.0, 1.0, 0], degToRad(90))
+    new Node("middle-left-femur", SQUARE, AXES, [0.05, .32, 0], degToRad(-30.0), [.12, .30, 1.0], [
+      new Node("middle-left-tibia", SQUARE, AXES, [-0.1, 0.2, 0], degToRad(60), [.12, .30, 1.0])
     ]),
-    new Node("bottom-left-femur", SQUARE, AXES, [-0.35, .75, 0], degToRad(-45.0), [.20, .50, .35], [
-      new Node("bottom-left-tibia", SQUARE, AXES, [0.0, 1.0, 0], degToRad(90))
+    new Node("bottom-left-femur", SQUARE, AXES, [-0.15, .32, 0], degToRad(-30.0), [.12, .30, 1.0], [
+      new Node("bottom-left-tibia", SQUARE, AXES, [-0.1, 0.2, 0], degToRad(60), [.12, .30, 1.0])
     ]),
-    new Node("top-right-femur", SQUARE, AXES, [0.35, -.75, 0], degToRad(45.0), [.20, .50, .35], [
-      new Node("top-right-tibia", SQUARE, AXES, [0.0, -1.0, 0], degToRad(-90))
+    new Node("top-right-femur", SQUARE, AXES, [0.25, -.32, 0], degToRad(30.0), [.12, .30, 1.0], [
+      new Node("top-right-tibia", SQUARE, AXES, [-0.1, -0.2, 0], degToRad(-60), [.12, .30, 1.0])
     ]),
-    new Node("middle-right-femur", SQUARE, AXES, [0.00, -.75, 0], degToRad(45.0), [.20, .50, .35], [
-      new Node("middle-right-tibia", SQUARE, AXES, [0.0, -1.0, 0], degToRad(-90))
+    new Node("middle-right-femur", SQUARE, AXES, [0.05, -.32, 0], degToRad(30.0), [.12, .30, 1.0], [
+      new Node("middle-right-tibia", SQUARE, AXES, [-0.1, -0.2, 0], degToRad(-60), [.12, .30, 1.0])
     ]),
-    new Node("bottom-right-femur", SQUARE, AXES, [-0.35, -.75, 0], degToRad(45.0), [.20, .50, .35], [
-      new Node("bottom-right-tibia", SQUARE, AXES, [0.0, -1.0, 0], degToRad(-90))
+    new Node("bottom-right-femur", SQUARE, AXES, [-0.15, -.32, 0], degToRad(30.0), [.12, .30, 1.0], [
+      new Node("bottom-right-tibia", SQUARE, AXES, [-0.1, -0.2, 0], degToRad(-60), [.12, .30, 1.0])
     ])
   ])
   return root;
