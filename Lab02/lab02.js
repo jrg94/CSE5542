@@ -32,19 +32,27 @@ var viewAngle = 60;
  * @param {!Array<number>} axes a set of axes vertices for this node
  * @param {!Array<!Node>} children a set of children nodes
  */
-function Node(id, vertices, axes, initTranslation, initRotation, initScale, children) {
+function Node(id, vertices, axes, initTranslation = [0, 0, 0], initRotation = 0, initScale = [1, 1, 1], children = []) {
   this.id = id;
   this.vertices = vertices;
   this.axes = axes;
   this.initTranslation = initTranslation;
   this.initRotation = initRotation;
   this.initScale = initScale;
-  this.mMatrix = null;
+  this.translation = initTranslation.slice();
+  this.rotation = initRotation;
+  this.scaling = initScale.slice();
   this.children = children;
 
   // Implements the drawing feature
   this.traverse = function(stack, model) {
-    model = mat4.multiply(model, this.mMatrix);
+    console.log(this);
+    var mMatrix = mat4.create();
+    mat4.identity(mMatrix);
+    mat4.translate(mMatrix, this.translation);
+    mat4.rotateZ(mMatrix, this.rotation);
+    mat4.scale(mMatrix, this.scaling);
+    model = mat4.multiply(model, mMatrix);
     var pMatrix = getProjectionMatrix();
     var vMatrix = getViewMatrix();
     var mvMatrix = getModelViewMatrix(vMatrix, model);
@@ -75,53 +83,48 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
 
   // Implements the reset feature
   this.reset = function() {
-    this.initMVMatrix();
-    if (this.initTranslation !== null) {
-      this.translate(this.initTranslation);
-    }
-    if (this.initRotation !== null) {
-      this.rotate(this.initRotation);
-    }
-    if (this.initScale !== null) {
-      this.scale(this.initScale);
-    }
+    this.translation = this.initTranslation;
+    this.rotation = this.initRotation;
+    this.scaling = this.initScale;
     children.forEach(function(node) {
       node.reset();
     });
   }
 
-  this.initMVMatrix = function() {
-    var mvMatrix = mat4.create();
-    this.mvMatrix = mat4.identity(mvMatrix);
-    var mMatrix = mat4.create();
-    this.mMatrix = mat4.identity(mMatrix);
-  }
-
   // Implements a translation feature
   this.translate = function(dir) {
-    if (this.mvMatrix === null) {
-      this.initMVMatrix();
-    }
-    //this.mMatrix = mat4.identity(this.mMatrix);
-    this.mMatrix = mat4.translate(this.mMatrix, dir);
+    sumLists(this.translation, dir);
+    children.forEach(function(node) {
+      node.translate(dir);
+    });
   }
 
   // Implements a rotation feature
   this.rotate = function(theta) {
-    if (this.mvMatrix === null) {
-      this.initMVMatrix();
-    }
-    //this.mMatrix = mat4.identity(this.mMatrix);
-    this.mMatrix = mat4.rotateZ(this.mMatrix, theta);
+    this.rotation += theta;
+    children.forEach(function(node) {
+      node.rotate(theta);
+    });
   }
 
   // Implements a scaling feature
   this.scale = function(scale) {
-    if (this.mvMatrix === null) {
-      this.initMVMatrix();
-    }
-    //this.mMatrix = mat4.identity(this.mMatrix);
-    this.mMatrix = mat4.scale(this.mMatrix, scale);
+    productLists(this.scaling, scale);
+    children.forEach(function(node) {
+      node.scale(scale);
+    });
+  }
+}
+
+function sumLists(list1, list2) {
+  for (var i = 0; i < list1.length; i++) {
+    list1[i] += list2[i];
+  }
+}
+
+function productLists(list1, list2) {
+  for (var i = 0; i < list1.length; i++) {
+    list1[i] *= list2[i];
   }
 }
 
@@ -145,25 +148,25 @@ function getModelViewMatrix(viewMatrix, modelMatrix) {
  * Generates an object hierarchy.
  */
 function generateHierarchy() {
-  var root = new Node("body", SQUARE, AXES, null, null, [.5, .5, .5], [
-    new Node("head", SQUARE, AXES, [.75, 0, 0], null, [.5, .5, .5], []),
+  var root = new Node("body", SQUARE, AXES, undefined, undefined, [.5, .5, .5], [
+    new Node("head", SQUARE, AXES, [.75, 0, 0], undefined, [.5, .5, .5], []),
     new Node("top-left-femur", SQUARE, AXES, [0.35, .75, 0], degToRad(-45.0), [.20, .50, .35], [
-      new Node("top-left-tibia", SQUARE, AXES, [0.0, 1.0, 0], degToRad(90), null, [])
+      new Node("top-left-tibia", SQUARE, AXES, [0.0, 1.0, 0], degToRad(90))
     ]),
     new Node("middle-left-femur", SQUARE, AXES, [0.0, .75, 0], degToRad(-45.0), [.20, .50, .35], [
-      new Node("middle-left-tibia", SQUARE, AXES, [0.0, 1.0, 0], degToRad(90), null, [])
+      new Node("middle-left-tibia", SQUARE, AXES, [0.0, 1.0, 0], degToRad(90))
     ]),
     new Node("bottom-left-femur", SQUARE, AXES, [-0.35, .75, 0], degToRad(-45.0), [.20, .50, .35], [
-      new Node("bottom-left-tibia", SQUARE, AXES, [0.0, 1.0, 0], degToRad(90), null, [])
+      new Node("bottom-left-tibia", SQUARE, AXES, [0.0, 1.0, 0], degToRad(90))
     ]),
     new Node("top-right-femur", SQUARE, AXES, [0.35, -.75, 0], degToRad(45.0), [.20, .50, .35], [
-      new Node("top-right-tibia", SQUARE, AXES, [0.0, -1.0, 0], degToRad(-90), null, [])
+      new Node("top-right-tibia", SQUARE, AXES, [0.0, -1.0, 0], degToRad(-90))
     ]),
     new Node("middle-right-femur", SQUARE, AXES, [0.00, -.75, 0], degToRad(45.0), [.20, .50, .35], [
-      new Node("middle-right-tibia", SQUARE, AXES, [0.0, -1.0, 0], degToRad(-90), null, [])
+      new Node("middle-right-tibia", SQUARE, AXES, [0.0, -1.0, 0], degToRad(-90))
     ]),
     new Node("bottom-right-femur", SQUARE, AXES, [-0.35, -.75, 0], degToRad(45.0), [.20, .50, .35], [
-      new Node("bottom-right-tibia", SQUARE, AXES, [0.0, -1.0, 0], degToRad(-90), null, [])
+      new Node("bottom-right-tibia", SQUARE, AXES, [0.0, -1.0, 0], degToRad(-90))
     ])
   ])
   return root;
