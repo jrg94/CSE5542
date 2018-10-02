@@ -75,7 +75,7 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
 
   // Implements the reset feature
   this.reset = function() {
-    this.initMVMatrix();
+    this.initMMatrix();
     if (this.initTranslation !== null) {
       this.translate(this.initTranslation);
     }
@@ -90,9 +90,8 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
     });
   }
 
-  this.initMVMatrix = function() {
-    var mvMatrix = mat4.create();
-    this.mvMatrix = mat4.identity(mvMatrix);
+  // Clears the model matrix
+  this.initMMatrix = function() {
     var mMatrix = mat4.create();
     this.mMatrix = mat4.identity(mMatrix);
   }
@@ -102,7 +101,6 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
     if (this.mvMatrix === null) {
       this.initMVMatrix();
     }
-    //this.mMatrix = mat4.identity(this.mMatrix);
     this.mMatrix = mat4.translate(this.mMatrix, dir);
   }
 
@@ -111,7 +109,6 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
     if (this.mvMatrix === null) {
       this.initMVMatrix();
     }
-    //this.mMatrix = mat4.identity(this.mMatrix);
     this.mMatrix = mat4.rotateZ(this.mMatrix, theta);
   }
 
@@ -120,21 +117,29 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
     if (this.mvMatrix === null) {
       this.initMVMatrix();
     }
-    //this.mMatrix = mat4.identity(this.mMatrix);
     this.mMatrix = mat4.scale(this.mMatrix, scale);
   }
 }
 
+/**
+ * A helper function for grabbing the perspective projection matrix.
+ */
 function getProjectionMatrix() {
   var pMatrix = mat4.perspective(viewAngle, 1.0, 0.1, 100);
   return pMatrix;
 }
 
+/**
+ * A helper function for grabbing the view matrix.
+ */
 function getViewMatrix() {
   var vMatrix = mat4.lookAt([0, 0, 5], coi, [0, 1, 0]);
   return vMatrix;
 }
 
+/**
+ * A helper function for grabbing the model view matrix.
+ */
 function getModelViewMatrix(viewMatrix, modelMatrix) {
   var mvMatrix = mat4.create();
   mvMatrix = mat4.multiply(viewMatrix, modelMatrix);
@@ -202,6 +207,11 @@ function initBuffers() {
   );
 }
 
+/**
+ * A helper function for generating buffers by context. This function
+ * serves no real purpose as it was implemented to help with the map before
+ * I learned about viewport and scissor.
+ */
 function initBuffersByContext(
   gc,
   squareVertexPositionBuffer,
@@ -312,10 +322,17 @@ function drawSquareByContext(gc, squarePositionBuffer, squareColorBuffer, linePo
   gc.drawArrays(gc.LINES, 0, linePositionBuffer.numItems);
 }
 
+/**
+ * Draws the static maze.
+ */
 function drawMaze() {
   drawMazeByContext(gl, glMazeVertexPositionBuffer, glMazeVertexColorBuffer);
 }
 
+/**
+ * A helper function for drawing the static maze per context.
+ * This function is not necessary.
+ */
 function drawMazeByContext(gc, positionBuffer, colorBuffer) {
   var modelMatrix = mat4.create();
   modelMatrix = mat4.identity(modelMatrix);
@@ -355,6 +372,9 @@ function drawScene() {
   gl.disable(gl.SCISSOR_TEST);
 }
 
+/**
+ * A generic draw function which handles static and hierarchy drawing.
+ */
 function draw() {
   var mStack = [];
   var model = mat4.create();
@@ -487,6 +507,9 @@ function onKeyDown(event) {
   drawScene();
 }
 
+/**
+ * Initializes the canvas, and sets the scene.
+ */
 function webGLStart() {
   var canvas = document.getElementById("lab02-canvas");
   initGL(canvas);
