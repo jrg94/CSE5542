@@ -75,7 +75,7 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
 
   // Implements the reset feature
   this.reset = function() {
-    this.initMVMatrix();
+    this.initMMatrix();
     if (this.initTranslation !== null) {
       this.translate(this.initTranslation);
     }
