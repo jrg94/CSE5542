@@ -33,6 +33,22 @@ The solution should render as follows:
 
 ![Sample Scene][1]
 
+Unfortunately, there are a few issues with my solution which I was unable
+to resolve even after speaking with Professor Shen:
+
+1. Leg rotation
+  - Currently, if you attempt to rotate the legs, you will notice some
+    skewing. Sadly, I was unable to fix this issue despite attempting
+    many different strategies. For instance, I tried accumulating
+    translation, rotation, and scaling in their own variables which I used
+    to apply transformations from basic blocks. Unfortunately, this proved
+    too difficult in conjunction with the hierarchy. I was losing my mind
+    in recursion.
+2. Leg anchor
+  - In addition to skewing, I was hoping to change the location of rotation
+    for the legs, so that they rotated about their joints. Sadly, without part
+    1, I was unable to attempt this fix. 
+
 Source credit goes to Dr. Han-Wei Shen who provided the template code via their
 [OSU course website][2]. Namely, [`code06.html`][3], [`code06.js`][4],
 and [`shader_setup_5.js`][7].

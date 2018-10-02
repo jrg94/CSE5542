@@ -102,7 +102,6 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
     if (this.mvMatrix === null) {
       this.initMVMatrix();
     }
-    //this.mMatrix = mat4.identity(this.mMatrix);
     this.mMatrix = mat4.translate(this.mMatrix, dir);
   }
 
@@ -111,7 +110,6 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
     if (this.mvMatrix === null) {
       this.initMVMatrix();
     }
-    //this.mMatrix = mat4.identity(this.mMatrix);
     this.mMatrix = mat4.rotateZ(this.mMatrix, theta);
   }
 
@@ -120,7 +118,6 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
     if (this.mvMatrix === null) {
       this.initMVMatrix();
     }
-    //this.mMatrix = mat4.identity(this.mMatrix);
     this.mMatrix = mat4.scale(this.mMatrix, scale);
   }
 }
