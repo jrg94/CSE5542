@@ -7,7 +7,7 @@
 
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 
-  <script type="text/javascript" src ="shaders.js"></script>
+  <script type="text/javascript" src="shaders.js"></script>
 
   <script type="text/javascript" src="constants.js"></script>
 
@@ -25,48 +25,77 @@
 
   <h1>Ant Maze</h2>
 
-  <div class="container">
-    <canvas id="lab02-canvas" class="graph" width="700" height="700"></canvas>
-  </div>
+    <div class="container">
+      <canvas id="lab02-canvas" class="graph" width="700" height="700"></canvas>
+    </div>
 
-  <h2>Geometry</h2>
+    <h2>Controls</h2>
 
-  <h3>Top Level</h3>
-  <button onclick="obj('body')">Body</button>
+    Below you'll find various controls for this scene. They're broken up into the
+    following sections:
 
-  <h3>Tier 2</h3>
-  <button onclick="obj('head')">Head</button>
-  <button onclick="obj('top-left-femur')">Top Left Femur</button>
-  <button onclick="obj('middle-left-femur')">Middle Left Femur</button>
-  <button onclick="obj('bottom-left-femur')">Bottom Left Femur</button>
-  <button onclick="obj('top-right-femur')">Top Right Femur</button>
-  <button onclick="obj('middle-right-femur')">Middle Right Femur</button>
-  <button onclick="obj('bottom-right-femur')">Bottom Right Femur</button>
+    <ol>
+      <li>Mouse</li>
+      <li>Keyboard</li>
+      <li>Buttons</li>
+    </ol>
 
-  <h3>Tier 3</h3>
-  <button onclick="obj('top-left-tibia')">Top Left Tibia</button>
-  <button onclick="obj('middle-left-tibia')">Middle Left Tibia</button>
-  <button onclick="obj('bottom-left-tibia')">Bottom Left Tibia</button>
-  <button onclick="obj('top-right-tibia')">Top Right Tibia</button>
-  <button onclick="obj('middle-right-tibia')">Middle Right Tibia</button>
-  <button onclick="obj('bottom-right-tibia')">Bottom Right Tibia</button>
+    Hope you enjoy the game!
 
+    <h3>Mouse</h3>
 
-  <h2>Graph Background</h2>
-  <button  onclick="backgroundColor(1,0,0)"> Red</button>
-  <button  onclick="backgroundColor(0,1,0)"> Green</button>
-  <button  onclick="backgroundColor(0,0,1)"> Blue</button>
-  <button  onclick="backgroundColor(0.5,0.5,0.5)"> Grey</button>
-  <button  onclick="backgroundColor(1,1,1)"> White</button>
+    Click and drag the mouse to rotate the current component.
 
-  <h2>Reset</h2>
-  <button onclick="redraw()"> Go Back! </button>
+    <h3>Keyboard</h3>
 
-  <footer>
-    <center>
-      <p>&copy; Jeremy Grifski 2018</p>
-    </center>
-  </footer>
+    <ul>
+      <li>w: moves component up along y-axis</li>
+      <li>s: moves component down along y-axis</li>
+    </ul>
+
+    <h3>Buttons</h3>
+
+    <p>
+      The following controls are used to select the various body parts of the ant
+      for transformation.
+    </p>
+
+    <p>
+      Each subsection refers to the level of the object in
+      the scene graph. Try grabbing a leg and pulling it off the body!
+    </p>
+
+    <p>
+      If you don't like what you've done, consider resetting the scene!
+
+      <h4>Top Level</h4>
+      <button onclick="obj('body')">Body</button>
+
+      <h4>Tier 2</h4>
+      <button onclick="obj('head')">Head</button>
+      <button onclick="obj('top-left-femur')">Top Left Femur</button>
+      <button onclick="obj('middle-left-femur')">Middle Left Femur</button>
+      <button onclick="obj('bottom-left-femur')">Bottom Left Femur</button>
+      <button onclick="obj('top-right-femur')">Top Right Femur</button>
+      <button onclick="obj('middle-right-femur')">Middle Right Femur</button>
+      <button onclick="obj('bottom-right-femur')">Bottom Right Femur</button>
+
+      <h4>Tier 3</h4>
+      <button onclick="obj('top-left-tibia')">Top Left Tibia</button>
+      <button onclick="obj('middle-left-tibia')">Middle Left Tibia</button>
+      <button onclick="obj('bottom-left-tibia')">Bottom Left Tibia</button>
+      <button onclick="obj('top-right-tibia')">Top Right Tibia</button>
+      <button onclick="obj('middle-right-tibia')">Middle Right Tibia</button>
+      <button onclick="obj('bottom-right-tibia')">Bottom Right Tibia</button>
+
+      <h4>Reset</h4>
+      <button onclick="redraw()"> Go Back! </button>
+
+      <footer>
+        <center>
+          <p>&copy; Jeremy Grifski 2018</p>
+        </center>
+      </footer>
 </body>
 
 </html>
