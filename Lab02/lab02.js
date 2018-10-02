@@ -51,6 +51,7 @@ function Node(id, vertices, axes, initTranslation = [0, 0, 0], initRotation = 0,
     model = mat4.identity(model);
     this.applyScale(stack, model);
     this.draw();
+    console.log(this);
   }
 
   this.draw = function() {
@@ -81,11 +82,9 @@ function Node(id, vertices, axes, initTranslation = [0, 0, 0], initRotation = 0,
   }
 
   this.applyScale = function(stack, model) {
-    var mMatrix = mat4.create();
-    mat4.identity(mMatrix);
-    mat4.scale(mMatrix, this.scaling);
-    model = mat4.multiply(model, mMatrix);
-    this.mMatrix = mat4.multiply(this.mMatrix, model);
+    mat4.scale(this.mMatrix, this.scaling);
+    model = mat4.multiply(model, this.mMatrix);
+    mat4.set(model, this.mMatrix);
     children.forEach(function(node) {
       pushMatrix(stack, model);
       node.applyScale(stack, model);
@@ -167,30 +166,30 @@ function getModelViewMatrix(viewMatrix, modelMatrix) {
 /**
  * Generates an object hierarchy.
  */
- function generateHierarchy() {
-   var root = new Node("body", SQUARE, AXES, undefined, undefined, [.5, .5, .5], [
-     new Node("head", SQUARE, AXES, [.75, 0, 0], undefined, [.5, .5, .5], []),
-     new Node("top-left-femur", SQUARE, AXES, [0.35, .75, 0], degToRad(-45.0), [.20, .50, .35], [
-       new Node("top-left-tibia", SQUARE, AXES, [0.0, 1.0, 0], degToRad(90))
-     ]),
-     new Node("middle-left-femur", SQUARE, AXES, [0.0, .75, 0], degToRad(-45.0), [.20, .50, .35], [
-       new Node("middle-left-tibia", SQUARE, AXES, [0.0, 1.0, 0], degToRad(90))
-     ]),
-     new Node("bottom-left-femur", SQUARE, AXES, [-0.35, .75, 0], degToRad(-45.0), [.20, .50, .35], [
-       new Node("bottom-left-tibia", SQUARE, AXES, [0.0, 1.0, 0], degToRad(90))
-     ]),
-     new Node("top-right-femur", SQUARE, AXES, [0.35, -.75, 0], degToRad(45.0), [.20, .50, .35], [
-       new Node("top-right-tibia", SQUARE, AXES, [0.0, -1.0, 0], degToRad(-90))
-     ]),
-     new Node("middle-right-femur", SQUARE, AXES, [0.00, -.75, 0], degToRad(45.0), [.20, .50, .35], [
-       new Node("middle-right-tibia", SQUARE, AXES, [0.0, -1.0, 0], degToRad(-90))
-     ]),
-     new Node("bottom-right-femur", SQUARE, AXES, [-0.35, -.75, 0], degToRad(45.0), [.20, .50, .35], [
-       new Node("bottom-right-tibia", SQUARE, AXES, [0.0, -1.0, 0], degToRad(-90))
-     ])
-   ])
-   return root;
- }
+function generateHierarchy() {
+  var root = new Node("body", SQUARE, AXES, undefined, undefined, [.5, .5, .5], [
+    new Node("head", SQUARE, AXES, [.75, 0, 0], undefined, [.5, .5, .5], []),
+    new Node("top-left-femur", SQUARE, AXES, [0.35, .75, 0], degToRad(-45.0), [.20, .50, .35], [
+      new Node("top-left-tibia", SQUARE, AXES, [0.0, 1.0, 0], degToRad(90))
+    ]),
+    new Node("middle-left-femur", SQUARE, AXES, [0.0, .75, 0], degToRad(-45.0), [.20, .50, .35], [
+      new Node("middle-left-tibia", SQUARE, AXES, [0.0, 1.0, 0], degToRad(90))
+    ]),
+    new Node("bottom-left-femur", SQUARE, AXES, [-0.35, .75, 0], degToRad(-45.0), [.20, .50, .35], [
+      new Node("bottom-left-tibia", SQUARE, AXES, [0.0, 1.0, 0], degToRad(90))
+    ]),
+    new Node("top-right-femur", SQUARE, AXES, [0.35, -.75, 0], degToRad(45.0), [.20, .50, .35], [
+      new Node("top-right-tibia", SQUARE, AXES, [0.0, -1.0, 0], degToRad(-90))
+    ]),
+    new Node("middle-right-femur", SQUARE, AXES, [0.00, -.75, 0], degToRad(45.0), [.20, .50, .35], [
+      new Node("middle-right-tibia", SQUARE, AXES, [0.0, -1.0, 0], degToRad(-90))
+    ]),
+    new Node("bottom-right-femur", SQUARE, AXES, [-0.35, -.75, 0], degToRad(45.0), [.20, .50, .35], [
+      new Node("bottom-right-tibia", SQUARE, AXES, [0.0, -1.0, 0], degToRad(-90))
+    ])
+  ])
+  return root;
+}
 
 /**
  * Initializes the graphics context given some canvas.
