@@ -31,7 +31,7 @@ From there, you have all you need to navigate the maze.
 
 The solution should render as follows:
 
-![Sample Scene][1] 
+![Sample Scene][1]
 
 Source credit goes to Dr. Han-Wei Shen who provided the template code via their
 [OSU course website][2]. Namely, [`code06.html`][3], [`code06.js`][4],
@@ -50,4 +50,4 @@ Solution is freely available under the MIT license.
 [4]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/code06.js
 [7]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/shaders_setup_5.js
 [8]: https://github.com/jrg94/CSE5542/blob/master/Lab02/shaders.js
-[9]: https://cdn.rawgit.com/jrg94/CSE5542/v2.0.0/Lab02/lab02.html
+[9]: https://cdn.rawgit.com/jrg94/CSE5542/v2.1.0/Lab02/lab02.html
