@@ -10,6 +10,8 @@ var glLineVertexPositionBuffer;
 var glLineVertexColorBuffer;
 var glMazeVertexPositionBuffer;
 var glMazeVertexColorBuffer;
+var glRectVertexPositionBuffer;
+var glRectVertexColorBuffer;
 
 // Values
 var Xtranslate = 0.0;
@@ -48,12 +50,39 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
     var pMatrix = getProjectionMatrix();
     var vMatrix = getViewMatrix();
     var mvMatrix = getModelViewMatrix(vMatrix, model);
-    drawSquare(mvMatrix, pMatrix);
+    this.drawShape(mvMatrix, pMatrix);
     children.forEach(function(node) {
       pushMatrix(stack, model);
       node.traverse(stack, model);
       model = popMatrix(stack);
     });
+  }
+
+  // Prepares the buffers to draw a shape.
+  this.drawShape = function(mvMatrix, pMatrix) {
+    setMatrixUniforms(gl, mvMatrix, pMatrix);
+    if (this.vertices === SQUARE) {
+      this.drawSquareByContext(gl, glSquareVertexPositionBuffer, glSquareVertexColorBuffer, glLineVertexPositionBuffer);
+    } else {
+      this.drawSquareByContext(gl, glRectVertexPositionBuffer, glSquareVertexColorBuffer, glLineVertexPositionBuffer);
+    }
+  }
+
+  // Prepares the buffers to draw a square.
+  this.drawSquareByContext = function(gc, squarePositionBuffer, squareColorBuffer, linePositionBuffer) {
+    // Prepares the square for transformation
+    gc.bindBuffer(gc.ARRAY_BUFFER, squarePositionBuffer);
+    gc.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squarePositionBuffer.itemSize, gc.FLOAT, false, 0, 0);
+    gc.bindBuffer(gc.ARRAY_BUFFER, squareColorBuffer);
+    gc.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareColorBuffer.itemSize, gc.FLOAT, false, 0, 0);
+    gc.drawArrays(gc.TRIANGLE_FAN, 0, squarePositionBuffer.numItems);
+
+    // Prepares the axes for transformation
+    gc.bindBuffer(gc.ARRAY_BUFFER, linePositionBuffer);
+    gc.vertexAttribPointer(shaderProgram.vertexPositionAttribute, linePositionBuffer.itemSize, gc.FLOAT, false, 0, 0);
+    gc.bindBuffer(gc.ARRAY_BUFFER, glSquareVertexColorBuffer);
+    gc.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareColorBuffer.itemSize, gc.FLOAT, false, 0, 0);
+    gc.drawArrays(gc.LINES, 0, linePositionBuffer.numItems);
   }
 
   // Implements a searching feature
@@ -152,8 +181,8 @@ function getModelViewMatrix(viewMatrix, modelMatrix) {
 function generateHierarchy() {
   var root = new Node("body", SQUARE, AXES, null, null, [.5, .5, .5], [
     new Node("head", SQUARE, AXES, [.75, 0, 0], null, [.5, .5, .5], []),
-    new Node("top-left-femur", SQUARE, AXES, [0.35, .75, 0], degToRad(-45.0), [.20, .50, .35], [
-      new Node("top-left-tibia", SQUARE, AXES, [0.0, 1.0, 0], degToRad(90), null, [])
+    new Node("top-left-femur", RECT, AXES, [0.35, .75, 0], degToRad(-45.0), [.5, .5, .5], [
+      new Node("top-left-tibia", RECT, AXES, [0.0, 1.0, 0], degToRad(90), null, [])
     ]),
     new Node("middle-left-femur", SQUARE, AXES, [0.0, .75, 0], degToRad(-45.0), [.20, .50, .35], [
       new Node("middle-left-tibia", SQUARE, AXES, [0.0, 1.0, 0], degToRad(90), null, [])
@@ -197,13 +226,15 @@ function initBuffers() {
   glMazeVertexColorBuffer = gl.createBuffer();
   glLineVertexPositionBuffer = gl.createBuffer();
   glSquareVertexColorBuffer = gl.createBuffer();
+  glRectVertexPositionBuffer = gl.createBuffer();
   initBuffersByContext(
     gl,
     glSquareVertexPositionBuffer,
     glMazeVertexPositionBuffer,
     glMazeVertexColorBuffer,
     glLineVertexPositionBuffer,
-    glSquareVertexColorBuffer
+    glSquareVertexColorBuffer,
+    glRectVertexPositionBuffer
   );
 }
 
@@ -218,7 +249,8 @@ function initBuffersByContext(
   mazeVertexPositionBuffer,
   mazeVertexColorBuffer,
   lineVertexPositionBuffer,
-  squareVertexColorBuffer
+  squareVertexColorBuffer,
+  rectVertexPositionBuffer
 ) {
 
   // Square buffer
@@ -226,6 +258,12 @@ function initBuffersByContext(
   gc.bufferData(gc.ARRAY_BUFFER, new Float32Array(SQUARE), gc.STATIC_DRAW);
   squareVertexPositionBuffer.itemSize = 3;
   squareVertexPositionBuffer.numItems = 4;
+
+  // Rect Buffer
+  gc.bindBuffer(gc.ARRAY_BUFFER, rectVertexPositionBuffer);
+  gc.bufferData(gc.ARRAY_BUFFER, new Float32Array(RECT), gc.STATIC_DRAW);
+  rectVertexPositionBuffer.itemSize = 3;
+  rectVertexPositionBuffer.numItems = 4;
 
   // Maze buffer
   gc.bindBuffer(gc.ARRAY_BUFFER, mazeVertexPositionBuffer);
@@ -294,32 +332,6 @@ function popMatrix(stack) {
     throw "Invalid popMatrix!";
   }
   return stack.pop();
-}
-
-/**
- * Prepares the buffers to draw a square.
- *
- * @param {!Array<!Array<number>} matrix a matrix
- */
-function drawSquare(mvMatrix, pMatrix) {
-  setMatrixUniforms(gl, mvMatrix, pMatrix);
-  drawSquareByContext(gl, glSquareVertexPositionBuffer, glSquareVertexColorBuffer, glLineVertexPositionBuffer);
-}
-
-function drawSquareByContext(gc, squarePositionBuffer, squareColorBuffer, linePositionBuffer) {
-  // Prepares the square for transformation
-  gc.bindBuffer(gc.ARRAY_BUFFER, glSquareVertexPositionBuffer);
-  gc.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squarePositionBuffer.itemSize, gc.FLOAT, false, 0, 0);
-  gc.bindBuffer(gc.ARRAY_BUFFER, glSquareVertexColorBuffer);
-  gc.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareColorBuffer.itemSize, gc.FLOAT, false, 0, 0);
-  gc.drawArrays(gc.TRIANGLE_FAN, 0, squarePositionBuffer.numItems);
-
-  // Prepares the axes for transformation
-  gc.bindBuffer(gc.ARRAY_BUFFER, linePositionBuffer);
-  gc.vertexAttribPointer(shaderProgram.vertexPositionAttribute, linePositionBuffer.itemSize, gc.FLOAT, false, 0, 0);
-  gc.bindBuffer(gc.ARRAY_BUFFER, glSquareVertexColorBuffer);
-  gc.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareColorBuffer.itemSize, gc.FLOAT, false, 0, 0);
-  gc.drawArrays(gc.LINES, 0, linePositionBuffer.numItems);
 }
 
 /**
