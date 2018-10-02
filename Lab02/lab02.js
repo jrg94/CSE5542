@@ -180,23 +180,23 @@ function getModelViewMatrix(viewMatrix, modelMatrix) {
  */
 function generateHierarchy() {
   var root = new Node("body", SQUARE, AXES, null, null, [.5, .5, .5], [
-    new Node("head", SQUARE, AXES, [.75, 0, 0], null, [.5, .5, .5], []),
-    new Node("top-left-femur", RECT, AXES, [0.35, .5, 0], degToRad(-45.0), [.5, .5, .5], [
+    new Node("head", SQUARE, AXES, [0, .75, 0], null, [.5, .5, .5], []),
+    new Node("top-left-femur", RECT, AXES, [-0.5, .35, 0], degToRad(45.0), [.5, .5, .5], [
       new Node("top-left-tibia", RECT, AXES, [0.0, 1.0, 0], degToRad(90), null, [])
     ]),
-    new Node("middle-left-femur", RECT, AXES, [0.0, .5, 0], degToRad(-45.0), [.5, .5, .5], [
+    new Node("middle-left-femur", RECT, AXES, [-0.5, 0, 0], degToRad(45.0), [.5, .5, .5], [
       new Node("middle-left-tibia", RECT, AXES, [0.0, 1.0, 0], degToRad(90), null, [])
     ]),
-    new Node("bottom-left-femur", RECT, AXES, [-0.35, .5, 0], degToRad(-45.0), [.5, .5, .5], [
+    new Node("bottom-left-femur", RECT, AXES, [-0.5, -.35, 0], degToRad(45.0), [.5, .5, .5], [
       new Node("bottom-left-tibia", RECT, AXES, [0.0, 1.0, 0], degToRad(90), null, [])
     ]),
-    new Node("top-right-femur", RECT, AXES, [0.35, -.5, 0], degToRad(225.0), [.5, .5, .5], [
+    new Node("top-right-femur", RECT, AXES, [0.5, .35, 0], degToRad(-45.0), [.5, .5, .5], [
       new Node("top-right-tibia", RECT, AXES, [0.0, 1.0, 0], degToRad(-90), null, [])
     ]),
-    new Node("middle-right-femur", RECT, AXES, [0.00, -.5, 0], degToRad(225.0), [.5, .5, .5], [
+    new Node("middle-right-femur", RECT, AXES, [0.5, 0, 0], degToRad(-45.0), [.5, .5, .5], [
       new Node("middle-right-tibia", RECT, AXES, [0.0, 1.0, 0], degToRad(-90), null, [])
     ]),
-    new Node("bottom-right-femur", RECT, AXES, [-0.35, -.5, 0], degToRad(225.0), [.5, .5, .5], [
+    new Node("bottom-right-femur", RECT, AXES, [0.5, -.35, 0], degToRad(-45.0), [.5, .5, .5], [
       new Node("bottom-right-tibia", RECT, AXES, [0.0, 1.0, 0], degToRad(-90), null, [])
     ])
   ])
