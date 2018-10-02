@@ -184,20 +184,20 @@ function generateHierarchy() {
     new Node("top-left-femur", RECT, AXES, [0.35, .75, 0], degToRad(-45.0), [.5, .5, .5], [
       new Node("top-left-tibia", RECT, AXES, [0.0, 1.0, 0], degToRad(90), null, [])
     ]),
-    new Node("middle-left-femur", SQUARE, AXES, [0.0, .75, 0], degToRad(-45.0), [.20, .50, .35], [
-      new Node("middle-left-tibia", SQUARE, AXES, [0.0, 1.0, 0], degToRad(90), null, [])
+    new Node("middle-left-femur", RECT, AXES, [0.0, .75, 0], degToRad(-45.0), [.20, .50, .35], [
+      new Node("middle-left-tibia", RECT, AXES, [0.0, 1.0, 0], degToRad(90), null, [])
     ]),
-    new Node("bottom-left-femur", SQUARE, AXES, [-0.35, .75, 0], degToRad(-45.0), [.20, .50, .35], [
-      new Node("bottom-left-tibia", SQUARE, AXES, [0.0, 1.0, 0], degToRad(90), null, [])
+    new Node("bottom-left-femur", RECT, AXES, [-0.35, .75, 0], degToRad(-45.0), [.20, .50, .35], [
+      new Node("bottom-left-tibia", RECT, AXES, [0.0, 1.0, 0], degToRad(90), null, [])
     ]),
-    new Node("top-right-femur", SQUARE, AXES, [0.35, -.75, 0], degToRad(45.0), [.20, .50, .35], [
-      new Node("top-right-tibia", SQUARE, AXES, [0.0, -1.0, 0], degToRad(-90), null, [])
+    new Node("top-right-femur", RECT, AXES, [0.35, -.75, 0], degToRad(45.0), [.20, .50, .35], [
+      new Node("top-right-tibia", RECT, AXES, [0.0, -1.0, 0], degToRad(-90), null, [])
     ]),
-    new Node("middle-right-femur", SQUARE, AXES, [0.00, -.75, 0], degToRad(45.0), [.20, .50, .35], [
-      new Node("middle-right-tibia", SQUARE, AXES, [0.0, -1.0, 0], degToRad(-90), null, [])
+    new Node("middle-right-femur", RECT, AXES, [0.00, -.75, 0], degToRad(45.0), [.20, .50, .35], [
+      new Node("middle-right-tibia", RECT, AXES, [0.0, -1.0, 0], degToRad(-90), null, [])
     ]),
-    new Node("bottom-right-femur", SQUARE, AXES, [-0.35, -.75, 0], degToRad(45.0), [.20, .50, .35], [
-      new Node("bottom-right-tibia", SQUARE, AXES, [0.0, -1.0, 0], degToRad(-90), null, [])
+    new Node("bottom-right-femur", RECT, AXES, [-0.35, -.75, 0], degToRad(45.0), [.20, .50, .35], [
+      new Node("bottom-right-tibia", RECT, AXES, [0.0, -1.0, 0], degToRad(-90), null, [])
     ])
   ])
   return root;
