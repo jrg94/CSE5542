@@ -42,30 +42,56 @@ function Node(id, vertices, axes, initTranslation = [0, 0, 0], initRotation = 0,
   this.translation = initTranslation.slice();
   this.rotation = initRotation;
   this.scaling = initScale.slice();
+  this.mMatrix = null;
   this.children = children;
 
   // Implements the drawing feature
   this.traverse = function(stack, model) {
     console.log(this);
-    var mMatrix = mat4.create();
-    mat4.identity(mMatrix);
-    mat4.translate(mMatrix, this.translation);
-    mat4.rotateZ(mMatrix, this.rotation);
-    model = mat4.multiply(model, mMatrix);
+    this.applyTransformation(stack, model);
+    model = mat4.identity(model);
+    this.applyScale(stack, model);
+    this.draw();
+  }
 
-    children.forEach(function(node) {
-      pushMatrix(stack, model);
-      node.traverse(stack, model);
-      model = popMatrix(stack);
-    });
-
-    mat4.identity(mMatrix);
-    mMatrix = mat4.scale(mMatrix, this.scaling);
-    model = mat4.multiply(model, mMatrix);
+  this.draw = function() {
     var pMatrix = getProjectionMatrix();
     var vMatrix = getViewMatrix();
-    var mvMatrix = getModelViewMatrix(vMatrix, model);
+    var mvMatrix = getModelViewMatrix(vMatrix, this.mMatrix);
     drawSquare(mvMatrix, pMatrix);
+    children.forEach(function(node) {
+      node.draw();
+    });
+    this.mMatrix = mat4.identity(this.mMatrix);
+  }
+
+  this.applyTransformation = function(stack, model) {
+    if (this.mMatrix === null) {
+      this.mMatrix = mat4.create();
+      this.mMatrix = mat4.identity(this.mMatrix);
+    }
+    mat4.translate(this.mMatrix, this.translation);
+    mat4.rotateZ(this.mMatrix, this.rotation);
+    model = mat4.multiply(model, this.mMatrix);
+    mat4.set(model, this.mMatrix);
+    children.forEach(function(node) {
+      pushMatrix(stack, model);
+      node.applyTransformation(stack, model);
+      model = popMatrix(stack);
+    });
+  }
+
+  this.applyScale = function(stack, model) {
+    var mMatrix = mat4.create();
+    mat4.identity(mMatrix);
+    mat4.scale(mMatrix, this.scaling);
+    model = mat4.multiply(model, mMatrix);
+    this.mMatrix = mat4.multiply(this.mMatrix, model);
+    children.forEach(function(node) {
+      pushMatrix(stack, model);
+      node.applyScale(stack, model);
+      model = popMatrix(stack);
+    });
   }
 
   // Implements a searching feature
@@ -108,9 +134,6 @@ function Node(id, vertices, axes, initTranslation = [0, 0, 0], initRotation = 0,
   // Implements a scaling feature
   this.scale = function(scale) {
     productLists(this.scaling, scale);
-    children.forEach(function(node) {
-      node.scale(scale);
-    });
   }
 }
 
