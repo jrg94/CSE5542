@@ -479,40 +479,40 @@ function onDocumentMouseOut(event) {
  */
 function onKeyDown(event) {
   switch (event.keyCode) {
-    case 65:
+    case 65: // a
       root.search(which_object).translate([-0.1, 0, 0]);
       break;
-    case 68:
+    case 68: // d
       root.search(which_object).translate([0.1, 0, 0]);
       break;
-    case 87:
+    case 87: // w
       root.search(which_object).translate([0.0, 0.1, 0]);
       break;
-    case 83:
+    case 83: // s
       root.search(which_object).translate([0.0, -0.1, 0]);
       break;
-    case 81:
+    case 81: // q
       root.search(which_object).scale([0.95, 0.95, 0.95]);
       break;
-    case 69:
+    case 69: // e
       root.search(which_object).scale([1.05, 1.05, 1.05]);
       break;
-    case 49:
+    case 49: // 1
       coi[1] += .05;
       break;
-    case 50:
+    case 50: // 2
       coi[1] -= .05;
       break;
-    case 51:
+    case 51: // 3
       coi[0] -= .05;
       break;
-    case 52:
+    case 52: // 4
       coi[0] += .05;
       break;
-    case 53:
+    case 53: // 5
       viewAngle -= 1;
       break;
-    case 54:
+    case 54: // 6
       viewAngle += 1;
       break;
   }
