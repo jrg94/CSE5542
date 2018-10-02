@@ -374,13 +374,16 @@ function drawScene() {
   // Map
   gl.enable(gl.SCISSOR_TEST);
   var tempViewAngle = viewAngle;
+  var tempCOI = coi;
   viewAngle = 120;
+  coi = [0, 0, 0];
   gl.viewport(500, 500, gl.viewportWidth - 500, gl.viewportHeight - 500);
   gl.scissor(500, 500, gl.viewportWidth - 500, gl.viewportHeight - 500);
   gl.clearColor(0.05, 0.25, 0.05, 0.5);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
   draw();
   viewAngle = tempViewAngle;
+  coi = tempCOI;
   gl.disable(gl.SCISSOR_TEST);
 }
 
