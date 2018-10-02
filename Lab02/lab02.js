@@ -80,7 +80,7 @@ function Node(id, vertices, axes, initTranslation, initRotation, initScale, chil
     // Prepares the axes for transformation
     gc.bindBuffer(gc.ARRAY_BUFFER, linePositionBuffer);
     gc.vertexAttribPointer(shaderProgram.vertexPositionAttribute, linePositionBuffer.itemSize, gc.FLOAT, false, 0, 0);
-    gc.bindBuffer(gc.ARRAY_BUFFER, glSquareVertexColorBuffer);
+    gc.bindBuffer(gc.ARRAY_BUFFER, squareColorBuffer);
     gc.vertexAttribPointer(shaderProgram.vertexColorAttribute, squareColorBuffer.itemSize, gc.FLOAT, false, 0, 0);
     gc.drawArrays(gc.LINES, 0, linePositionBuffer.numItems);
   }
