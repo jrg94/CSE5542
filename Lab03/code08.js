@@ -33,6 +33,47 @@ function initGL(canvas) {
   }
 }
 
+function webGLStart() {
+  var canvas = document.getElementById("code03-canvas");
+  initGL(canvas);
+  initShaders();
+
+  gl.enable(gl.DEPTH_TEST);
+
+  shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
+  gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
+
+  shaderProgram.vertexNormalAttribute = gl.getAttribLocation(shaderProgram, "aVertexNormal");
+  gl.enableVertexAttribArray(shaderProgram.vertexNormalAttribute);
+
+  shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
+  gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
+
+  shaderProgram.mMatrixUniform = gl.getUniformLocation(shaderProgram, "uMMatrix");
+  shaderProgram.vMatrixUniform = gl.getUniformLocation(shaderProgram, "uVMatrix");
+  shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
+  shaderProgram.nMatrixUniform = gl.getUniformLocation(shaderProgram, "uNMatrix");
+
+  shaderProgram.light_posUniform = gl.getUniformLocation(shaderProgram, "light_pos");
+  shaderProgram.ambient_coefUniform = gl.getUniformLocation(shaderProgram, "ambient_coef");
+  shaderProgram.diffuse_coefUniform = gl.getUniformLocation(shaderProgram, "diffuse_coef");
+  shaderProgram.specular_coefUniform = gl.getUniformLocation(shaderProgram, "specular_coef");
+  shaderProgram.shininess_coefUniform = gl.getUniformLocation(shaderProgram, "mat_shininess");
+
+  shaderProgram.light_ambientUniform = gl.getUniformLocation(shaderProgram, "light_ambient");
+  shaderProgram.light_diffuseUniform = gl.getUniformLocation(shaderProgram, "light_diffuse");
+  shaderProgram.light_specularUniform = gl.getUniformLocation(shaderProgram, "light_specular");
+
+  initSQBuffers();
+  initCYBuffers();
+
+  gl.clearColor(0.0, 0.0, 0.0, 1.0);
+
+  document.addEventListener('mousedown', onDocumentMouseDown, false);
+
+  drawScene();
+}
+
 ///////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////
 
@@ -314,6 +355,9 @@ function onDocumentMouseMove(event) {
   drawScene();
 }
 
+/**
+ * Removes all mouse listeners when the mouse is not clicked.
+ */
 function onDocumentMouseUp(event) {
   document.removeEventListener('mousemove', onDocumentMouseMove, false);
   document.removeEventListener('mouseup', onDocumentMouseUp, false);
@@ -327,47 +371,6 @@ function onDocumentMouseOut(event) {
   document.removeEventListener('mousemove', onDocumentMouseMove, false);
   document.removeEventListener('mouseup', onDocumentMouseUp, false);
   document.removeEventListener('mouseout', onDocumentMouseOut, false);
-}
-
-function webGLStart() {
-  var canvas = document.getElementById("code03-canvas");
-  initGL(canvas);
-  initShaders();
-
-  gl.enable(gl.DEPTH_TEST);
-
-  shaderProgram.vertexPositionAttribute = gl.getAttribLocation(shaderProgram, "aVertexPosition");
-  gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
-
-  shaderProgram.vertexNormalAttribute = gl.getAttribLocation(shaderProgram, "aVertexNormal");
-  gl.enableVertexAttribArray(shaderProgram.vertexNormalAttribute);
-
-  shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
-  gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
-
-  shaderProgram.mMatrixUniform = gl.getUniformLocation(shaderProgram, "uMMatrix");
-  shaderProgram.vMatrixUniform = gl.getUniformLocation(shaderProgram, "uVMatrix");
-  shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
-  shaderProgram.nMatrixUniform = gl.getUniformLocation(shaderProgram, "uNMatrix");
-
-  shaderProgram.light_posUniform = gl.getUniformLocation(shaderProgram, "light_pos");
-  shaderProgram.ambient_coefUniform = gl.getUniformLocation(shaderProgram, "ambient_coef");
-  shaderProgram.diffuse_coefUniform = gl.getUniformLocation(shaderProgram, "diffuse_coef");
-  shaderProgram.specular_coefUniform = gl.getUniformLocation(shaderProgram, "specular_coef");
-  shaderProgram.shininess_coefUniform = gl.getUniformLocation(shaderProgram, "mat_shininess");
-
-  shaderProgram.light_ambientUniform = gl.getUniformLocation(shaderProgram, "light_ambient");
-  shaderProgram.light_diffuseUniform = gl.getUniformLocation(shaderProgram, "light_diffuse");
-  shaderProgram.light_specularUniform = gl.getUniformLocation(shaderProgram, "light_specular");
-
-  initSQBuffers();
-  initCYBuffers();
-
-  gl.clearColor(0.0, 0.0, 0.0, 1.0);
-
-  document.addEventListener('mousedown', onDocumentMouseDown, false);
-
-  drawScene();
 }
 
 /**
