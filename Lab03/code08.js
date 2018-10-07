@@ -320,13 +320,14 @@ function onDocumentMouseUp(event) {
   document.removeEventListener('mouseout', onDocumentMouseOut, false);
 }
 
+/**
+ * Removes mouse listeners when mouse leaves the canvas.
+ */
 function onDocumentMouseOut(event) {
   document.removeEventListener('mousemove', onDocumentMouseMove, false);
   document.removeEventListener('mouseup', onDocumentMouseUp, false);
   document.removeEventListener('mouseout', onDocumentMouseOut, false);
 }
-
-///////////////////////////////////////////////////////////////
 
 function webGLStart() {
   var canvas = document.getElementById("code03-canvas");
@@ -369,11 +370,17 @@ function webGLStart() {
   drawScene();
 }
 
+/**
+ * Sets the background color of the canvas
+ */
 function backgroundColor(red, green, blue) {
   gl.clearColor(red, green, blue, 1.0);
   drawScene();
 }
 
+/**
+ * Redraws the scene
+ */
 function redraw() {
   Z_angle = 0;
   drawScene();
