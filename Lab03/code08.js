@@ -379,6 +379,15 @@ function redraw() {
   drawScene();
 }
 
+/**
+ * Sets the geometry type for the scene.
+ *
+ * 0 - Points
+ * 1 - Lines
+ * 2 - Triangles
+ *
+ * @param {number} type the type of geometry
+ */
 function geometry(type) {
   draw_type = type;
   drawScene();
