@@ -219,7 +219,6 @@ function drawScene() {
 
   mat4.identity(mMatrix);
 
-  //        console.log('Z angle = '+ Z_angle);
   mMatrix = mat4.rotate(mMatrix, degToRad(Z_angle), [0, 1, 1]); // now set up the model matrix
 
 
@@ -360,26 +359,19 @@ function webGLStart() {
   shaderProgram.light_diffuseUniform = gl.getUniformLocation(shaderProgram, "light_diffuse");
   shaderProgram.light_specularUniform = gl.getUniformLocation(shaderProgram, "light_specular");
 
-
   initSQBuffers();
   initCYBuffers();
 
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
-  console.log('start! ');
-  console.error('I hope no error ....');
 
-
-  document.addEventListener('mousedown', onDocumentMouseDown,
-    false);
+  document.addEventListener('mousedown', onDocumentMouseDown, false);
 
   drawScene();
 }
 
-function BG(red, green, blue) {
-
+function backgroundColor(red, green, blue) {
   gl.clearColor(red, green, blue, 1.0);
   drawScene();
-
 }
 
 function redraw() {
@@ -387,10 +379,7 @@ function redraw() {
   drawScene();
 }
 
-
 function geometry(type) {
-
   draw_type = type;
   drawScene();
-
 }
