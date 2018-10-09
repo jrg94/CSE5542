@@ -162,10 +162,7 @@ function initCYBuffers() {
   cylinder = InitCylinder(nslices, nstacks, 1.0, 1.0, 0.0);
 
   cylinderVertexPositionBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, cylinderVertexPositionBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cylinder.verts), gl.STATIC_DRAW);
-  cylinderVertexPositionBuffer.itemSize = 3;
-  cylinderVertexPositionBuffer.numItems = nslices * nstacks;
+  initArrayBuffer(cylinderVertexPositionBuffer, cylinder.verts, 3);
 
   cylinderVertexNormalBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, cylinderVertexNormalBuffer);
@@ -185,6 +182,20 @@ function initCYBuffers() {
   cylinderVertexColorBuffer.itemSize = 4;
   cylinderVertexColorBuffer.numItems = nslices * nstacks;
 
+}
+
+/**
+ * A helper function for initializing an array buffer.
+ *
+ * @param buffer a gl buffer object
+ * @param data a set of data--could be verts, colors, normals, etc.
+ * @param itemSize the number of elements that constitute an item
+ */
+function initArrayBuffer(buffer, data, itemSize) {
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
+  buffer.itemSize = itemSize;
+  buffer.numItems = data.length;
 }
 
 
