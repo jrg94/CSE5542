@@ -208,10 +208,13 @@ function initCYBuffers(nslices, nstacks) {
   initArrayBuffer(cylinderVertexColorBuffer, cylinder.colors, 4);
 }
 
-function InitSquare() {
-  var square = new Geometry();
+/**
+ * Generates a cube.
+ */
+function InitCube() {
+  var cube = new Geometry();
 
-  square.verts = [
+  cube.verts = [
     0.5, 0.5, -.5,
     -0.5, 0.5, -.5,
     -0.5, -0.5, -.5,
@@ -223,7 +226,7 @@ function InitSquare() {
 
   ];
 
-  square.indices = [
+  cube.indices = [
     0, 1, 2,
     0, 2, 3,
     0, 3, 7,
@@ -238,7 +241,7 @@ function InitSquare() {
     5, 7, 4
   ];
 
-  square.colors = [
+  cube.colors = [
     1.0, 0.0, 0.0, 1.0,
     0.0, 1.0, 0.0, 1.0,
     0.0, 0.0, 1.0, 1.0,
@@ -249,20 +252,20 @@ function InitSquare() {
     1.0, 0.0, 0.0, 1.0,
   ];
 
-  return square;
+  return cube;
 }
 
 /**
- * Initializes square buffers.
+ * Initializes cube buffers.
  */
 function initSQBuffers() {
-  var square = InitSquare();
+  var cube = InitCube();
   squareVertexPositionBuffer = gl.createBuffer();
-  initArrayBuffer(squareVertexPositionBuffer, square.verts, 3)
+  initArrayBuffer(squareVertexPositionBuffer, cube.verts, 3)
   squareVertexIndexBuffer = gl.createBuffer();
-  initElementArrayBuffer(squareVertexIndexBuffer, square.indices, 1);
+  initElementArrayBuffer(squareVertexIndexBuffer, cube.indices, 1);
   squareVertexColorBuffer = gl.createBuffer();
-  initArrayBuffer(squareVertexColorBuffer, square.colors, 4);
+  initArrayBuffer(squareVertexColorBuffer, cube.colors, 4);
 }
 
 function setMatrixUniforms() {
