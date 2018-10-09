@@ -151,7 +151,12 @@ function InitCylinder(nslices, nstacks, r, g, b) {
   return cylinder;
 }
 
-
+/**
+ * Initializes cylinder buffers.
+ *
+ * @param {number} nslices the number of vertical cylinder slices
+ * @param {number} nstacks the number of circular stacks
+ */
 function initCYBuffers(nslices, nstacks) {
   var cylinder = InitCylinder(nslices, nstacks, 1.0, 1.0, 0.0);
 
