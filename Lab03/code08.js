@@ -25,6 +25,16 @@ var cylinderVertexNormalBuffer;
 var cylinderVertexColorBuffer;
 var cylinderVertexIndexBuffer;
 
+// Cylinder data
+var cylinder;
+
+function Geometry() {
+  this.verts = [];
+  this.normals = [];
+  this.colors = [];
+  this.indices = [];
+}
+
 /**
  * Initializes the graphics context.
  *
@@ -82,14 +92,8 @@ function webGLStart() {
   drawScene();
 }
 
-////////////////    Initialize VBO  ////////////////////////
-
-var cyverts = [];
-var cynormals = [];
-var cycolors = [];
-var cyindicies = [];
-
 function InitCylinder(nslices, nstacks, r, g, b) {
+  cylinder = new Geometry();
   var nvertices = nslices * nstacks;
 
   var Dangle = 2 * Math.PI / (nslices - 1);
@@ -98,18 +102,18 @@ function InitCylinder(nslices, nstacks, r, g, b) {
     for (i = 0; i < nslices; i++) {
       var idx = j * nslices + i; // mesh[j][i]
       var angle = Dangle * i;
-      cyverts.push(Math.cos(angle));
-      cyverts.push(Math.sin(angle));
-      cyverts.push(j * 3.0 / (nstacks - 1) - 1.5);
+      cylinder.verts.push(Math.cos(angle));
+      cylinder.verts.push(Math.sin(angle));
+      cylinder.verts.push(j * 3.0 / (nstacks - 1) - 1.5);
 
-      cynormals.push(Math.cos(angle));
-      cynormals.push(Math.sin(angle));
-      cynormals.push(0.0);
+      cylinder.normals.push(Math.cos(angle));
+      cylinder.normals.push(Math.sin(angle));
+      cylinder.normals.push(0.0);
 
-      cycolors.push(Math.cos(angle));
-      cycolors.push(Math.sin(angle));
-      cycolors.push(j * 1.0 / (nstacks - 1));
-      cycolors.push(1.0);
+      cylinder.colors.push(Math.cos(angle));
+      cylinder.colors.push(Math.sin(angle));
+      cylinder.colors.push(j * 1.0 / (nstacks - 1));
+      cylinder.colors.push(1.0);
     }
   // now create the index array
 
@@ -126,12 +130,12 @@ function InitCylinder(nslices, nstacks, r, g, b) {
       var idx5 = (j) * nslices + mi2;
       var idx6 = (j + 1) * nslices + mi2;
 
-      cyindicies.push(idx);
-      cyindicies.push(idx2);
-      cyindicies.push(idx3);
-      cyindicies.push(idx4);
-      cyindicies.push(idx5);
-      cyindicies.push(idx6);
+      cylinder.indices.push(idx);
+      cylinder.indices.push(idx2);
+      cylinder.indices.push(idx3);
+      cylinder.indices.push(idx4);
+      cylinder.indices.push(idx5);
+      cylinder.indices.push(idx6);
     }
 }
 
@@ -144,25 +148,25 @@ function initCYBuffers() {
 
   cylinderVertexPositionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, cylinderVertexPositionBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cyverts), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cylinder.verts), gl.STATIC_DRAW);
   cylinderVertexPositionBuffer.itemSize = 3;
   cylinderVertexPositionBuffer.numItems = nslices * nstacks;
 
   cylinderVertexNormalBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, cylinderVertexNormalBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cynormals), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cylinder.normals), gl.STATIC_DRAW);
   cylinderVertexNormalBuffer.itemSize = 3;
   cylinderVertexNormalBuffer.numItems = nslices * nstacks;
 
   cylinderVertexIndexBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cylinderVertexIndexBuffer);
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cyindicies), gl.STATIC_DRAW);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cylinder.indices), gl.STATIC_DRAW);
   cylinderVertexIndexBuffer.itemsize = 1;
   cylinderVertexIndexBuffer.numItems = (nstacks - 1) * 6 * (nslices + 1);
 
   cylinderVertexColorBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, cylinderVertexColorBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cycolors), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cylinder.colors), gl.STATIC_DRAW);
   cylinderVertexColorBuffer.itemSize = 4;
   cylinderVertexColorBuffer.numItems = nslices * nstacks;
 
