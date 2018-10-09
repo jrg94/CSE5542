@@ -337,6 +337,12 @@ function drawScene() {
   drawByType(squareVertexPositionBuffer, squareVertexIndexBuffer);
 }
 
+/**
+ * Draws an object by type.
+ *
+ * @param positionBuffer a gl position buffer
+ * @param indexBuffer a gl index buffer
+ */
 function drawByType(positionBuffer, indexBuffer) {
   if (draw_type == 1) {
     gl.drawArrays(gl.LINE_LOOP, 0, positionBuffer.numItems);
