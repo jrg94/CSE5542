@@ -333,18 +333,23 @@ function drawScene() {
 
   setMatrixUniforms(); // pass the modelview mattrix and projection matrix to the shader
 
-  if (draw_type == 1) gl.drawArrays(gl.LINE_LOOP, 0, cylinderVertexPositionBuffer.numItems);
-  else if (draw_type == 0) gl.drawArrays(gl.POINTS, 0, cylinderVertexPositionBuffer.numItems);
-  else if (draw_type == 2) gl.drawElements(gl.TRIANGLES, cylinderVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
-
-  /*
-	if (draw_type ==1) gl.drawArrays(gl.LINE_LOOP, 0, squareVertexPositionBuffer.numItems);
-        else if (draw_type ==0) gl.drawArrays(gl.POINTS, 0, squareVertexPositionBuffer.numItems);
-	else if (draw_type==2) gl.drawElements(gl.TRIANGLES, squareVertexIndexBuffer.numItems , gl.UNSIGNED_SHORT, 0);
-	*/
-
+  drawByType(cylinderVertexPositionBuffer, cylinderVertexIndexBuffer);
+  drawByType(squareVertexPositionBuffer, squareVertexIndexBuffer);
 }
 
+function drawByType(positionBuffer, indexBuffer) {
+  if (draw_type == 1) {
+    gl.drawArrays(gl.LINE_LOOP, 0, positionBuffer.numItems);
+  } else if (draw_type == 0) {
+    gl.drawArrays(gl.POINTS, 0, positionBuffer.numItems);
+  } else if (draw_type == 2) {
+    gl.drawElements(gl.TRIANGLES, indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+  }
+}
+
+/**
+ * Sets the event listeners on mouse down.
+ */
 function onDocumentMouseDown(event) {
   event.preventDefault();
   document.addEventListener('mousemove', onDocumentMouseMove, false);
