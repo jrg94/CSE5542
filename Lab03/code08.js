@@ -25,9 +25,6 @@ var cylinderVertexNormalBuffer;
 var cylinderVertexColorBuffer;
 var cylinderVertexIndexBuffer;
 
-// Cylinder data
-var cylinder;
-
 /**
  * Generates a geometry object.
  */
@@ -86,7 +83,7 @@ function webGLStart() {
   shaderProgram.light_specularUniform = gl.getUniformLocation(shaderProgram, "light_specular");
 
   initSQBuffers();
-  initCYBuffers();
+  initCYBuffers(10, 50);
 
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
@@ -155,33 +152,20 @@ function InitCylinder(nslices, nstacks, r, g, b) {
 }
 
 
-function initCYBuffers() {
-
-  var nslices = 10;
-  var nstacks = 50;
-  cylinder = InitCylinder(nslices, nstacks, 1.0, 1.0, 0.0);
+function initCYBuffers(nslices, nstacks) {
+  var cylinder = InitCylinder(nslices, nstacks, 1.0, 1.0, 0.0);
 
   cylinderVertexPositionBuffer = gl.createBuffer();
   initArrayBuffer(cylinderVertexPositionBuffer, cylinder.verts, 3);
 
   cylinderVertexNormalBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, cylinderVertexNormalBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cylinder.normals), gl.STATIC_DRAW);
-  cylinderVertexNormalBuffer.itemSize = 3;
-  cylinderVertexNormalBuffer.numItems = nslices * nstacks;
+  initArrayBuffer(cylinderVertexNormalBuffer, cylinder.normals, 3)
 
   cylinderVertexIndexBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cylinderVertexIndexBuffer);
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(cylinder.indices), gl.STATIC_DRAW);
-  cylinderVertexIndexBuffer.itemsize = 1;
-  cylinderVertexIndexBuffer.numItems = (nstacks - 1) * 6 * (nslices + 1);
+  initElementArrayBuffer(cylinderVertexIndexBuffer, cylinder.indices, 1);
 
   cylinderVertexColorBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, cylinderVertexColorBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(cylinder.colors), gl.STATIC_DRAW);
-  cylinderVertexColorBuffer.itemSize = 4;
-  cylinderVertexColorBuffer.numItems = nslices * nstacks;
-
+  initArrayBuffer(cylinderVertexColorBuffer, cylinder.colors, 4);
 }
 
 /**
@@ -198,6 +182,12 @@ function initArrayBuffer(buffer, data, itemSize) {
   buffer.numItems = data.length;
 }
 
+function initElementArrayBuffer(buffer, data, itemSize) {
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(data), gl.STATIC_DRAW);
+  buffer.itemsize = itemSize;
+  buffer.numItems = data.length;
+}
 
 var sqvertices = [];
 var sqindices = [];
