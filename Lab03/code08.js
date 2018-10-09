@@ -92,13 +92,22 @@ function webGLStart() {
   drawScene();
 }
 
+/**
+ * Creates a cylinder geometry.
+ *
+ * @param {number} nslices the number of vertical slices
+ * @param {number} nstacks the number of circular stacks
+ * @param {number} r the red value
+ * @param {number} g the green value
+ * @param {number} b the blue value
+ */
 function InitCylinder(nslices, nstacks, r, g, b) {
-  cylinder = new Geometry();
+  var cylinder = new Geometry();
   var nvertices = nslices * nstacks;
 
   var Dangle = 2 * Math.PI / (nslices - 1);
 
-  for (j = 0; j < nstacks; j++)
+  for (j = 0; j < nstacks; j++) {
     for (i = 0; i < nslices; i++) {
       var idx = j * nslices + i; // mesh[j][i]
       var angle = Dangle * i;
@@ -115,11 +124,11 @@ function InitCylinder(nslices, nstacks, r, g, b) {
       cylinder.colors.push(j * 1.0 / (nstacks - 1));
       cylinder.colors.push(1.0);
     }
-  // now create the index array
+  }
 
   nindices = (nstacks - 1) * 6 * (nslices + 1);
 
-  for (j = 0; j < nstacks - 1; j++)
+  for (j = 0; j < nstacks - 1; j++) {
     for (i = 0; i <= nslices; i++) {
       var mi = i % nslices;
       var mi2 = (i + 1) % nslices;
@@ -137,6 +146,9 @@ function InitCylinder(nslices, nstacks, r, g, b) {
       cylinder.indices.push(idx5);
       cylinder.indices.push(idx6);
     }
+  }
+
+  return cylinder;
 }
 
 
@@ -144,7 +156,7 @@ function initCYBuffers() {
 
   var nslices = 10;
   var nstacks = 50;
-  InitCylinder(nslices, nstacks, 1.0, 1.0, 0.0);
+  cylinder = InitCylinder(nslices, nstacks, 1.0, 1.0, 0.0);
 
   cylinderVertexPositionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, cylinderVertexPositionBuffer);
