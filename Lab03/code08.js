@@ -104,6 +104,34 @@ function webGLStart() {
 }
 
 /**
+ * A helper function for initializing an array buffer.
+ *
+ * @param buffer a gl buffer object
+ * @param data a set of data--could be verts, colors, normals, etc.
+ * @param itemSize the number of elements that constitute an item
+ */
+function initArrayBuffer(buffer, data, itemSize) {
+  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
+  buffer.itemSize = itemSize;
+  buffer.numItems = data.length / itemSize;
+}
+
+/**
+ * A helper function for initializing an element array buffer.
+ *
+ * @param buffer a gl buffer object
+ * @param data a set of data--usually indices
+ * @param itemSize the number of elements that constitute an item
+ */
+function initElementArrayBuffer(buffer, data, itemSize) {
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(data), gl.STATIC_DRAW);
+  buffer.itemsize = itemSize;
+  buffer.numItems = data.length / itemSize;
+}
+
+/**
  * Creates a cylinder geometry.
  *
  * @param {number} nslices the number of vertical slices
@@ -178,34 +206,6 @@ function initCYBuffers(nslices, nstacks) {
   initElementArrayBuffer(cylinderVertexIndexBuffer, cylinder.indices, 1);
   cylinderVertexColorBuffer = gl.createBuffer();
   initArrayBuffer(cylinderVertexColorBuffer, cylinder.colors, 4);
-}
-
-/**
- * A helper function for initializing an array buffer.
- *
- * @param buffer a gl buffer object
- * @param data a set of data--could be verts, colors, normals, etc.
- * @param itemSize the number of elements that constitute an item
- */
-function initArrayBuffer(buffer, data, itemSize) {
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
-  buffer.itemSize = itemSize;
-  buffer.numItems = data.length / itemSize;
-}
-
-/**
- * A helper function for initializing an element array buffer.
- *
- * @param buffer a gl buffer object
- * @param data a set of data--usually indices
- * @param itemSize the number of elements that constitute an item
- */
-function initElementArrayBuffer(buffer, data, itemSize) {
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(data), gl.STATIC_DRAW);
-  buffer.itemsize = itemSize;
-  buffer.numItems = data.length / itemSize;
 }
 
 function InitSquare() {
@@ -334,7 +334,7 @@ function drawScene() {
   setMatrixUniforms(); // pass the modelview mattrix and projection matrix to the shader
 
   drawByType(cylinderVertexPositionBuffer, cylinderVertexIndexBuffer);
-  drawByType(squareVertexPositionBuffer, squareVertexIndexBuffer);
+  //drawByType(squareVertexPositionBuffer, squareVertexIndexBuffer);
 }
 
 /**
