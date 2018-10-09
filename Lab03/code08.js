@@ -32,6 +32,10 @@ var pMatrix = mat4.create(); //projection matrix
 var nMatrix = mat4.create(); // normal matrix
 var Z_angle = 0.0;
 
+// Mouse location
+var lastMouseX = 0;
+var lastMouseY = 0;
+
 /**
  * Generates a geometry object.
  */
@@ -166,21 +170,14 @@ function InitCylinder(nslices, nstacks, r, g, b) {
  */
 function initCYBuffers(nslices, nstacks) {
   var cylinder = InitCylinder(nslices, nstacks, 1.0, 1.0, 0.0);
-
   cylinderVertexPositionBuffer = gl.createBuffer();
   initArrayBuffer(cylinderVertexPositionBuffer, cylinder.verts, 3);
-  console.log("Positions: " + cylinderVertexPositionBuffer.numItems);
-
   cylinderVertexNormalBuffer = gl.createBuffer();
   initArrayBuffer(cylinderVertexNormalBuffer, cylinder.normals, 3)
-  console.log("Normals: " + cylinderVertexNormalBuffer.numItems);
-
   cylinderVertexIndexBuffer = gl.createBuffer();
   initElementArrayBuffer(cylinderVertexIndexBuffer, cylinder.indices, 1);
-
   cylinderVertexColorBuffer = gl.createBuffer();
   initArrayBuffer(cylinderVertexColorBuffer, cylinder.colors, 4);
-  console.log("Colors: " + cylinderVertexColorBuffer.numItems);
 }
 
 /**
@@ -255,16 +252,15 @@ function InitSquare() {
   return square;
 }
 
-
+/**
+ * Initializes square buffers.
+ */
 function initSQBuffers() {
   var square = InitSquare();
-
   squareVertexPositionBuffer = gl.createBuffer();
   initArrayBuffer(squareVertexPositionBuffer, square.verts, 3)
-
   squareVertexIndexBuffer = gl.createBuffer();
   initElementArrayBuffer(squareVertexIndexBuffer, square.indices, 1);
-
   squareVertexColorBuffer = gl.createBuffer();
   initArrayBuffer(squareVertexColorBuffer, square.colors, 4);
 }
@@ -274,14 +270,11 @@ function setMatrixUniforms() {
   gl.uniformMatrix4fv(shaderProgram.vMatrixUniform, false, vMatrix);
   gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
   gl.uniformMatrix4fv(shaderProgram.nMatrixUniform, false, nMatrix);
-
 }
 
 function degToRad(degrees) {
   return degrees * Math.PI / 180;
 }
-
-///////////////////////////////////////////////////////////////
 
 function drawScene() {
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
@@ -352,14 +345,6 @@ function drawScene() {
 
 }
 
-
-///////////////////////////////////////////////////////////////
-
-var lastMouseX = 0,
-  lastMouseY = 0;
-
-///////////////////////////////////////////////////////////////
-
 function onDocumentMouseDown(event) {
   event.preventDefault();
   document.addEventListener('mousemove', onDocumentMouseMove, false);
@@ -373,10 +358,12 @@ function onDocumentMouseDown(event) {
 
 }
 
+/**
+ * Calculates the mouse displacement on mouse move.
+ */
 function onDocumentMouseMove(event) {
   var mouseX = event.clientX;
   var mouseY = event.ClientY;
-
   var diffX = mouseX - lastMouseX;
   var diffY = mouseY - lastMouseY;
 
