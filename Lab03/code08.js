@@ -28,6 +28,9 @@ var cylinderVertexIndexBuffer;
 // Cylinder data
 var cylinder;
 
+/**
+ * Generates a geometry object.
+ */
 function Geometry() {
   this.verts = [];
   this.normals = [];
