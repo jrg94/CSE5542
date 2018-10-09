@@ -1,27 +1,35 @@
-//////////////////////////////////////////////////////////////////
-//
-//  This example is similar to code03.html, but I am showing you how to
-//  use gl elemenntary array, i.e, triangle indices, to draw faces
-//
-
 var gl;
 var shaderProgram;
 var draw_type = 2;
 
-
-// set up the parameters for lighting
+// Lighting parameters
 var light_ambient = [0, 0, 0, 1];
 var light_diffuse = [.8, .8, .8, 1];
 var light_specular = [1, 1, 1, 1];
 var light_pos = [0, 0, 0, 1]; // eye space position
 
+// Material parameters
 var mat_ambient = [0, 0, 0, 1];
 var mat_diffuse = [1, 1, 0, 1];
 var mat_specular = [.9, .9, .9, 1];
 var mat_shine = [50];
 
-//////////// Init OpenGL Context etc. ///////////////
+// Square buffers
+var squareVertexPositionBuffer;
+var squareVertexColorBuffer;
+var squareVertexIndexBuffer;
 
+// Cylinder Buffers
+var cylinderVertexPositionBuffer;
+var cylinderVertexNormalBuffer;
+var cylinderVertexColorBuffer;
+var cylinderVertexIndexBuffer;
+
+/**
+ * Initializes the graphics context.
+ *
+ * @param canvas a canvas object
+ */
 function initGL(canvas) {
   try {
     gl = canvas.getContext("experimental-webgl");
@@ -73,19 +81,6 @@ function webGLStart() {
 
   drawScene();
 }
-
-///////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-
-var squareVertexPositionBuffer;
-var squareVertexColorBuffer;
-var squareVertexIndexBuffer;
-
-var cylinderVertexPositionBuffer;
-var cylinderVertexNormalBuffer;
-var cylinderVertexColorBuffer;
-var cylinderVertexIndexBuffer;
-
 
 ////////////////    Initialize VBO  ////////////////////////
 
