@@ -25,6 +25,13 @@ var cylinderVertexNormalBuffer;
 var cylinderVertexColorBuffer;
 var cylinderVertexIndexBuffer;
 
+// Matrices
+var mMatrix = mat4.create(); // model matrix
+var vMatrix = mat4.create(); // view matrix
+var pMatrix = mat4.create(); //projection matrix
+var nMatrix = mat4.create(); // normal matrix
+var Z_angle = 0.0;
+
 /**
  * Generates a geometry object.
  */
@@ -162,15 +169,18 @@ function initCYBuffers(nslices, nstacks) {
 
   cylinderVertexPositionBuffer = gl.createBuffer();
   initArrayBuffer(cylinderVertexPositionBuffer, cylinder.verts, 3);
+  console.log("Positions: " + cylinderVertexPositionBuffer.numItems);
 
   cylinderVertexNormalBuffer = gl.createBuffer();
   initArrayBuffer(cylinderVertexNormalBuffer, cylinder.normals, 3)
+  console.log("Normals: " + cylinderVertexNormalBuffer.numItems);
 
   cylinderVertexIndexBuffer = gl.createBuffer();
   initElementArrayBuffer(cylinderVertexIndexBuffer, cylinder.indices, 1);
 
   cylinderVertexColorBuffer = gl.createBuffer();
   initArrayBuffer(cylinderVertexColorBuffer, cylinder.colors, 4);
+  console.log("Colors: " + cylinderVertexColorBuffer.numItems);
 }
 
 /**
@@ -184,22 +194,27 @@ function initArrayBuffer(buffer, data, itemSize) {
   gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
   buffer.itemSize = itemSize;
-  buffer.numItems = data.length;
+  buffer.numItems = data.length / itemSize;
 }
 
+/**
+ * A helper function for initializing an element array buffer.
+ *
+ * @param buffer a gl buffer object
+ * @param data a set of data--usually indices
+ * @param itemSize the number of elements that constitute an item
+ */
 function initElementArrayBuffer(buffer, data, itemSize) {
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(data), gl.STATIC_DRAW);
   buffer.itemsize = itemSize;
-  buffer.numItems = data.length;
+  buffer.numItems = data.length / itemSize;
 }
 
-var sqvertices = [];
-var sqindices = [];
-var sqcolors = [];
-
 function InitSquare() {
-  sqvertices = [
+  var square = new Geometry();
+
+  square.verts = [
     0.5, 0.5, -.5,
     -0.5, 0.5, -.5,
     -0.5, -0.5, -.5,
@@ -210,8 +225,23 @@ function InitSquare() {
     0.5, -0.5, .5,
 
   ];
-  sqindices = [0, 1, 2, 0, 2, 3, 0, 3, 7, 0, 7, 4, 6, 2, 3, 6, 3, 7, 5, 1, 2, 5, 2, 6, 5, 1, 0, 5, 0, 4, 5, 6, 7, 5, 7, 4];
-  sqcolors = [
+
+  square.indices = [
+    0, 1, 2,
+    0, 2, 3,
+    0, 3, 7,
+    0, 7, 4,
+    6, 2, 3,
+    6, 3, 7,
+    5, 1, 2,
+    5, 2, 6,
+    5, 1, 0,
+    5, 0, 4,
+    5, 6, 7,
+    5, 7, 4
+  ];
+
+  square.colors = [
     1.0, 0.0, 0.0, 1.0,
     0.0, 1.0, 0.0, 1.0,
     0.0, 0.0, 1.0, 1.0,
@@ -221,40 +251,23 @@ function InitSquare() {
     0.0, 0.0, 1.0, 1.0,
     1.0, 0.0, 0.0, 1.0,
   ];
+
+  return square;
 }
 
 
 function initSQBuffers() {
+  var square = InitSquare();
 
-  InitSquare();
   squareVertexPositionBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sqvertices), gl.STATIC_DRAW);
-  squareVertexPositionBuffer.itemSize = 3;
-  squareVertexPositionBuffer.numItems = 8;
+  initArrayBuffer(squareVertexPositionBuffer, square.verts, 3)
 
   squareVertexIndexBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareVertexIndexBuffer);
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(sqindices), gl.STATIC_DRAW);
-  squareVertexIndexBuffer.itemsize = 1;
-  squareVertexIndexBuffer.numItems = 36;
+  initElementArrayBuffer(squareVertexIndexBuffer, square.indices, 1);
 
   squareVertexColorBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(sqcolors), gl.STATIC_DRAW);
-  squareVertexColorBuffer.itemSize = 4;
-  squareVertexColorBuffer.numItems = 8;
-
+  initArrayBuffer(squareVertexColorBuffer, square.colors, 4);
 }
-
-///////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////
-
-var mMatrix = mat4.create(); // model matrix
-var vMatrix = mat4.create(); // view matrix
-var pMatrix = mat4.create(); //projection matrix
-var nMatrix = mat4.create(); // normal matrix
-var Z_angle = 0.0;
 
 function setMatrixUniforms() {
   gl.uniformMatrix4fv(shaderProgram.mMatrixUniform, false, mMatrix);
