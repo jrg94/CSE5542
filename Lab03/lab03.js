@@ -324,6 +324,7 @@ function drawScene() {
   gl.uniform4f(shaderProgram.light_diffuseUniform, light_diffuse[0], light_diffuse[1], light_diffuse[2], 1.0);
   gl.uniform4f(shaderProgram.light_specularUniform, light_specular[0], light_specular[1], light_specular[2], 1.0);
 
+  // CUBE
 
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
   gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -335,27 +336,30 @@ function drawScene() {
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
   gl.vertexAttribPointer(shaderProgram.vertexColorAttribute,squareVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-
-  //gl.bindBuffer(gl.ARRAY_BUFFER, cylinderVertexPositionBuffer);
-  //gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cylinderVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-  //gl.bindBuffer(gl.ARRAY_BUFFER, cylinderVertexNormalBuffer);
-  //gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, cylinderVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-  // TODO: Deal with cylinder color
-  //gl.bindBuffer(gl.ARRAY_BUFFER, cylinderVertexColorBuffer);
-  //gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, cylinderVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-
   // draw elementary arrays - triangle indices
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareVertexIndexBuffer);
 
-  //gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cylinderVertexIndexBuffer);
+  setMatrixUniforms(); // pass the modelview mattrix and projection matrix to the shader
+
+  drawByType(squareVertexPositionBuffer, squareVertexIndexBuffer);
+
+  // CYLINDER
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, cylinderVertexPositionBuffer);
+  gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cylinderVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, cylinderVertexNormalBuffer);
+  gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, cylinderVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+  // TODO: Deal with cylinder color
+  gl.bindBuffer(gl.ARRAY_BUFFER, cylinderVertexColorBuffer);
+  gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, cylinderVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cylinderVertexIndexBuffer);
 
   setMatrixUniforms(); // pass the modelview mattrix and projection matrix to the shader
 
-  //drawByType(cylinderVertexPositionBuffer, cylinderVertexIndexBuffer);
-  drawByType(squareVertexPositionBuffer, squareVertexIndexBuffer);
+  drawByType(cylinderVertexPositionBuffer, cylinderVertexIndexBuffer);
 }
 
 /**
