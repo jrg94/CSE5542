@@ -132,8 +132,11 @@ function webGLStart() {
   shaderProgram.light_diffuseUniform = gl.getUniformLocation(shaderProgram, "light_diffuse");
   shaderProgram.light_specularUniform = gl.getUniformLocation(shaderProgram, "light_specular");
 
-  initSQBuffers();
-  initCYBuffers(10, 50);
+  cube = InitCube();
+  cube.initBuffers();
+
+  cylinder = InitCylinder(10, 50, 1.0, 1.0, 0.0);
+  cylinder.initBuffers();
 
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
@@ -230,17 +233,6 @@ function InitCylinder(nslices, nstacks, r, g, b) {
 }
 
 /**
- * Initializes cylinder buffers.
- *
- * @param {number} nslices the number of vertical cylinder slices
- * @param {number} nstacks the number of circular stacks
- */
-function initCYBuffers(nslices, nstacks) {
-  cylinder = InitCylinder(nslices, nstacks, 1.0, 1.0, 0.0);
-  cylinder.initBuffers();
-}
-
-/**
  * Generates a cube.
  */
 function InitCube() {
@@ -297,14 +289,6 @@ function InitCube() {
   return cube;
 }
 
-/**
- * Initializes cube buffers.
- */
-function initSQBuffers() {
-  cube = InitCube();
-  cube.initBuffers();
-}
-
 function setMatrixUniforms() {
   gl.uniformMatrix4fv(shaderProgram.mMatrixUniform, false, mMatrix);
   gl.uniformMatrix4fv(shaderProgram.vMatrixUniform, false, vMatrix);
@@ -353,22 +337,6 @@ function drawScene() {
 
   // CYLINDER
   cylinder.draw();
-}
-
-/**
- * Draws an object by type.
- *
- * @param positionBuffer a gl position buffer
- * @param indexBuffer a gl index buffer
- */
-function drawByType(positionBuffer, indexBuffer) {
-  if (draw_type == 1) {
-    gl.drawArrays(gl.LINE_LOOP, 0, positionBuffer.numItems);
-  } else if (draw_type == 0) {
-    gl.drawArrays(gl.POINTS, 0, positionBuffer.numItems);
-  } else if (draw_type == 2) {
-    gl.drawElements(gl.TRIANGLES, indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
-  }
 }
 
 /**
