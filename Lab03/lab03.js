@@ -37,6 +37,9 @@ var Z_angle = 0.0;
 var lastMouseX = 0;
 var lastMouseY = 0;
 
+var cylinder;
+var cube;
+
 /**
  * Generates a geometry object.
  */
@@ -45,6 +48,41 @@ function Geometry() {
   this.normals = [];
   this.colors = [];
   this.indices = [];
+  this.positionBuffer = null;
+  this.normalBuffer = null;
+  this.colorBuffer = null;
+  this.indexBuffer = null;
+
+  this.initBuffers = function() {
+    this.positionBuffer = gl.createBuffer();
+    initArrayBuffer(this.positionBuffer, this.verts, 3);
+    this.normalBuffer = gl.createBuffer();
+    initArrayBuffer(this.normalBuffer, this.normals, 3)
+    this.indexBuffer = gl.createBuffer();
+    initElementArrayBuffer(this.indexBuffer, this.indices, 1);
+    this.colorBuffer = gl.createBuffer();
+    initArrayBuffer(this.colorBuffer, this.colors, 4);
+  }
+
+  this.draw = function() {
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
+    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.positionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
+    gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, this.normalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
+    gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, this.colorBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+
+    setMatrixUniforms(); // pass the modelview mattrix and projection matrix to the shader
+
+    if (draw_type == 1) {
+      gl.drawArrays(gl.LINE_LOOP, 0, this.positionBuffer.numItems);
+    } else if (draw_type == 0) {
+      gl.drawArrays(gl.POINTS, 0, this.positionBuffer.numItems);
+    } else if (draw_type == 2) {
+      gl.drawElements(gl.TRIANGLES, this.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    }
+  }
 }
 
 /**
@@ -198,15 +236,8 @@ function InitCylinder(nslices, nstacks, r, g, b) {
  * @param {number} nstacks the number of circular stacks
  */
 function initCYBuffers(nslices, nstacks) {
-  var cylinder = InitCylinder(nslices, nstacks, 1.0, 1.0, 0.0);
-  cylinderVertexPositionBuffer = gl.createBuffer();
-  initArrayBuffer(cylinderVertexPositionBuffer, cylinder.verts, 3);
-  cylinderVertexNormalBuffer = gl.createBuffer();
-  initArrayBuffer(cylinderVertexNormalBuffer, cylinder.normals, 3)
-  cylinderVertexIndexBuffer = gl.createBuffer();
-  initElementArrayBuffer(cylinderVertexIndexBuffer, cylinder.indices, 1);
-  cylinderVertexColorBuffer = gl.createBuffer();
-  initArrayBuffer(cylinderVertexColorBuffer, cylinder.colors, 4);
+  cylinder = InitCylinder(nslices, nstacks, 1.0, 1.0, 0.0);
+  cylinder.initBuffers();
 }
 
 /**
@@ -270,15 +301,8 @@ function InitCube() {
  * Initializes cube buffers.
  */
 function initSQBuffers() {
-  var cube = InitCube();
-  squareVertexPositionBuffer = gl.createBuffer();
-  initArrayBuffer(squareVertexPositionBuffer, cube.verts, 3)
-  squareVertexIndexBuffer = gl.createBuffer();
-  initElementArrayBuffer(squareVertexIndexBuffer, cube.indices, 1);
-  squareVertexColorBuffer = gl.createBuffer();
-  initArrayBuffer(squareVertexColorBuffer, cube.colors, 4);
-  squareVertexNormalBuffer = gl.createBuffer();
-  initArrayBuffer(squareVertexNormalBuffer, cube.normals, 3);
+  cube = InitCube();
+  cube.initBuffers();
 }
 
 function setMatrixUniforms() {
@@ -325,41 +349,10 @@ function drawScene() {
   gl.uniform4f(shaderProgram.light_specularUniform, light_specular[0], light_specular[1], light_specular[2], 1.0);
 
   // CUBE
-
-  gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
-  gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-  gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexNormalBuffer);
-  gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, squareVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-  // TODO: Deal with cube color
-  gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexColorBuffer);
-  gl.vertexAttribPointer(shaderProgram.vertexColorAttribute,squareVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-  // draw elementary arrays - triangle indices
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, squareVertexIndexBuffer);
-
-  setMatrixUniforms(); // pass the modelview mattrix and projection matrix to the shader
-
-  drawByType(squareVertexPositionBuffer, squareVertexIndexBuffer);
+  cube.draw();
 
   // CYLINDER
-
-  gl.bindBuffer(gl.ARRAY_BUFFER, cylinderVertexPositionBuffer);
-  gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, cylinderVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-  gl.bindBuffer(gl.ARRAY_BUFFER, cylinderVertexNormalBuffer);
-  gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, cylinderVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-  // TODO: Deal with cylinder color
-  gl.bindBuffer(gl.ARRAY_BUFFER, cylinderVertexColorBuffer);
-  gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, cylinderVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, cylinderVertexIndexBuffer);
-
-  setMatrixUniforms(); // pass the modelview mattrix and projection matrix to the shader
-
-  drawByType(cylinderVertexPositionBuffer, cylinderVertexIndexBuffer);
+  cylinder.draw();
 }
 
 /**
