@@ -26,7 +26,7 @@ var cube;
 /**
  * Generates a geometry object.
  */
-function Geometry() {
+function Geometry(location = [0, 0, 0]) {
   this.verts = [];
   this.normals = [];
   this.colors = [];
@@ -39,6 +39,7 @@ function Geometry() {
   this.vMatrix = mat4.create(); // view matrix
   this.pMatrix = mat4.create(); //projection matrix
   this.nMatrix = mat4.create(); // normal matrix
+  this.location = location;
 
   this.initArrayBuffer = function(buffer, data, itemSize) {
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -70,6 +71,7 @@ function Geometry() {
     this.vMatrix = mat4.lookAt([0, 0, 5], [0, 0, 0], [0, 1, 0], this.vMatrix); // set up the view matrix, multiply into the modelview matrix
 
     mat4.identity(this.mMatrix);
+    this.mMatrix = mat4.translate(this.mMatrix, this.location);
     this.mMatrix = mat4.rotate(this.mMatrix, degToRad(Z_angle), [0, 1, 1]); // now set up the model matrix
 
     mat4.identity(this.nMatrix);
@@ -125,6 +127,9 @@ function initGL(canvas) {
   }
 }
 
+/**
+ * Initializes the canvas and several other fields.
+ */
 function webGLStart() {
   var canvas = document.getElementById("code03-canvas");
   initGL(canvas);
@@ -179,7 +184,7 @@ function webGLStart() {
  * @param {number} b the blue value
  */
 function InitCylinder(nslices, nstacks, r, g, b) {
-  var cylinder = new Geometry();
+  var cylinder = new Geometry([-1, -1, 0]);
   var nvertices = nslices * nstacks;
 
   var Dangle = 2 * Math.PI / (nslices - 1);
@@ -232,7 +237,7 @@ function InitCylinder(nslices, nstacks, r, g, b) {
  * Generates a cube.
  */
 function InitCube() {
-  var cube = new Geometry();
+  var cube = new Geometry([1, 1, 0]);
 
   cube.verts = [
     0.5, 0.5, -.5,
@@ -285,16 +290,21 @@ function InitCube() {
   return cube;
 }
 
+/**
+ * Computes radians from degrees.
+ */
 function degToRad(degrees) {
   return degrees * Math.PI / 180;
 }
 
+/**
+ * Draws the scene.
+ */
 function drawScene() {
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   shaderProgram.light_posUniform = gl.getUniformLocation(shaderProgram, "light_pos");
-
 
   gl.uniform4f(shaderProgram.light_posUniform, light_pos[0], light_pos[1], light_pos[2], light_pos[3]);
   gl.uniform4f(shaderProgram.ambient_coefUniform, mat_ambient[0], mat_ambient[1], mat_ambient[2], 1.0);
@@ -306,10 +316,7 @@ function drawScene() {
   gl.uniform4f(shaderProgram.light_diffuseUniform, light_diffuse[0], light_diffuse[1], light_diffuse[2], 1.0);
   gl.uniform4f(shaderProgram.light_specularUniform, light_specular[0], light_specular[1], light_specular[2], 1.0);
 
-  // CUBE
   cube.draw();
-
-  // CYLINDER
   cylinder.draw();
 }
 
