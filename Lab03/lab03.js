@@ -53,15 +53,29 @@ function Geometry() {
   this.colorBuffer = null;
   this.indexBuffer = null;
 
+  this.initArrayBuffer = function(buffer, data, itemSize) {
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
+    buffer.itemSize = itemSize;
+    buffer.numItems = data.length / itemSize;
+  }
+
+  this.initElementArrayBuffer = function(buffer, data, itemSize) {
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(data), gl.STATIC_DRAW);
+    buffer.itemsize = itemSize;
+    buffer.numItems = data.length / itemSize;
+  }
+
   this.initBuffers = function() {
     this.positionBuffer = gl.createBuffer();
-    initArrayBuffer(this.positionBuffer, this.verts, 3);
+    this.initArrayBuffer(this.positionBuffer, this.verts, 3);
     this.normalBuffer = gl.createBuffer();
-    initArrayBuffer(this.normalBuffer, this.normals, 3)
+    this.initArrayBuffer(this.normalBuffer, this.normals, 3)
     this.indexBuffer = gl.createBuffer();
-    initElementArrayBuffer(this.indexBuffer, this.indices, 1);
+    this.initElementArrayBuffer(this.indexBuffer, this.indices, 1);
     this.colorBuffer = gl.createBuffer();
-    initArrayBuffer(this.colorBuffer, this.colors, 4);
+    this.initArrayBuffer(this.colorBuffer, this.colors, 4);
   }
 
   this.draw = function() {
@@ -143,34 +157,6 @@ function webGLStart() {
   document.addEventListener('mousedown', onDocumentMouseDown, false);
 
   drawScene();
-}
-
-/**
- * A helper function for initializing an array buffer.
- *
- * @param buffer a gl buffer object
- * @param data a set of data--could be verts, colors, normals, etc.
- * @param itemSize the number of elements that constitute an item
- */
-function initArrayBuffer(buffer, data, itemSize) {
-  gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
-  buffer.itemSize = itemSize;
-  buffer.numItems = data.length / itemSize;
-}
-
-/**
- * A helper function for initializing an element array buffer.
- *
- * @param buffer a gl buffer object
- * @param data a set of data--usually indices
- * @param itemSize the number of elements that constitute an item
- */
-function initElementArrayBuffer(buffer, data, itemSize) {
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(data), gl.STATIC_DRAW);
-  buffer.itemsize = itemSize;
-  buffer.numItems = data.length / itemSize;
 }
 
 /**
