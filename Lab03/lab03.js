@@ -14,23 +14,6 @@ var mat_diffuse = [1, 1, 0, 1];
 var mat_specular = [.9, .9, .9, 1];
 var mat_shine = [50];
 
-// Square buffers
-var squareVertexPositionBuffer;
-var squareVertexColorBuffer;
-var squareVertexIndexBuffer;
-var squareVertexNormalBuffer;
-
-// Cylinder Buffers
-var cylinderVertexPositionBuffer;
-var cylinderVertexNormalBuffer;
-var cylinderVertexColorBuffer;
-var cylinderVertexIndexBuffer;
-
-// Matrices
-var mMatrix = mat4.create(); // model matrix
-var vMatrix = mat4.create(); // view matrix
-var pMatrix = mat4.create(); //projection matrix
-var nMatrix = mat4.create(); // normal matrix
 var Z_angle = 0.0;
 
 // Mouse location
@@ -52,6 +35,10 @@ function Geometry() {
   this.normalBuffer = null;
   this.colorBuffer = null;
   this.indexBuffer = null;
+  this.mMatrix = mat4.create(); // model matrix
+  this.vMatrix = mat4.create(); // view matrix
+  this.pMatrix = mat4.create(); //projection matrix
+  this.nMatrix = mat4.create(); // normal matrix
 
   this.initArrayBuffer = function(buffer, data, itemSize) {
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -78,7 +65,30 @@ function Geometry() {
     this.initArrayBuffer(this.colorBuffer, this.colors, 4);
   }
 
+  this.transform = function() {
+    this.pMatrix = mat4.perspective(60, 1.0, 0.1, 100, this.pMatrix); // set up the projection matrix
+    this.vMatrix = mat4.lookAt([0, 0, 5], [0, 0, 0], [0, 1, 0], this.vMatrix); // set up the view matrix, multiply into the modelview matrix
+
+    mat4.identity(this.mMatrix);
+    this.mMatrix = mat4.rotate(this.mMatrix, degToRad(Z_angle), [0, 1, 1]); // now set up the model matrix
+
+    mat4.identity(this.nMatrix);
+    this.nMatrix = mat4.multiply(this.nMatrix, this.vMatrix);
+    this.nMatrix = mat4.multiply(this.nMatrix, this.mMatrix);
+    this.nMatrix = mat4.inverse(this.nMatrix);
+    this.nMatrix = mat4.transpose(this.nMatrix);
+  }
+
+  this.setMatrixUniforms = function() {
+    gl.uniformMatrix4fv(shaderProgram.mMatrixUniform, false, this.mMatrix);
+    gl.uniformMatrix4fv(shaderProgram.vMatrixUniform, false, this.vMatrix);
+    gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, this.pMatrix);
+    gl.uniformMatrix4fv(shaderProgram.nMatrixUniform, false, this.nMatrix);
+  }
+
   this.draw = function() {
+    this.transform();
+
     gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
     gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.positionBuffer.itemSize, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
@@ -87,7 +97,7 @@ function Geometry() {
     gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, this.colorBuffer.itemSize, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
 
-    setMatrixUniforms(); // pass the modelview mattrix and projection matrix to the shader
+    this.setMatrixUniforms(); // pass the modelview mattrix and projection matrix to the shader
 
     if (draw_type == 1) {
       gl.drawArrays(gl.LINE_LOOP, 0, this.positionBuffer.numItems);
@@ -275,13 +285,6 @@ function InitCube() {
   return cube;
 }
 
-function setMatrixUniforms() {
-  gl.uniformMatrix4fv(shaderProgram.mMatrixUniform, false, mMatrix);
-  gl.uniformMatrix4fv(shaderProgram.vMatrixUniform, false, vMatrix);
-  gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
-  gl.uniformMatrix4fv(shaderProgram.nMatrixUniform, false, nMatrix);
-}
-
 function degToRad(degrees) {
   return degrees * Math.PI / 180;
 }
@@ -289,21 +292,6 @@ function degToRad(degrees) {
 function drawScene() {
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-  pMatrix = mat4.perspective(60, 1.0, 0.1, 100, pMatrix); // set up the projection matrix
-
-  vMatrix = mat4.lookAt([0, 0, 5], [0, 0, 0], [0, 1, 0], vMatrix); // set up the view matrix, multiply into the modelview matrix
-
-  mat4.identity(mMatrix);
-
-  mMatrix = mat4.rotate(mMatrix, degToRad(Z_angle), [0, 1, 1]); // now set up the model matrix
-
-
-  mat4.identity(nMatrix);
-  nMatrix = mat4.multiply(nMatrix, vMatrix);
-  nMatrix = mat4.multiply(nMatrix, mMatrix);
-  nMatrix = mat4.inverse(nMatrix);
-  nMatrix = mat4.transpose(nMatrix);
 
   shaderProgram.light_posUniform = gl.getUniformLocation(shaderProgram, "light_pos");
 
