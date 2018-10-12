@@ -22,11 +22,12 @@ var lastMouseY = 0;
 
 var cylinder;
 var cube;
+var sphere;
 
 /**
  * Generates a geometry object.
  */
-function Geometry(location = [0, 0, 0]) {
+function Geometry(location = [0, 0, 0], scale = [1, 1, 1]) {
   this.verts = [];
   this.normals = [];
   this.colors = [];
@@ -40,6 +41,7 @@ function Geometry(location = [0, 0, 0]) {
   this.pMatrix = mat4.create(); //projection matrix
   this.nMatrix = mat4.create(); // normal matrix
   this.location = location;
+  this.scale = scale;
 
   this.initArrayBuffer = function(buffer, data, itemSize) {
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -73,6 +75,7 @@ function Geometry(location = [0, 0, 0]) {
     mat4.identity(this.mMatrix);
     this.mMatrix = mat4.translate(this.mMatrix, this.location);
     this.mMatrix = mat4.rotate(this.mMatrix, degToRad(Z_angle), [0, 1, 1]); // now set up the model matrix
+    this.mMatrix = mat4.scale(this.mMatrix, this.scale);
 
     mat4.identity(this.nMatrix);
     this.nMatrix = mat4.multiply(this.nMatrix, this.vMatrix);
@@ -164,8 +167,11 @@ function webGLStart() {
   cube = InitCube();
   cube.initBuffers();
 
-  cylinder = InitCylinder(10, 50, 1.0, 1.0, 0.0);
+  cylinder = InitCylinder(50, 50, 1.0, 1.0, 0.0);
   cylinder.initBuffers();
+
+  sphere = InitSphere(50, 50, 1);
+  sphere.initBuffers();
 
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
@@ -184,7 +190,7 @@ function webGLStart() {
  * @param {number} b the blue value
  */
 function InitCylinder(nslices, nstacks, r, g, b) {
-  var cylinder = new Geometry([-1, -1, 0]);
+  var cylinder = new Geometry([-1, 0, 0], [.5, .5, .5]);
   var nvertices = nslices * nstacks;
 
   var Dangle = 2 * Math.PI / (nslices - 1);
@@ -365,6 +371,7 @@ function drawScene() {
 
   cube.draw();
   cylinder.draw();
+  sphere.draw();
 }
 
 /**
