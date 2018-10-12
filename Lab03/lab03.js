@@ -290,29 +290,48 @@ function InitCube() {
   return cube;
 }
 
-function InitSphere(nslices, nstacks) {
+/**
+ * Generates a sphere object.
+ * Adapted from: http://learningwebgl.com/blog/?p=1253
+ */
+function InitSphere(nslices, nstacks, radius) {
   var sphere = new Geometry([1, -1, 0]);
 
+  for (var i = 0; i <= nstacks; i++) {
+    var theta = i * Math.PI / nstacks;
+    var sinTheta = Math.sin(theta);
+    var cosTheta = Math.cos(theta);
+
+    for (var j = 0; j <= nslices; j++) {
+      var phi = j * 2 * Math.PI / nslices;
+      var sinPhi = Math.sin(phi);
+      var cosPhi = Math.cos(phi);
+
+      var x = cosPhi * sinTheta;
+      var y = cosTheta;
+      var z = sinPhi * sinTheta;
+
+      sphere.normals.push(x);
+      sphere.normals.push(y);
+      sphere.normals.push(z);
+      sphere.verts.push(radius * x);
+      sphere.verts.push(radius * y);
+      sphere.verts.push(radius * z);
+    }
+  }
+
   for (var i = 0; i < nstacks; i++) {
-    var theta1 = (i / nstacks) * Math.PI;
-    var theta2 = ((i + 1) / nstacks) * Math.PI;
     for (var j = 0; j < nslices; j++) {
-      var phi1 = (j / nslices) * 2 * Math.PI;
-      var phi2 = ((j + 1) / nslices) * 2 * Math.PI;
+      var v1 = (i * (nslices + 1)) + j;
+      var v2 = v1 + nslices + 1;
 
-      var v1 = theta1 * phi1;
-      var v2 = theta1 * phi2;
-      var v3 = theta2 * phi2;
-      var v4 = theta2 * phi1;
+      sphere.indices.push(v1);
+      sphere.indices.push(v2);
+      sphere.indices.push(v1 + 1);
 
-      if (i == 0) {
-        sphere.verts.push(v1, v3, v4);
-      } else if (i + 1 == nstacks) {
-        sphere.verts.push(v3, v1, v2);
-      } else {
-        sphere.verts.push(v1, v2, v4);
-        sphere.verts.push(v2, v3, v4);
-      }
+      sphere.indices.push(v2);
+      sphere.indices.push(v2 + 1);
+      sphere.indices.push(v1 + 1);
     }
   }
   return sphere;
