@@ -55,10 +55,11 @@ function Material(ambient = [0, 0, 1, 1], diffuse = [1, 1, 0, 1], specular = [.9
 /**
  * Generates a light object.
  */
-function Light(transformation = new Transformation, emitter = new Material()) {
+function Light(transformation = new Transformation, emitter = new Material(), view = new Material()) {
   this.transformation = transformation;
-  this.emitter = emitter;
-  this.lightObject = initSphere(50, 50, .2, transformation, emitter);
+  this.emitter = emitter; // how the light emits light
+  this.view = view; // how the light is perceived
+  this.lightObject = initSphere(50, 50, .2, transformation, view);
 
   this.emit = function() {
     gl.uniform4f(
@@ -196,17 +197,22 @@ function Geometry(transformation = new Transformation(), material = new Material
  */
 function initScene() {
   // Lights
-  var lightTransformation = new Transformation([0, 10, 0, 1]);
-  var lightEmitter = new Material([0, 0, 0, 1], [.8, .8, .8, 1], [1, 1, 1, 1])
-  var light = new Light(lightTransformation, lightEmitter);
+  var lightTransformation = new Transformation([-1.8, 1.8, 1, 1]);
+  var lightEmitter = new Material([.1, .1, .1, 1], [.8, .8, .8, 1], [.5, .5, .5, 1]);
+  var lightView = new Material([1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1], 0);
+  var light = new Light(lightTransformation, lightEmitter, lightView);
 
-  // Objects
+  // Cylinder
   var cylinderTransformation = new Transformation([-1, 0, 0], undefined, [.5, .5, .5]);
-  var cylinderMaterial = new Material([0, 1, 0], [1, 0, 1, 1], [.5, .5, .5, 1], 10);
+  var cylinderMaterial = new Material([0, 1, 0, 1], [1, 0, 1, 1], [.5, .5, .5, 1], 10);
   var cylinder = initCylinder(50, 50, cylinderTransformation, cylinderMaterial);
+
+  // Cube
   var cubeTransformation = new Transformation([1, 1, 0]);
-  var cubeMaterial = new Material([0, 1, 0], [1, 0, 1, 1]);
+  var cubeMaterial = new Material([0, 1, 0, 1], [1, 0, 1, 1]);
   var cube = initCube(cubeTransformation, cubeMaterial);
+
+  // Sphere
   var sphereTransformation = new Transformation([1, -1, 0]);
   var sphereMaterial = new Material([0, 1, 0], [0, 0, 1, 1], undefined, 5);
   var sphere = initSphere(50, 50, 1, sphereTransformation, sphereMaterial);
