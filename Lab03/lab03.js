@@ -13,6 +13,13 @@ function Scene() {
   this.objects = [];
   this.lights = [];
 
+  this.addLight = function(light) {
+    this.lights.push(light);
+    var lightMaterial = new Material([1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0], 0);
+    var lightObject = initSphere(50, 50, .2, light.transformation, lightMaterial);
+    this.objects.push(lightObject);
+  }
+
   this.drawScene = function() {
     this.lights.forEach(function(light) {
       light.emit();
@@ -26,10 +33,6 @@ function Scene() {
     this.objects.forEach(function(object) {
       object.initBuffers();
     });
-
-    this.lights.forEach(function(light) {
-      light.lightObject.initBuffers();
-    })
   }
 }
 
@@ -55,11 +58,9 @@ function Material(ambient = [0, 0, 1, 1], diffuse = [1, 1, 0, 1], specular = [.9
 /**
  * Generates a light object.
  */
-function Light(transformation = new Transformation, emitter = new Material(), view = new Material()) {
+function Light(transformation = new Transformation, emitter = new Material()) {
   this.transformation = transformation;
   this.emitter = emitter; // how the light emits light
-  this.view = view; // how the light is perceived
-  this.lightObject = initSphere(50, 50, .2, transformation, view);
 
   this.emit = function() {
     gl.uniform4f(
@@ -74,24 +75,22 @@ function Light(transformation = new Transformation, emitter = new Material(), vi
       this.emitter.ambient[0],
       this.emitter.ambient[1],
       this.emitter.ambient[2],
-      1.0
+      this.emitter.ambient[3]
     );
     gl.uniform4f(
       shaderProgram.light_diffuseUniform,
       this.emitter.diffuse[0],
       this.emitter.diffuse[1],
       this.emitter.diffuse[2],
-      1.0
+      this.emitter.diffuse[3]
      );
     gl.uniform4f(
       shaderProgram.light_specularUniform,
       this.emitter.specular[0],
       this.emitter.specular[1],
       this.emitter.specular[2],
-      1.0
+      this.emitter.specular[3]
      );
-
-    this.lightObject.draw();
   }
 }
 
@@ -199,8 +198,7 @@ function initScene() {
   // Lights
   var lightTransformation = new Transformation([-1.8, 1.8, 1, 1]);
   var lightEmitter = new Material([.1, .1, .1, 1], [.8, .8, .8, 1], [.5, .5, .5, 1]);
-  var lightView = new Material([1, 1, 1, 1], [1, 1, 1, 1], [1, 1, 1, 1], 0);
-  var light = new Light(lightTransformation, lightEmitter, lightView);
+  var light = new Light(lightTransformation, lightEmitter);
 
   // Cylinder
   var cylinderTransformation = new Transformation([-1, 0, 0], undefined, [.5, .5, .5]);
@@ -221,7 +219,7 @@ function initScene() {
   scene.objects.push(cylinder);
   scene.objects.push(cube);
   scene.objects.push(sphere);
-  scene.lights.push(light);
+  scene.addLight(light);
   scene.initBuffers();
 }
 
