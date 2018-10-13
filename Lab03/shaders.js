@@ -59,9 +59,18 @@ var fragmentShaderSrc = `
     vec3 reflectDir = reflect(-lightDir, v_normal);
     vec3 viewDir = normalize(-v_pos);
 
-    float lambertarian = max(dot(lightDir, normal), 0.0);
+    float lambertian = max(dot(lightDir, normal), 0.0);
+    float spec = 0.0;
 
-    vec4 color = ambient_coef + diffuse_coef * lambertarian + specular_coef * light_specular;
+    if (lambertian > 0.0) {
+       float specAngle = max(dot(reflectDir, viewDir), 0.0);
+       spec = pow(specAngle, 4.0);
+    }
+
+    vec4 ambient = ambient_coef * light_ambient;
+    vec4 diffuse = diffuse_coef * light_diffuse;
+    vec4 specular = specular_coef * light_specular;
+    vec4 color = ambient + lambertian * diffuse + spec * specular;
     gl_FragColor = color;
   }
 `;
