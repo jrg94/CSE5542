@@ -20,7 +20,6 @@ var vertexShaderSrc = `
   uniform vec4 light_diffuse;
   uniform vec4 light_specular;
 
-  varying vec4 eye_pos;
   varying vec3 v_normal;
   varying vec3 v_pos;
 
@@ -51,11 +50,18 @@ var fragmentShaderSrc = `
   uniform vec4 light_diffuse;
   uniform vec4 light_specular;
 
-  varying vec4 eye_pos;
   varying vec3 v_normal;
-  varying vec4 vColor;
+  varying vec3 v_pos;
 
   void main(void) {
-    gl_FragColor = vColor;
+    vec3 normal = normalize(v_normal);
+    vec3 lightDir = normalize(vec3(light_pos) - v_pos);
+    vec3 reflectDir = reflect(-lightDir, v_normal);
+    vec3 viewDir = normalize(-v_pos);
+
+    float lambertarian = max(dot(lightDir, normal), 0.0);
+
+    vec4 color = ambient_coef + diffuse_coef * lambertarian + specular_coef * light_specular;
+    gl_FragColor = color;
   }
 `;
