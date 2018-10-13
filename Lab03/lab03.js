@@ -164,13 +164,13 @@ function webGLStart() {
   shaderProgram.light_diffuseUniform = gl.getUniformLocation(shaderProgram, "light_diffuse");
   shaderProgram.light_specularUniform = gl.getUniformLocation(shaderProgram, "light_specular");
 
-  cube = InitCube();
+  cube = initCube();
   cube.initBuffers();
 
-  cylinder = InitCylinder(50, 50, 1.0, 1.0, 0.0);
+  cylinder = initCylinder(50, 50, 1.0, 1.0, 0.0);
   cylinder.initBuffers();
 
-  sphere = InitSphere(50, 50, 1);
+  sphere = initSphere(50, 50, 1);
   sphere.initBuffers();
 
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -189,7 +189,7 @@ function webGLStart() {
  * @param {number} g the green value
  * @param {number} b the blue value
  */
-function InitCylinder(nslices, nstacks, r, g, b) {
+function initCylinder(nslices, nstacks, r, g, b) {
   var cylinder = new Geometry([-1, 0, 0], [.5, .5, .5]);
   var nvertices = nslices * nstacks;
 
@@ -242,7 +242,7 @@ function InitCylinder(nslices, nstacks, r, g, b) {
 /**
  * Generates a cube.
  */
-function InitCube() {
+function initCube() {
   var cube = new Geometry([1, 1, 0]);
 
   var a = [0.5, 0.5, -0.5];
@@ -274,6 +274,9 @@ function InitCube() {
   return cube;
 }
 
+/**
+ * A helper method for generating cube faces.
+ */
 function initCubeSide(cube, v1, v2, v3, v4, normal, color) {
   cube.verts.push(...v1);
   cube.verts.push(...v2);
@@ -293,7 +296,7 @@ function initCubeSide(cube, v1, v2, v3, v4, normal, color) {
  * Generates a sphere object.
  * Adapted from: http://learningwebgl.com/blog/?p=1253
  */
-function InitSphere(nslices, nstacks, radius) {
+function initSphere(nslices, nstacks, radius) {
   var sphere = new Geometry([1, -1, 0]);
 
   for (var i = 0; i <= nstacks; i++) {
