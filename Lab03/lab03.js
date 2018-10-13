@@ -6,7 +6,7 @@ var draw_type = 2;
 var light_ambient = [0, 0, 0, 1];
 var light_diffuse = [.8, .8, .8, 1];
 var light_specular = [1, 1, 1, 1];
-var light_pos = [0, 0, 0, 1]; // eye space position
+var light_pos = [0, 0, 1, 1]; // eye space position
 
 var Z_angle = 0.0;
 
@@ -24,10 +24,11 @@ function Transformation(translation = [0, 0, 0], rotation = [0, 0, 0], scale = [
   this.scale = scale;
 }
 
-function Material(ambient = [0, 0, 1], diffuse = [1, 1, 0, 1], specular = [.9, .9, .9, 1]) {
+function Material(ambient = [0, 0, 1], diffuse = [1, 1, 0, 1], specular = [.9, .9, .9, 1], shininess = 50) {
   this.ambient = ambient;
   this.diffuse = diffuse;
   this.specular = specular;
+  this.shininess = shininess;
 }
 
 /**
@@ -36,16 +37,14 @@ function Material(ambient = [0, 0, 1], diffuse = [1, 1, 0, 1], specular = [.9, .
 function Geometry(transformation = new Transformation(), material = new Material()) {
   this.verts = [];
   this.normals = [];
-  this.colors = [];
   this.indices = [];
   this.positionBuffer = null;
   this.normalBuffer = null;
-  this.colorBuffer = null;
   this.indexBuffer = null;
   this.mat_ambient = material.ambient;
   this.mat_diffuse = material.diffuse;
   this.mat_specular = material.specular;
-  this.mat_shine = [50];
+  this.mat_shine = [material.shininess];
   this.mMatrix = mat4.create(); // model matrix
   this.vMatrix = mat4.create(); // view matrix
   this.pMatrix = mat4.create(); //projection matrix
@@ -75,8 +74,6 @@ function Geometry(transformation = new Transformation(), material = new Material
     this.initArrayBuffer(this.normalBuffer, this.normals, 3)
     this.indexBuffer = gl.createBuffer();
     this.initElementArrayBuffer(this.indexBuffer, this.indices, 1);
-    this.colorBuffer = gl.createBuffer();
-    this.initArrayBuffer(this.colorBuffer, this.colors, 4);
   }
 
   this.transform = function() {
@@ -117,8 +114,6 @@ function Geometry(transformation = new Transformation(), material = new Material
     gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.positionBuffer.itemSize, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
     gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, this.normalBuffer.itemSize, gl.FLOAT, false, 0, 0);
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.colorBuffer);
-    gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, this.colorBuffer.itemSize, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
 
     this.setMatrixUniforms(); // pass the modelview mattrix and projection matrix to the shader
@@ -165,9 +160,6 @@ function webGLStart() {
   shaderProgram.vertexNormalAttribute = gl.getAttribLocation(shaderProgram, "aVertexNormal");
   gl.enableVertexAttribArray(shaderProgram.vertexNormalAttribute);
 
-  shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
-  gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
-
   shaderProgram.mMatrixUniform = gl.getUniformLocation(shaderProgram, "uMMatrix");
   shaderProgram.vMatrixUniform = gl.getUniformLocation(shaderProgram, "uVMatrix");
   shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
@@ -210,7 +202,7 @@ function webGLStart() {
  */
 function initCylinder(nslices, nstacks, r, g, b) {
   var transformation = new Transformation([-1, 0, 0], undefined, [.5, .5, .5]);
-  var material = new Material([0, 1, 0], [1, 0, 1, 1], [.5, .5, .5, 1]);
+  var material = new Material([0, 1, 0], [1, 0, 1, 1], [.5, .5, .5, 1], 10);
   var cylinder = new Geometry(transformation);
   var nvertices = nslices * nstacks;
 
@@ -227,11 +219,6 @@ function initCylinder(nslices, nstacks, r, g, b) {
       cylinder.normals.push(Math.cos(angle));
       cylinder.normals.push(Math.sin(angle));
       cylinder.normals.push(0.0);
-
-      cylinder.colors.push(Math.cos(angle));
-      cylinder.colors.push(Math.sin(angle));
-      cylinder.colors.push(j * 1.0 / (nstacks - 1));
-      cylinder.colors.push(1.0);
     }
   }
 
@@ -276,14 +263,13 @@ function initCube() {
   var f = [-0.5, 0.5, 0.5];
   var g = [-0.5, -0.5, 0.5];
   var h = [0.5, -0.5, 0.5];
-  var color = [1, 0, 0];
 
-  initCubeSide(cube, a, b, c, d, [0, 0, -1], color);
-  initCubeSide(cube, e, f, g, h, [0, 0, 1], color);
-  initCubeSide(cube, b, c, g, f, [-1, 0, 0], color);
-  initCubeSide(cube, a, d, h, e, [1, 0, 0], color);
-  initCubeSide(cube, a, b, f, e, [0, 1, 0], color);
-  initCubeSide(cube, c, d, h, g, [0, -1, 0], color);
+  initCubeSide(cube, a, b, c, d, [0, 0, -1]);
+  initCubeSide(cube, e, f, g, h, [0, 0, 1]);
+  initCubeSide(cube, b, c, g, f, [-1, 0, 0]);
+  initCubeSide(cube, a, d, h, e, [1, 0, 0]);
+  initCubeSide(cube, a, b, f, e, [0, 1, 0]);
+  initCubeSide(cube, c, d, h, g, [0, -1, 0]);
 
   for (var i = 0; i < 6; i++) {
     cube.indices.push(i * 4);
@@ -300,7 +286,7 @@ function initCube() {
 /**
  * A helper method for generating cube faces.
  */
-function initCubeSide(cube, v1, v2, v3, v4, normal, color) {
+function initCubeSide(cube, v1, v2, v3, v4, normal) {
   cube.verts.push(...v1);
   cube.verts.push(...v2);
   cube.verts.push(...v3);
@@ -309,10 +295,6 @@ function initCubeSide(cube, v1, v2, v3, v4, normal, color) {
   cube.normals.push(...normal);
   cube.normals.push(...normal);
   cube.normals.push(...normal);
-  cube.colors.push(...color);
-  cube.colors.push(...color);
-  cube.colors.push(...color);
-  cube.colors.push(...color);
 }
 
 /**
@@ -321,7 +303,7 @@ function initCubeSide(cube, v1, v2, v3, v4, normal, color) {
  */
 function initSphere(nslices, nstacks, radius) {
   var transformation = new Transformation([1, -1, 0]);
-  var material = new Material([0, 1, 0], [0, 0, 1, 1]);
+  var material = new Material([0, 1, 0], [0, 0, 1, 1], undefined, 5);
   var sphere = new Geometry(transformation, material);
 
   for (var i = 0; i <= nstacks; i++) {

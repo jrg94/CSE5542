@@ -3,7 +3,6 @@ var vertexShaderSrc = `
   precision mediump float;
   attribute vec3 aVertexPosition;
   attribute vec3 aVertexNormal;
-  attribute vec4 aVertexColor;
 
   uniform mat4 uMMatrix;
   uniform mat4 uVMatrix;
@@ -64,7 +63,7 @@ var fragmentShaderSrc = `
 
     if (lambertian > 0.0) {
        float specAngle = max(dot(reflectDir, viewDir), 0.0);
-       spec = pow(specAngle, 4.0);
+       spec = pow(specAngle, mat_shininess);
     }
 
     vec4 ambient = ambient_coef * light_ambient;
