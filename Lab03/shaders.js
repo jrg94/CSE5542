@@ -22,9 +22,13 @@ var vertexShaderSrc = `
 
   varying vec4 eye_pos;
   varying vec3 v_normal;
+  varying vec3 v_pos;
 
   void main(void) {
     gl_Position = uPMatrix * uVMatrix * uMMatrix * vec4(aVertexPosition, 1.0);
+    vec4 v_pos4 = uVMatrix * uMMatrix * vec4(aVertexPosition, 1.0);
+    v_pos = vec3(v_pos4) / v_pos4.w;
+    v_normal = vec3(uNMatrix * vec4(aVertexNormal, 0.0));
   }
 `;
 
