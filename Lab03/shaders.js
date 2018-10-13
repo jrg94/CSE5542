@@ -27,7 +27,6 @@ var vertexShaderSrc = `
   void main(void) {
 
     // transform light pos from local to eye space
-    // vec4 light_pos_in_eye = uVMatrix * uMMatrix * light_pos;
     vec4 light_pos_in_eye = light_pos;
 
     // transform normal from local to eye space: normal matrix is the inverse transpose of the modelview matrix
@@ -48,11 +47,9 @@ var vertexShaderSrc = `
     vec4 ambient = ambient_coef * light_ambient;
     float ndotl = max(dot(v_normal, light_vector), 0.0);
 
-    vec4 diffuse = diffuse_coef * light_diffuse* ndotl;
+    vec4 diffuse = diffuse_coef * light_diffuse * ndotl;
 
-    // both lines below are okay. One is to use the reflect function the other is to compute by yourself
-    // vec3 R= normalize(vec3(reflect(-light_vector, v_normal)));
-    vec3 R = normalize(2.0 * ndotl *v_normal-eye_vector);
+    vec3 R = normalize(2.0 * ndotl * v_normal - eye_vector);
     float rdotv = max(dot(R, eye_vector), 0.0);
 
     vec4 specular;
@@ -61,16 +58,11 @@ var vertexShaderSrc = `
     else
       specular = vec4(0,0,0,1);
 
-    gl_Position = uPMatrix*uVMatrix*uMMatrix*vec4(aVertexPosition, 1.0);
+    gl_Position = uPMatrix * uVMatrix * uMMatrix * vec4(aVertexPosition, 1.0);
 
-    vColor = ambient+diffuse+specular;
-    // vColor = vec4(eye_vector, 1.0);
-    // vColor = aVertexColor;
-    // vColor = vec4(aVertexNormal, 1.0);
-    // vColor = vec4(v_normal, 1.0);
-
+    vColor = ambient + diffuse + specular;
     }
-`;
+`;  
 
 // The fragment shader
 var fragmentShaderSrc = `
