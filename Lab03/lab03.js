@@ -11,6 +11,9 @@ var cylinder = initCylinder(50, 50, 1.0, 1.0, 0.0);
 var cube = initCube();;
 var sphere = initSphere(50, 50, 1);
 
+/**
+ * Generates a light object.
+ */
 function Light(position = [0, 0, 0, 1], ambient = [0, 0, 0, 1], diffuse = [.8, .8, .8], specular = [1, 1, 1, 1]) {
   this.position = position;
   this.ambient = ambient;
@@ -25,12 +28,18 @@ function Light(position = [0, 0, 0, 1], ambient = [0, 0, 0, 1], diffuse = [.8, .
   }
 }
 
+/**
+ * Generates a transformation object.
+ */
 function Transformation(translation = [0, 0, 0], rotation = [0, 0, 0], scale = [1, 1, 1]) {
   this.translation = translation;
   this.rotation = rotation;
   this.scale = scale;
 }
 
+/**
+ * Generates a material object.
+ */
 function Material(ambient = [0, 0, 1, 1], diffuse = [1, 1, 0, 1], specular = [.9, .9, .9, 1], shininess = 50) {
   this.ambient = ambient;
   this.diffuse = diffuse;
