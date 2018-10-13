@@ -245,55 +245,48 @@ function InitCylinder(nslices, nstacks, r, g, b) {
 function InitCube() {
   var cube = new Geometry([1, 1, 0]);
 
-  cube.verts = [
-    0.5, 0.5, -.5,
-    -0.5, 0.5, -.5,
-    -0.5, -0.5, -.5,
-    0.5, -0.5, -.5,
-    0.5, 0.5, .5,
-    -0.5, 0.5, .5,
-    -0.5, -0.5, .5,
-    0.5, -0.5, .5
-  ];
+  var a = [0.5, 0.5, -0.5];
+  var b = [-0.5, 0.5, -0.5];
+  var c = [-0.5, -0.5, -0.5];
+  var d = [0.5, -0.5, -0.5];
+  var e = [0.5, 0.5, 0.5];
+  var f = [-0.5, 0.5, 0.5];
+  var g = [-0.5, -0.5, 0.5];
+  var h = [0.5, -0.5, 0.5];
+  var color = [1, 0, 0];
 
-  cube.normals = [
-    1, 1, -1,
-    -1, 1, -1,
-    -1, -1, -1,
-    1, -1, -1,
-    1, 1, 1,
-    -1, 1, 1,
-    -1, -1, 1,
-    1, -1, 1
-  ];
+  initCubeSide(cube, a, b, c, d, [0, 0, -1], color);
+  initCubeSide(cube, e, f, g, h, [0, 0, 1], color);
+  initCubeSide(cube, b, c, g, f, [-1, 0, 0], color);
+  initCubeSide(cube, a, d, h, e, [1, 0, 0], color);
+  initCubeSide(cube, a, b, f, e, [0, 1, 0], color);
+  initCubeSide(cube, c, d, h, g, [0, -1, 0], color);
 
-  cube.indices = [
-    0, 1, 2,
-    0, 2, 3,
-    0, 3, 7,
-    0, 7, 4,
-    6, 2, 3,
-    6, 3, 7,
-    5, 1, 2,
-    5, 2, 6,
-    5, 1, 0,
-    5, 0, 4,
-    5, 6, 7,
-    5, 7, 4
-  ];
-
-  cube.colors = [
-    1.0, 0.0, 0.0, 1.0,
-    0.0, 1.0, 0.0, 1.0,
-    0.0, 0.0, 1.0, 1.0,
-    1.0, 0.0, 0.0, 1.0,
-    1.0, 0.0, 0.0, 1.0,
-    0.0, 1.0, 0.0, 1.0,
-    0.0, 0.0, 1.0, 1.0,
-    1.0, 0.0, 0.0, 1.0,
-  ];
+  for (var i = 0; i < 6; i++) {
+    cube.indices.push(i * 4);
+    cube.indices.push(i * 4 + 1);
+    cube.indices.push(i * 4 + 2);
+    cube.indices.push(i * 4);
+    cube.indices.push(i * 4 + 2);
+    cube.indices.push(i * 4 + 3);
+  }
 
   return cube;
+}
+
+function initCubeSide(cube, v1, v2, v3, v4, normal, color) {
+  cube.verts.push(...v1);
+  cube.verts.push(...v2);
+  cube.verts.push(...v3);
+  cube.verts.push(...v4);
+  cube.normals.push(...normal);
+  cube.normals.push(...normal);
+  cube.normals.push(...normal);
+  cube.normals.push(...normal);
+  cube.colors.push(...color);
+  cube.colors.push(...color);
+  cube.colors.push(...color);
+  cube.colors.push(...color);
 }
 
 /**
