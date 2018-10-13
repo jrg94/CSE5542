@@ -15,7 +15,7 @@ function Scene() {
 
   this.addLight = function(light) {
     this.lights.push(light);
-    var lightMaterial = new Material([1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0], 0);
+    var lightMaterial = new Material([0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], 0);
     var lightObject = initSphere(50, 50, .2, light.transformation, lightMaterial);
     this.objects.push(lightObject);
   }
@@ -163,9 +163,9 @@ function Geometry(transformation = new Transformation(), material = new Material
   }
 
   this.setMaterialProperties = function() {
-    gl.uniform4f(shaderProgram.ambient_coefUniform, this.mat_ambient[0], this.mat_ambient[1], this.mat_ambient[2], 1.0);
-    gl.uniform4f(shaderProgram.diffuse_coefUniform, this.mat_diffuse[0], this.mat_diffuse[1], this.mat_diffuse[2], 1.0);
-    gl.uniform4f(shaderProgram.specular_coefUniform, this.mat_specular[0], this.mat_specular[1], this.mat_specular[2], 1.0);
+    gl.uniform4f(shaderProgram.ambient_coefUniform, this.mat_ambient[0], this.mat_ambient[1], this.mat_ambient[2], this.mat_ambient[3]);
+    gl.uniform4f(shaderProgram.diffuse_coefUniform, this.mat_diffuse[0], this.mat_diffuse[1], this.mat_diffuse[2], this.mat_diffuse[3]);
+    gl.uniform4f(shaderProgram.specular_coefUniform, this.mat_specular[0], this.mat_specular[1], this.mat_specular[2], this.mat_specular[3]);
     gl.uniform1f(shaderProgram.shininess_coefUniform, this.mat_shine[0]);
   }
 
@@ -212,7 +212,7 @@ function initScene() {
 
   // Sphere
   var sphereTransformation = new Transformation([1, -1, 0]);
-  var sphereMaterial = new Material([0, 1, 0], [0, 0, 1, 1], undefined, 5);
+  var sphereMaterial = new Material([0, 1, 0, 1], [0, 0, 1, 1], undefined, 5);
   var sphere = initSphere(50, 50, 1, sphereTransformation, sphereMaterial);
 
   scene = new Scene();
