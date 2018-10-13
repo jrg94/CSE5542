@@ -1,22 +1,29 @@
 var gl;
 var shaderProgram;
 var draw_type = 2;
-
-// Lighting parameters
-var light_ambient = [0, 0, 0, 1];
-var light_diffuse = [.8, .8, .8, 1];
-var light_specular = [1, 1, 1, 1];
-var light_pos = [0, 0, 1, 1]; // eye space position
-
 var Z_angle = 0.0;
-
-// Mouse location
 var lastMouseX = 0;
 var lastMouseY = 0;
 
-var cylinder;
-var cube;
-var sphere;
+// Scene
+var light = new Light();
+var cylinder = initCylinder(50, 50, 1.0, 1.0, 0.0);
+var cube = initCube();;
+var sphere = initSphere(50, 50, 1);
+
+function Light(position = [0, 0, 0, 1], ambient = [0, 0, 0, 1], diffuse = [.8, .8, .8], specular = [1, 1, 1, 1]) {
+  this.position = position;
+  this.ambient = ambient;
+  this.diffuse = diffuse;
+  this.specular = specular;
+
+  this.emit = function() {
+    gl.uniform4f(shaderProgram.light_posUniform, this.position[0], this.position[1], this.position[2], this.position[3]);
+    gl.uniform4f(shaderProgram.light_ambientUniform, this.ambient[0], this.ambient[1], this.ambient[2], 1.0);
+    gl.uniform4f(shaderProgram.light_diffuseUniform, this.diffuse[0], this.diffuse[1], this.diffuse[2], 1.0);
+    gl.uniform4f(shaderProgram.light_specularUniform, this.specular[0], this.specular[1], this.specular[2], 1.0);
+  }
+}
 
 function Transformation(translation = [0, 0, 0], rotation = [0, 0, 0], scale = [1, 1, 1]) {
   this.translation = translation;
@@ -24,7 +31,7 @@ function Transformation(translation = [0, 0, 0], rotation = [0, 0, 0], scale = [
   this.scale = scale;
 }
 
-function Material(ambient = [0, 0, 1], diffuse = [1, 1, 0, 1], specular = [.9, .9, .9, 1], shininess = 50) {
+function Material(ambient = [0, 0, 1, 1], diffuse = [1, 1, 0, 1], specular = [.9, .9, .9, 1], shininess = 50) {
   this.ambient = ambient;
   this.diffuse = diffuse;
   this.specular = specular;
@@ -175,13 +182,8 @@ function webGLStart() {
   shaderProgram.light_diffuseUniform = gl.getUniformLocation(shaderProgram, "light_diffuse");
   shaderProgram.light_specularUniform = gl.getUniformLocation(shaderProgram, "light_specular");
 
-  cube = initCube();
   cube.initBuffers();
-
-  cylinder = initCylinder(50, 50, 1.0, 1.0, 0.0);
   cylinder.initBuffers();
-
-  sphere = initSphere(50, 50, 1);
   sphere.initBuffers();
 
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
@@ -360,11 +362,7 @@ function drawScene() {
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  gl.uniform4f(shaderProgram.light_posUniform, light_pos[0], light_pos[1], light_pos[2], light_pos[3]);
-  gl.uniform4f(shaderProgram.light_ambientUniform, light_ambient[0], light_ambient[1], light_ambient[2], 1.0);
-  gl.uniform4f(shaderProgram.light_diffuseUniform, light_diffuse[0], light_diffuse[1], light_diffuse[2], 1.0);
-  gl.uniform4f(shaderProgram.light_specularUniform, light_specular[0], light_specular[1], light_specular[2], 1.0);
-
+  light.emit();
   cube.draw();
   cylinder.draw();
   sphere.draw();
