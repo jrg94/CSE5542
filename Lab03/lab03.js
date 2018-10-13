@@ -4,27 +4,32 @@ var draw_type = 2;
 var Z_angle = 0.0;
 var lastMouseX = 0;
 var lastMouseY = 0;
-
-// Scene
-var light = new Light();
-var cylinder = initCylinder(50, 50, 1.0, 1.0, 0.0);
-var cube = initCube();;
-var sphere = initSphere(50, 50, 1);
+var scene;
 
 /**
- * Generates a light object.
+ * A scene object.
  */
-function Light(position = [0, 0, 0, 1], ambient = [0, 0, 0, 1], diffuse = [.8, .8, .8], specular = [1, 1, 1, 1]) {
-  this.position = position;
-  this.ambient = ambient;
-  this.diffuse = diffuse;
-  this.specular = specular;
+function Scene() {
+  this.objects = [];
+  this.lights = [];
 
-  this.emit = function() {
-    gl.uniform4f(shaderProgram.light_posUniform, this.position[0], this.position[1], this.position[2], this.position[3]);
-    gl.uniform4f(shaderProgram.light_ambientUniform, this.ambient[0], this.ambient[1], this.ambient[2], 1.0);
-    gl.uniform4f(shaderProgram.light_diffuseUniform, this.diffuse[0], this.diffuse[1], this.diffuse[2], 1.0);
-    gl.uniform4f(shaderProgram.light_specularUniform, this.specular[0], this.specular[1], this.specular[2], 1.0);
+  this.drawScene = function() {
+    this.lights.forEach(function(light) {
+      light.emit();
+    });
+    this.objects.forEach(function(object) {
+      object.draw();
+    });
+  }
+
+  this.initBuffers = function() {
+    this.objects.forEach(function(object) {
+      object.initBuffers();
+    });
+
+    this.lights.forEach(function(light) {
+      light.lightObject.initBuffers();
+    })
   }
 }
 
@@ -45,6 +50,48 @@ function Material(ambient = [0, 0, 1, 1], diffuse = [1, 1, 0, 1], specular = [.9
   this.diffuse = diffuse;
   this.specular = specular;
   this.shininess = shininess;
+}
+
+/**
+ * Generates a light object.
+ */
+function Light(transformation = new Transformation, emitter = new Material()) {
+  this.transformation = transformation;
+  this.emitter = emitter;
+  this.lightObject = initSphere(50, 50, .2, transformation, emitter);
+
+  this.emit = function() {
+    gl.uniform4f(
+      shaderProgram.light_posUniform,
+      this.transformation.translation[0],
+      this.transformation.translation[1],
+      this.transformation.translation[2],
+      this.transformation.translation[3]
+    );
+    gl.uniform4f(
+      shaderProgram.light_ambientUniform,
+      this.emitter.ambient[0],
+      this.emitter.ambient[1],
+      this.emitter.ambient[2],
+      1.0
+    );
+    gl.uniform4f(
+      shaderProgram.light_diffuseUniform,
+      this.emitter.diffuse[0],
+      this.emitter.diffuse[1],
+      this.emitter.diffuse[2],
+      1.0
+     );
+    gl.uniform4f(
+      shaderProgram.light_specularUniform,
+      this.emitter.specular[0],
+      this.emitter.specular[1],
+      this.emitter.specular[2],
+      1.0
+     );
+
+    this.lightObject.draw();
+  }
 }
 
 /**
@@ -145,6 +192,34 @@ function Geometry(transformation = new Transformation(), material = new Material
 }
 
 /**
+ * A helper function to group all scene initialization.
+ */
+function initScene() {
+  // Lights
+  var lightTransformation = new Transformation([0, 10, 0, 1]);
+  var lightEmitter = new Material([0, 0, 0, 1], [.8, .8, .8, 1], [1, 1, 1, 1])
+  var light = new Light(lightTransformation, lightEmitter);
+
+  // Objects
+  var cylinderTransformation = new Transformation([-1, 0, 0], undefined, [.5, .5, .5]);
+  var cylinderMaterial = new Material([0, 1, 0], [1, 0, 1, 1], [.5, .5, .5, 1], 10);
+  var cylinder = initCylinder(50, 50, cylinderTransformation, cylinderMaterial);
+  var cubeTransformation = new Transformation([1, 1, 0]);
+  var cubeMaterial = new Material([0, 1, 0], [1, 0, 1, 1]);
+  var cube = initCube(cubeTransformation, cubeMaterial);
+  var sphereTransformation = new Transformation([1, -1, 0]);
+  var sphereMaterial = new Material([0, 1, 0], [0, 0, 1, 1], undefined, 5);
+  var sphere = initSphere(50, 50, 1, sphereTransformation, sphereMaterial);
+
+  scene = new Scene();
+  scene.objects.push(cylinder);
+  scene.objects.push(cube);
+  scene.objects.push(sphere);
+  scene.lights.push(light);
+  scene.initBuffers();
+}
+
+/**
  * Initializes the graphics context.
  *
  * @param canvas a canvas object
@@ -191,9 +266,7 @@ function webGLStart() {
   shaderProgram.light_diffuseUniform = gl.getUniformLocation(shaderProgram, "light_diffuse");
   shaderProgram.light_specularUniform = gl.getUniformLocation(shaderProgram, "light_specular");
 
-  cube.initBuffers();
-  cylinder.initBuffers();
-  sphere.initBuffers();
+  initScene();
 
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
@@ -211,9 +284,7 @@ function webGLStart() {
  * @param {number} g the green value
  * @param {number} b the blue value
  */
-function initCylinder(nslices, nstacks, r, g, b) {
-  var transformation = new Transformation([-1, 0, 0], undefined, [.5, .5, .5]);
-  var material = new Material([0, 1, 0], [1, 0, 1, 1], [.5, .5, .5, 1], 10);
+function initCylinder(nslices, nstacks, transformation, material) {
   var cylinder = new Geometry(transformation);
   var nvertices = nslices * nstacks;
 
@@ -261,9 +332,7 @@ function initCylinder(nslices, nstacks, r, g, b) {
 /**
  * Generates a cube.
  */
-function initCube() {
-  var transformation = new Transformation([1, 1, 0]);
-  var material = new Material([0, 1, 0], [1, 0, 1, 1]);
+function initCube(transformation, material) {
   var cube = new Geometry(transformation, material);
 
   var a = [0.5, 0.5, -0.5];
@@ -312,9 +381,7 @@ function initCubeSide(cube, v1, v2, v3, v4, normal) {
  * Generates a sphere object.
  * Adapted from: http://learningwebgl.com/blog/?p=1253
  */
-function initSphere(nslices, nstacks, radius) {
-  var transformation = new Transformation([1, -1, 0]);
-  var material = new Material([0, 1, 0], [0, 0, 1, 1], undefined, 5);
+function initSphere(nslices, nstacks, radius, transformation, material) {
   var sphere = new Geometry(transformation, material);
 
   for (var i = 0; i <= nstacks; i++) {
@@ -370,11 +437,7 @@ function degToRad(degrees) {
 function drawScene() {
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-  light.emit();
-  cube.draw();
-  cylinder.draw();
-  sphere.draw();
+  scene.drawScene();
 }
 
 /**
