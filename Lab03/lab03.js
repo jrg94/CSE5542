@@ -210,6 +210,7 @@ function webGLStart() {
  */
 function initCylinder(nslices, nstacks, r, g, b) {
   var transformation = new Transformation([-1, 0, 0], undefined, [.5, .5, .5]);
+  var material = new Material([0, 1, 0], [1, 0, 1, 1], [.5, .5, .5, 1]);
   var cylinder = new Geometry(transformation);
   var nvertices = nslices * nstacks;
 
@@ -264,7 +265,8 @@ function initCylinder(nslices, nstacks, r, g, b) {
  */
 function initCube() {
   var transformation = new Transformation([1, 1, 0]);
-  var cube = new Geometry(transformation);
+  var material = new Material([0, 1, 0], [1, 0, 1, 1]);
+  var cube = new Geometry(transformation, material);
 
   var a = [0.5, 0.5, -0.5];
   var b = [-0.5, 0.5, -0.5];
@@ -319,7 +321,8 @@ function initCubeSide(cube, v1, v2, v3, v4, normal, color) {
  */
 function initSphere(nslices, nstacks, radius) {
   var transformation = new Transformation([1, -1, 0]);
-  var sphere = new Geometry(transformation);
+  var material = new Material([0, 1, 0], [0, 0, 1, 1]);
+  var sphere = new Geometry(transformation, material);
 
   for (var i = 0; i <= nstacks; i++) {
     var theta = i * Math.PI / nstacks;
