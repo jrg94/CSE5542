@@ -8,12 +8,6 @@ var light_diffuse = [.8, .8, .8, 1];
 var light_specular = [1, 1, 1, 1];
 var light_pos = [0, 0, 0, 1]; // eye space position
 
-// Material parameters
-var mat_ambient = [0, 0, 0, 1];
-var mat_diffuse = [1, 1, 0, 1];
-var mat_specular = [.9, .9, .9, 1];
-var mat_shine = [50];
-
 var Z_angle = 0.0;
 
 // Mouse location
@@ -24,10 +18,22 @@ var cylinder;
 var cube;
 var sphere;
 
+function Transformation(translation = [0, 0, 0], rotation = [0, 0, 0], scale = [1, 1, 1]) {
+  this.translation = translation;
+  this.rotation = rotation;
+  this.scale = scale;
+}
+
+function Material(ambient = [0, 0, 1], diffuse = [1, 1, 0, 1], specular = [.9, .9, .9, 1]) {
+  this.ambient = ambient;
+  this.diffuse = diffuse;
+  this.specular = specular;
+}
+
 /**
  * Generates a geometry object.
  */
-function Geometry(location = [0, 0, 0], scale = [1, 1, 1]) {
+function Geometry(transformation = new Transformation(), material = new Material()) {
   this.verts = [];
   this.normals = [];
   this.colors = [];
@@ -36,12 +42,17 @@ function Geometry(location = [0, 0, 0], scale = [1, 1, 1]) {
   this.normalBuffer = null;
   this.colorBuffer = null;
   this.indexBuffer = null;
+  this.mat_ambient = material.ambient;
+  this.mat_diffuse = material.diffuse;
+  this.mat_specular = material.specular;
+  this.mat_shine = [50];
   this.mMatrix = mat4.create(); // model matrix
   this.vMatrix = mat4.create(); // view matrix
   this.pMatrix = mat4.create(); //projection matrix
   this.nMatrix = mat4.create(); // normal matrix
-  this.location = location;
-  this.scale = scale;
+  this.location = transformation.translation;
+  this.rotation = transformation.rotation;
+  this.scale = transformation.scale;
 
   this.initArrayBuffer = function(buffer, data, itemSize) {
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -92,10 +103,10 @@ function Geometry(location = [0, 0, 0], scale = [1, 1, 1]) {
   }
 
   this.setMaterialProperties = function() {
-    gl.uniform4f(shaderProgram.ambient_coefUniform, mat_ambient[0], mat_ambient[1], mat_ambient[2], 1.0);
-    gl.uniform4f(shaderProgram.diffuse_coefUniform, mat_diffuse[0], mat_diffuse[1], mat_diffuse[2], 1.0);
-    gl.uniform4f(shaderProgram.specular_coefUniform, mat_specular[0], mat_specular[1], mat_specular[2], 1.0);
-    gl.uniform1f(shaderProgram.shininess_coefUniform, mat_shine[0]);
+    gl.uniform4f(shaderProgram.ambient_coefUniform, this.mat_ambient[0], this.mat_ambient[1], this.mat_ambient[2], 1.0);
+    gl.uniform4f(shaderProgram.diffuse_coefUniform, this.mat_diffuse[0], this.mat_diffuse[1], this.mat_diffuse[2], 1.0);
+    gl.uniform4f(shaderProgram.specular_coefUniform, this.mat_specular[0], this.mat_specular[1], this.mat_specular[2], 1.0);
+    gl.uniform1f(shaderProgram.shininess_coefUniform, this.mat_shine[0]);
   }
 
   this.draw = function() {
@@ -198,7 +209,8 @@ function webGLStart() {
  * @param {number} b the blue value
  */
 function initCylinder(nslices, nstacks, r, g, b) {
-  var cylinder = new Geometry([-1, 0, 0], [.5, .5, .5]);
+  var transformation = new Transformation([-1, 0, 0], undefined, [.5, .5, .5]);
+  var cylinder = new Geometry(transformation);
   var nvertices = nslices * nstacks;
 
   var Dangle = 2 * Math.PI / (nslices - 1);
@@ -251,7 +263,8 @@ function initCylinder(nslices, nstacks, r, g, b) {
  * Generates a cube.
  */
 function initCube() {
-  var cube = new Geometry([1, 1, 0]);
+  var transformation = new Transformation([1, 1, 0]);
+  var cube = new Geometry(transformation);
 
   var a = [0.5, 0.5, -0.5];
   var b = [-0.5, 0.5, -0.5];
@@ -305,7 +318,8 @@ function initCubeSide(cube, v1, v2, v3, v4, normal, color) {
  * Adapted from: http://learningwebgl.com/blog/?p=1253
  */
 function initSphere(nslices, nstacks, radius) {
-  var sphere = new Geometry([1, -1, 0]);
+  var transformation = new Transformation([1, -1, 0]);
+  var sphere = new Geometry(transformation);
 
   for (var i = 0; i <= nstacks; i++) {
     var theta = i * Math.PI / nstacks;
