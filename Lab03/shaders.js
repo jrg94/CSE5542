@@ -53,16 +53,17 @@ var vertexShaderSrc = `
     float rdotv = max(dot(R, eye_vector), 0.0);
 
     vec4 specular;
-    if (ndotl>0.0)
-      specular = specular_coef* light_specular*pow(rdotv, mat_shininess);
-    else
-      specular = vec4(0,0,0,1);
+    if (ndotl > 0.0) {
+      specular = specular_coef * light_specular * pow(rdotv, mat_shininess);
+    } else {
+      specular = vec4(0, 0, 0, 1);
+    }
 
     gl_Position = uPMatrix * uVMatrix * uMMatrix * vec4(aVertexPosition, 1.0);
 
     vColor = ambient + diffuse + specular;
     }
-`;  
+`;
 
 // The fragment shader
 var fragmentShaderSrc = `
