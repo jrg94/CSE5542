@@ -500,18 +500,12 @@ function onDocumentMouseOut(event) {
  * A keyboard event which manipulates the matrices for translation and
  * scaling depending on the key pressed.
  *
- * d: translates the matrices by 0.1 on the local x-axis
- * a: translates the matrices by -0.1 on the local x-axis
- * w: translates the matrices by 0.1 on the local y-axis
- * s: translates the matrices by -0.1. on the local y-axis
- * e: scales the matrices by 1.05
- * q: scales the matrices by 0.95
- * 1: moves the camera up
- * 2: moves the camera down
- * 3: moves the camera left
- * 4: moves the camera right
- * 5: reduces the camera viewing angle
- * 6: expands the camera viewing angle
+ * d: translates the light by +0.1 on the local x-axis
+ * a: translates the light by -0.1 on the local x-axis
+ * w: translates the light by +0.1 on the local y-axis
+ * s: translates the light by -0.1 on the local y-axis
+ * e: translates the light by +0.1 on the local z-axis
+ * q: translates the light by -0.1 on the local z-axis
  *
  * @param event some keyboard event
  */
