@@ -171,7 +171,6 @@ function Geometry(transformation = new Transformation(), material = new Material
 
   this.draw = function() {
     this.transform();
-    this.setMaterialProperties();
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.positionBuffer);
     gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.positionBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -179,7 +178,8 @@ function Geometry(transformation = new Transformation(), material = new Material
     gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, this.normalBuffer.itemSize, gl.FLOAT, false, 0, 0);
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
 
-    this.setMatrixUniforms(); // pass the modelview mattrix and projection matrix to the shader
+    this.setMaterialProperties();
+    this.setMatrixUniforms();
 
     if (draw_type == 1) {
       gl.drawArrays(gl.LINE_LOOP, 0, this.positionBuffer.numItems);
@@ -202,7 +202,7 @@ function initScene() {
 
   // Cylinder
   var cylinderTransformation = new Transformation([-1, 0, 0], undefined, [.5, .5, .5]);
-  var cylinderMaterial = new Material([0, 1, 0, 1], [1, 0, 1, 1], [.5, .5, .5, 1], 10);
+  var cylinderMaterial = new Material([0, 1, 0, 1], [0, 1, 0, 1], [.05, .05, .05, 1], 50);
   var cylinder = initCylinder(50, 50, cylinderTransformation, cylinderMaterial);
 
   // Cube
@@ -290,7 +290,7 @@ function webGLStart() {
  * @param {number} b the blue value
  */
 function initCylinder(nslices, nstacks, transformation, material) {
-  var cylinder = new Geometry(transformation);
+  var cylinder = new Geometry(transformation, material);
   var nvertices = nslices * nstacks;
 
   var Dangle = 2 * Math.PI / (nslices - 1);
