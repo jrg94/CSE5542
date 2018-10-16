@@ -9,7 +9,8 @@ I tested on **Google Chrome** and **Windows 10**.
 
 With the solution open, you can begin playing with the following controls:
 
-- left click + drag: rotation
+- left click + drag: rotate objects
+- a, s, d, f, q, e: translate light
 
 The solution should render as follows:
 
