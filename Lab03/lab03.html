@@ -16,12 +16,25 @@
 <body onload="webGLStart();">
   <canvas id="code03-canvas" style="border:none;" width="700" height="700"></canvas>
 
-  <h4> Geometry: </h4>
+  <h2> Controls </h2>
+
+  Below you'll find all the controls needed to interact with the scene.
+
+  <ul>
+    <li>d: moves the light left</li>
+    <li>a: moves the light right</li>
+    <li>w: moves the light up</li>
+    <li>s: moves the light down</li>
+    <li>e: moves the light back</li>
+    <li>q: moves the light forward</li>
+  </ul>
+
+  <h3> Geometry: </h3>
   <button onclick="geometry(0)"> POINTS</button>
   <button onclick="geometry(1)"> LINEs</button>
   <button onclick="geometry(2)"> FACES</button>
 
-  <h4> Background: </h4>
+  <h3> Background: </h3>
   <button onclick="backgroundColor(1,0,0)"> Red</button>
   <button onclick="backgroundColor(0,1,0)"> Green</button>
   <button onclick="backgroundColor(0,0,1)"> Blue</button>
@@ -29,12 +42,8 @@
   <button onclick="backgroundColor(0,0,0)"> Black</button>
   <button onclick="backgroundColor(1,1,1)"> White</button>
 
-  <div>
-    <h4>
-      Click on the left mouse button and move the coursor to rotate
-    </h4>
-    <button onclick="redraw()"> Go Back! </button>
-  </div>
+  <h3> Reset: </h3>
+  <button onclick="redraw()"> Go Back! </button>
 
 </body>
 
