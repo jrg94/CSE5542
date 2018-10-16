@@ -39,7 +39,7 @@ function Scene() {
 /**
  * Generates a transformation object.
  */
-function Transformation(translation = [0, 0, 0], rotation = [0, 0, 0], scale = [1, 1, 1]) {
+function Transformation(translation = [0, 0, 0, 1], rotation = [0, 0, 0, 1], scale = [1, 1, 1, 1]) {
   this.translation = translation;
   this.rotation = rotation;
   this.scale = scale;
@@ -275,6 +275,7 @@ function webGLStart() {
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
   document.addEventListener('mousedown', onDocumentMouseDown, false);
+  document.addEventListener('keydown', onKeyDown, false);
 
   drawScene();
 }
@@ -493,6 +494,49 @@ function onDocumentMouseOut(event) {
   document.removeEventListener('mousemove', onDocumentMouseMove, false);
   document.removeEventListener('mouseup', onDocumentMouseUp, false);
   document.removeEventListener('mouseout', onDocumentMouseOut, false);
+}
+
+/**
+ * A keyboard event which manipulates the matrices for translation and
+ * scaling depending on the key pressed.
+ *
+ * d: translates the matrices by 0.1 on the local x-axis
+ * a: translates the matrices by -0.1 on the local x-axis
+ * w: translates the matrices by 0.1 on the local y-axis
+ * s: translates the matrices by -0.1. on the local y-axis
+ * e: scales the matrices by 1.05
+ * q: scales the matrices by 0.95
+ * 1: moves the camera up
+ * 2: moves the camera down
+ * 3: moves the camera left
+ * 4: moves the camera right
+ * 5: reduces the camera viewing angle
+ * 6: expands the camera viewing angle
+ *
+ * @param event some keyboard event
+ */
+function onKeyDown(event) {
+  switch (event.keyCode) {
+    case 65: // a
+      scene.lights[0].transformation.translation[0] -= 0.1;
+      break;
+    case 68: // d
+      scene.lights[0].transformation.translation[0] += 0.1;
+      break;
+    case 87: // w
+      scene.lights[0].transformation.translation[1] += 0.1;
+      break;
+    case 83: // s
+      scene.lights[0].transformation.translation[1] -= 0.1;
+      break;
+    case 81: // q
+      scene.lights[0].transformation.translation[2] += 0.1;
+      break;
+    case 69: // e
+      scene.lights[0].transformation.translation[2] -= 0.1;
+      break;
+  }
+  drawScene();
 }
 
 /**
