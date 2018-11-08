@@ -122,15 +122,18 @@ function find_range(positions) {
   console.log("*****zmin = " + zmin + "zmax = " + zmax);
 }
 
-////////////////    Initialize JSON geometry file ///////////
-
-function initJSON() {
+function initJSON(file) {
   var request = new XMLHttpRequest();
-  request.open("GET", "Objects/teapot.json");
+  request.open("GET", file);
   request.onreadystatechange =
     function() {
       if (request.readyState == 4) {
-        handleLoadedTeapot(JSON.parse(request.responseText));
+        geometry = JSON.parse(request.responseText);
+        if (file === "Objects/teapot.json") {
+          handleLoadedTeapot(geometry);
+        } else {
+          handleLoadedGeometry(geomtry)
+        }
       }
     }
   request.send();
@@ -406,7 +409,7 @@ function webGLStart() {
   shaderProgram.cube_map_textureUniform = gl.getUniformLocation(shaderProgram, "cubeMap");
   shaderProgram.use_textureUniform = gl.getUniformLocation(shaderProgram, "use_texture");
 
-  initJSON();
+  initJSON("Objects/teapot.json");
 
   initTextures();
 
