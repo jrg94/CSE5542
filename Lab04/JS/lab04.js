@@ -45,8 +45,7 @@ function initCubeMap() {
   cubemapTexture.image.onload = function() {
     handleCubemapTextureLoaded(cubemapTexture);
   }
-  cubemapTexture.image.src = "brick.png";
-  //    cubemapTexture.image.src = "earth.png";
+  cubemapTexture.image.src = "Textures/brick.png";
   console.log("loading cubemap texture....")
 }
 
@@ -83,8 +82,7 @@ function initTextures() {
   sampleTexture.image.onload = function() {
     handleTextureLoaded(sampleTexture);
   }
-  //    sampleTexture.image.src = "earth.png";
-  sampleTexture.image.src = "earth.png";
+  sampleTexture.image.src = "Textures/earth.png";
   console.log("loading texture....")
 }
 
@@ -130,7 +128,7 @@ function find_range(positions) {
 function initJSON() {
   var request = new XMLHttpRequest();
   //  request.open("GET", "triangle.json");
-  request.open("GET", "teapot.json");
+  request.open("GET", "Objects/teapot.json");
   request.onreadystatechange =
     function() {
       if (request.readyState == 4) {
@@ -387,14 +385,10 @@ function webGLStart() {
 
 
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
-  console.log('start! ');
-  console.error('I hope no error ....');
-
 
   document.addEventListener('mousedown', onDocumentMouseDown,
     false);
 
-  console.error("draw");
   drawScene();
 }
 
