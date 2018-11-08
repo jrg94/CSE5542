@@ -132,7 +132,7 @@ function initJSON(file) {
         if (file === "Objects/teapot.json") {
           handleLoadedTeapot(geometry);
         } else {
-          handleLoadedGeometry(geomtry)
+          handleLoadedGeometry(geometry)
         }
       }
     }
@@ -140,7 +140,7 @@ function initJSON(file) {
 }
 
 function handleLoadedGeometry(geometryData) {
-  geometry = teapotData.geometries[teapotData.geometries.length - 1].data
+  var geometry = geometryData.geometries[geometryData.geometries.length - 1].data
 
   console.log(geometry);
 
@@ -410,6 +410,7 @@ function webGLStart() {
   shaderProgram.use_textureUniform = gl.getUniformLocation(shaderProgram, "use_texture");
 
   initJSON("Objects/teapot.json");
+  initJSON("Objects/plane.json");
 
   initTextures();
 
