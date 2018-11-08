@@ -136,6 +136,42 @@ function initJSON() {
   request.send();
 }
 
+function handleLoadedGeometry(geometryData) {
+  geometry = teapotData.geometries[teapotData.geometries.length - 1].data
+
+  console.log(geometry);
+
+  teapotVertexPositionBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexPositionBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geometry.vertices), gl.STATIC_DRAW);
+  teapotVertexPositionBuffer.itemSize = 3;
+  teapotVertexPositionBuffer.numItems = geometry.vertices.length / 3;
+
+  teapotVertexNormalBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexNormalBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geometry.normals), gl.STATIC_DRAW);
+  teapotVertexNormalBuffer.itemSize = 3;
+  teapotVertexNormalBuffer.numItems = geometry.normals.length / 3;
+
+  teapotVertexTextureCoordBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexTextureCoordBuffer);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geometry.uvs),
+    gl.STATIC_DRAW);
+  teapotVertexTextureCoordBuffer.itemSize = 2;
+  teapotVertexTextureCoordBuffer.numItems = geometry.uvs.length / 2;
+
+  teapotVertexIndexBuffer = gl.createBuffer();
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, teapotVertexIndexBuffer);
+  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(geometry.faces), gl.STATIC_DRAW);
+  teapotVertexIndexBuffer.itemSize = 1;
+  teapotVertexIndexBuffer.numItems = geometry.faces.length;
+
+  find_range(geometry.vertices);
+
+  teapotVertexColorBuffer = teapotVertexNormalBuffer;
+
+  drawScene();
+}
 
 function handleLoadedTeapot(teapotData) {
   geometry = teapotData.geometries[4].data
