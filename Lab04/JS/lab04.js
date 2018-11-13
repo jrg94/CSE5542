@@ -41,41 +41,6 @@ function initGL(canvas) {
   }
 }
 
-function handleLoadedGeometry(geometryData) {
-  var geometry = geometryData.geometries[geometryData.geometries.length - 1].data
-
-  console.log(geometry);
-
-  teapotVertexPositionBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexPositionBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geometry.vertices), gl.STATIC_DRAW);
-  teapotVertexPositionBuffer.itemSize = 3;
-  teapotVertexPositionBuffer.numItems = geometry.metadata.vertices;
-
-  teapotVertexNormalBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexNormalBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geometry.normals), gl.STATIC_DRAW);
-  teapotVertexNormalBuffer.itemSize = 3;
-  teapotVertexNormalBuffer.numItems = geometry.metadata.normals;
-
-  teapotVertexTextureCoordBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexTextureCoordBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geometry.uvs),
-    gl.STATIC_DRAW);
-  teapotVertexTextureCoordBuffer.itemSize = 2;
-  teapotVertexTextureCoordBuffer.numItems = geometry.metadata.uvs;
-
-  teapotVertexIndexBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, teapotVertexIndexBuffer);
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(geometry.faces), gl.STATIC_DRAW);
-  teapotVertexIndexBuffer.itemSize = 1;
-  teapotVertexIndexBuffer.numItems = geometry.metadata.faces;
-
-  find_range(geometry.vertices);
-
-  drawScene();
-}
-
 function setMatrixUniforms() {
   gl.uniformMatrix4fv(shaderProgram.mMatrixUniform, false, mMatrix);
   gl.uniformMatrix4fv(shaderProgram.vMatrixUniform, false, vMatrix);
@@ -238,7 +203,7 @@ function webGLStart() {
 
   //initJSON("Objects/plane.json");
   scene = new Geometry();
-  scene.initJSON("Objects/teapot.json");
+  scene.initJSON("Objects/plane.json");
   scene.initTexture("Textures/earth.png", false);
   scene.initTexture("Textures/brick.png", true);
 
