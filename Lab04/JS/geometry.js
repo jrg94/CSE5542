@@ -78,10 +78,12 @@ function Scene() {
 
 function Geometry() {
   this.textures = [];
-  this.indices = [];
+  this.vertexIndices = [];
+  this.uvIndices = [];
+  this.normalIndices = [];
   this.vertices = [];
-  this.uvs;
-  this.normals;
+  this.uvs = [];
+  this.normals = [];
   this.xMin;
   this.xMax;
   this.yMin;
@@ -193,10 +195,10 @@ function Geometry() {
   }
 
   this.initBuffers = function(geometry) {
-    this.vertices = geometry.vertices.slice();
     this.getThreeJSIndices(geometry);
-    this.uvs = this.buildItemsFromIndex(this.indices[2], geometry.uvs[0]);
-    this.normals = this.buildItemsFromIndex(this.indices[1], geometry.normals);
+    this.vertices = this.buildItemsFromIndex(this.vertexIndices, geometry.vertices);
+    this.uvs = this.buildItemsFromIndex(this.uvIndices, geometry.uvs[0]);
+    this.normals = this.buildItemsFromIndex(this.normalIndices, geometry.normals);
 
     this.vertexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
@@ -218,9 +220,9 @@ function Geometry() {
 
     this.indexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.indices[0]), gl.STATIC_DRAW);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.vertexIndices), gl.STATIC_DRAW);
     this.indexBuffer.itemSize = 1;
-    this.indexBuffer.numItems = this.indices[0].length;
+    this.indexBuffer.numItems = this.vertexIndices.length;
 
     this.find_range(this.vertices);
     console.log(this);
@@ -268,8 +270,11 @@ function Geometry() {
       }
     }
 
+    this.vertexIndices = vertIndices;
+    this.normalIndices = normalIndices;
+    this.uvIndices = uvIndices;
+
     console.log(Math.max(...vertIndices));
-    this.indices = [vertIndices, normalIndices, uvIndices];
   }
 
   this.buildItemsFromIndex = function(index, collection) {
