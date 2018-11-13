@@ -148,30 +148,28 @@ function handleLoadedGeometry(geometryData) {
   gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexPositionBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geometry.vertices), gl.STATIC_DRAW);
   teapotVertexPositionBuffer.itemSize = 3;
-  teapotVertexPositionBuffer.numItems = geometry.vertices.length / 3;
+  teapotVertexPositionBuffer.numItems = geometry.metadata.vertices;
 
   teapotVertexNormalBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexNormalBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geometry.normals), gl.STATIC_DRAW);
   teapotVertexNormalBuffer.itemSize = 3;
-  teapotVertexNormalBuffer.numItems = geometry.normals.length / 3;
+  teapotVertexNormalBuffer.numItems = geometry.metadata.normals;
 
   teapotVertexTextureCoordBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexTextureCoordBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geometry.uvs),
     gl.STATIC_DRAW);
   teapotVertexTextureCoordBuffer.itemSize = 2;
-  teapotVertexTextureCoordBuffer.numItems = geometry.uvs.length / 2;
+  teapotVertexTextureCoordBuffer.numItems = geometry.metadata.uvs;
 
   teapotVertexIndexBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, teapotVertexIndexBuffer);
   gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(geometry.faces), gl.STATIC_DRAW);
   teapotVertexIndexBuffer.itemSize = 1;
-  teapotVertexIndexBuffer.numItems = geometry.faces.length;
+  teapotVertexIndexBuffer.numItems = geometry.metadata.faces;
 
   find_range(geometry.vertices);
-
-  teapotVertexColorBuffer = teapotVertexNormalBuffer;
 
   drawScene();
 }
@@ -205,8 +203,6 @@ function handleLoadedTeapot(teapotData) {
   teapotVertexIndexBuffer.numItems = teapotData.indices.length;
 
   find_range(teapotData.vertexPositions);
-
-  teapotVertexColorBuffer = teapotVertexNormalBuffer;
 
   drawScene();
 
@@ -290,9 +286,6 @@ function drawScene() {
 
   gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexTextureCoordBuffer);
   gl.vertexAttribPointer(shaderProgram.vertexTexCoordsAttribute, teapotVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-  gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexColorBuffer);
-  gl.vertexAttribPointer(shaderProgram.vertexColorAttribute, teapotVertexColorBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
 
   gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, teapotVertexIndexBuffer);
@@ -386,9 +379,6 @@ function webGLStart() {
   shaderProgram.vertexTexCoordsAttribute = gl.getAttribLocation(shaderProgram, "aVertexTexCoords");
   gl.enableVertexAttribArray(shaderProgram.vertexTexCoordsAttribute);
 
-  shaderProgram.vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
-  gl.enableVertexAttribArray(shaderProgram.vertexColorAttribute);
-
   shaderProgram.mMatrixUniform = gl.getUniformLocation(shaderProgram, "uMMatrix");
   shaderProgram.vMatrixUniform = gl.getUniformLocation(shaderProgram, "uVMatrix");
   shaderProgram.pMatrixUniform = gl.getUniformLocation(shaderProgram, "uPMatrix");
@@ -410,7 +400,7 @@ function webGLStart() {
   shaderProgram.use_textureUniform = gl.getUniformLocation(shaderProgram, "use_texture");
 
   initJSON("Objects/teapot.json");
-  initJSON("Objects/plane.json");
+  //initJSON("Objects/plane.json");
 
   initTextures();
 
