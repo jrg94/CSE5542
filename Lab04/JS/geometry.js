@@ -65,26 +65,33 @@ function Geometry() {
     console.log(geometry);
 
     var vertIndices = [];
-    var uvs = [];
-    var normals = [];
+    var uvIndices = [];
+    var normalIndices = [];
     var i = 0;
     while (i < geometry.faces.length) {
       if (geometry.faces[i] == 42) {
         vertIndices.push(...geometry.faces.slice(i + 1, i + 4));
-        uvs.push(...geometry.faces.slice(i + 5, i + 8));
-        normals.push(...geometry.faces.slice(i + 8, i + 11));
+        uvIndices.push(...geometry.faces.slice(i + 5, i + 8));
+        normalIndices.push(...geometry.faces.slice(i + 8, i + 11));
         i += 11;
       } else if (geometry.faces[i] == 43){
-        //indices.push(...geometry.faces.slice(i + 1, i + 4));
-        //indices.push(...geometry.faces.slice(i + 2, i + 5));
-        //uvs.push(...geometry.faces.slice(i + 6, i + 9));
-        //uvs.push(...geometry.faces.slice(i + 7, i + 10));
-        //normals.push(...geometry.faces.slice(i + 10, i + 13));
-        //normals.push(...geometry.faces.slice(i + 11, i + 14));
+        //vertIndices.push(...geometry.faces.slice(i + 1, i + 4));
+        //vertIndices.push(...geometry.faces.slice(i + 2, i + 5));
+        //uvIndices.push(...geometry.faces.slice(i + 6, i + 9));
+        //uvIndices.push(...geometry.faces.slice(i + 7, i + 10));
+        //normalIndices.push(...geometry.faces.slice(i + 10, i + 13));
+        //normalIndices.push(...geometry.faces.slice(i + 11, i + 14));
         i += 14;
       } else {
         console.log("NOT 42 | 43");
       }
+    }
+
+    var uvs = [];
+    var normals = [];
+    for (var i = 0; i < uvIndices.length; i++) {
+      uvs.push(geometry.uvs[0][uvIndices[i]]);
+      normals.push(geometry.normals[normalIndices[i]]);
     }
 
     console.log(vertIndices);
