@@ -67,6 +67,8 @@ function Scene() {
   }
 
   this.draw = function() {
+    gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     for (var i = 0; i < this.objects.length; i++) {
       this.objects[i].draw();
     }
@@ -121,8 +123,6 @@ function Geometry() {
   }
 
   this.draw = function() {
-    gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
-    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     if (this.vertexBuffer == null || this.normalBuffer == null || this.indexBuffer == null) {
       return;
