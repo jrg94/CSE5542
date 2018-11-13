@@ -108,11 +108,11 @@ function Geometry() {
 
     mat4.identity(this.mMatrix);
 
-    //this.mMatrix = mat4.translate(this.mMatrix, [0, 0, -75]);
-    this.mMatrix = mat4.translate(this.mMatrix, [0, 0, -5]);
+    this.mMatrix = mat4.translate(this.mMatrix, [0, 0, -75]);
+    //this.mMatrix = mat4.translate(this.mMatrix, [0, 0, -5]);
 
     // Plane Scaling
-    //this.mMatrix = mat4.scale(this.mMatrix, [1 / 70, 1 / 70, 1 / 70]);
+    this.mMatrix = mat4.scale(this.mMatrix, [1 / 70, 1 / 70, 1 / 70]);
 
     this.mMatrix = mat4.rotate(this.mMatrix, degToRad(this.z_angle), [0, 1, 1]); // now set up the model matrix
 
@@ -197,7 +197,7 @@ function Geometry() {
   this.initBuffers = function(geometry) {
     this.getThreeJSIndices(geometry);
     this.vertices = geometry.vertices.slice();
-    this.uvs = this.buildItemsFromIndex(this.uvIndices, geometry.uvs[0].slice(), 2);
+    this.uvs = this.buildItemsFromIndex(this.uvIndices, geometry.uvs[0], 2);
     this.normals = geometry.normals.slice();
 
     if (this.vertices.length != this.normals.length) {
@@ -285,7 +285,7 @@ function Geometry() {
     this.uvIndices = uvIndices;
 
     if (numFaces != geometry.metadata.faces) {
-      console.error("Number of faces is not correct!");
+      console.error("Number of faces is not correct!: " + numFaces + " != " + geometry.metadata.faces);
     }
 
     if (this.normalIndices.length != this.vertexIndices.length) {
@@ -293,7 +293,7 @@ function Geometry() {
     }
 
     if (this.uvIndices.length != this.vertexIndices.length) {
-      console.error("Number of indices is not correct!: " + this.uv.length + " != " + this.vertexIndices.length);
+      console.error("Number of indices is not correct!: " + this.uvIndices.length + " != " + this.vertexIndices.length);
     }
   }
 
@@ -307,7 +307,7 @@ function Geometry() {
       }
     }
     if (items.length == 0) {
-      items = new Array(this.indices[0].length);
+      items = new Array(this.vertexIndices.length);
       items.fill(0);
     }
     return items;

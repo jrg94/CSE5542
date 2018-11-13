@@ -100,7 +100,7 @@ function webGLStart() {
   shaderProgram.use_textureUniform = gl.getUniformLocation(shaderProgram, "use_texture");
 
   scene = new Scene();
-  scene.initJSON("Objects/sword.json");
+  scene.initJSON("Objects/plane.json");
 
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
