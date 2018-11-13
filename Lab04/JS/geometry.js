@@ -64,11 +64,32 @@ function Geometry() {
 
     console.log(geometry);
 
-    var faces = [];
-    for (var i = 0; i < geometry.faces.length; i+= 11) {
-      faces.push(...geometry.faces.slice(i + 1, i + 4));
+    var indices = [];
+    var uvs = [];
+    var normals = [];
+    var i = 0;
+    while (i < geometry.faces.length) {
+      if (geometry.faces[i] == 42) {
+        indices.push(...geometry.faces.slice(i + 1, i + 4));
+        uvs.push(...geometry.faces.slice(i + 5, i + 8));
+        normals.push(...geometry.faces.slice(i + 8, i + 11));
+        i += 11;
+      } else if (geometry.faces[i] == 43){
+        indices.push(...geometry.faces.slice(i + 1, i + 4));
+        indices.push(...geometry.faces.slice(i + 2, i + 5));
+        uvs.push(...geometry.faces.slice(i + 6, i + 9));
+        uvs.push(...geometry.faces.slice(i + 7, i + 10));
+        normals.push(...geometry.faces.slice(i + 10, i + 13));
+        normals.push(...geometry.faces.slice(i + 11, i + 14));
+        i += 14;
+      } else {
+        console.log("NOT 42 | 43");
+      }
     }
-    console.log(faces);
+
+    console.log(indices);
+    console.log(uvs);
+    console.log(normals);
 
     this.vertexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
@@ -78,21 +99,21 @@ function Geometry() {
 
     this.normalBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geometry.normals), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
     this.normalBuffer.itemSize = 3;
-    this.normalBuffer.numItems = geometry.normals.length / 3;
+    this.normalBuffer.numItems = normals.length / 3;
 
     this.textureBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, this.textureBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geometry.uvs[0]), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(uvs), gl.STATIC_DRAW);
     this.textureBuffer.itemSize = 2;
-    this.textureBuffer.numItems = geometry.uvs.length / 2;
+    this.textureBuffer.numItems = uvs.length / 2;
 
     this.indexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(faces), gl.STATIC_DRAW);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
     this.indexBuffer.itemSize = 1;
-    this.indexBuffer.numItems = faces.length;
+    this.indexBuffer.numItems = indices.length;
 
     this.find_range(geometry.vertices);
 
