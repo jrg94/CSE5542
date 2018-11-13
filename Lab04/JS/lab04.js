@@ -119,7 +119,7 @@ function redraw() {
   scene.draw();
 }
 
-function geometry(type) {
+function drawType(type) {
   draw_type = type;
   scene.draw();
 }
