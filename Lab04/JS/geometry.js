@@ -31,12 +31,12 @@ function Scene() {
       myObject.initTexture("Textures/camo.png", false);
       myObject.initTexture(
         [
-          "Textures/brick.png",
-          "Textures/brick.png",
-          "Textures/brick.png",
-          "Textures/brick.png",
-          "Textures/brick.png",
-          "Textures/brick.png"
+          "Textures/morning_rt.png",
+          "Textures/morning_lf.png",
+          "Textures/morning_up.png",
+          "Textures/morning_dn.png",
+          "Textures/morning_bk.png",
+          "Textures/morning_ft.png"
         ],
         true
       );
