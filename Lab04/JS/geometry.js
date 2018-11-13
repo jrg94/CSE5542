@@ -32,6 +32,7 @@ function Scene() {
       myObject.initBuffers(geometryData.geometries[i].data);
       this.objects.push(myObject);
     }
+    this.draw();
   }
 
   this.handleLoadedTeapot = function(teapotData) {
@@ -189,8 +190,7 @@ function Geometry() {
   }
 
   this.initBuffers = function(geometry) {
-    console.log(geometry);
-    this.vertices = geometry.vertices;
+    this.vertices = geometry.vertices.slice();
     this.getThreeJSIndices(geometry);
     this.uvs = this.buildItemsFromIndex(this.indices[2], geometry.uvs[0]);
     this.normals = this.buildItemsFromIndex(this.indices[1], geometry.normals);
@@ -220,8 +220,7 @@ function Geometry() {
     this.indexBuffer.numItems = this.indices[0].length;
 
     this.find_range(this.vertices);
-
-    this.draw();
+    console.log(this);
   }
 
   this.getThreeJSIndices = function(geometry) {
@@ -252,7 +251,7 @@ function Geometry() {
         i = geometry.faces.length;
       }
     }
-
+    console.log("RUN");
     this.indices = [vertIndices, normalIndices, uvIndices];
   }
 
@@ -294,7 +293,7 @@ function Geometry() {
     gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
     gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.REPEAT);
     gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.REPEAT);
-    //gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_R, gl.REPEAT);
+    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_R, gl.REPEAT);
     gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
@@ -346,8 +345,5 @@ function Geometry() {
         this.zMax = positions[i * 3 + 2];
       }
     }
-    console.log("*****xmin = " + this.xMin + "xmax = " + this.xMax);
-    console.log("*****ymin = " + this.yMin + "ymax = " + this.yMax);
-    console.log("*****zmin = " + this.zMin + "zmax = " + this.zMax);
   }
 }
