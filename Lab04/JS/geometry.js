@@ -26,11 +26,11 @@ function Scene() {
 
   this.handleLoadedGeometry = function(geometryData) {
     console.log(geometryData);
-    for (var i = 0; i < geometryData.geometries.length; i++) {
+    for (var i = 0; i < geometryData.meshes.length; i++) {
       myObject = new Geometry();
       myObject.initTexture("Textures/earth.png", false);
       myObject.initTexture("Textures/brick.png", true);
-      myObject.initBuffers(geometryData.geometries[i].data);
+      myObject.initBuffers(geometryData.meshes[i]);
       this.objects.push(myObject);
     }
     this.draw();
@@ -100,20 +100,23 @@ function Geometry() {
   this.nMatrix = mat4.create(); // normal matrix
   this.v2wMatrix = mat4.create(); // eye space to world space matrix
   this.z_angle = 0.0;
+  this.mat_ambient = [0, 0, 0, 1];
+  this.mat_diffuse = [1, 1, 0, 1];
+  this.mat_specular = [.9, .9, .9, 1];
+  this.mat_shine = [50];
+  this.light_ambient = [0, 0, 0, 1];
+  this.light_diffuse = [.8, .8, .8, 1];
+  this.light_specular = [1, 1, 1, 1];
+  this.light_pos = [0, 0, 0, 1]; // eye space position
 
   this.transform = function() {
     this.pMatrix = mat4.perspective(60, 1.0, 0.1, 100, this.pMatrix); // set up the projection matrix
-
     this.vMatrix = mat4.lookAt([0, 0, 5], [0, 0, 0], [0, 1, 0], this.vMatrix); // set up the view matrix, multiply into the modelview matrix
 
     mat4.identity(this.mMatrix);
-
     //this.mMatrix = mat4.translate(this.mMatrix, [0, 0, -75]);
     this.mMatrix = mat4.translate(this.mMatrix, [0, 0, -5]);
-
-    // Plane Scaling
     //this.mMatrix = mat4.scale(this.mMatrix, [1 / 70, 1 / 70, 1 / 70]);
-
     this.mMatrix = mat4.rotate(this.mMatrix, degToRad(this.z_angle), [0, 1, 1]); // now set up the model matrix
 
     mat4.identity(this.nMatrix);
@@ -128,35 +131,15 @@ function Geometry() {
   }
 
   this.draw = function() {
-
     if (this.vertexBuffer == null || this.normalBuffer == null || this.indexBuffer == null) {
       return;
     }
 
-    var light_ambient = [0, 0, 0, 1];
-    var light_diffuse = [.8, .8, .8, 1];
-    var light_specular = [1, 1, 1, 1];
-    var light_pos = [0, 0, 0, 1]; // eye space position
-
-    var mat_ambient = [0, 0, 0, 1];
-    var mat_diffuse = [1, 1, 0, 1];
-    var mat_specular = [.9, .9, .9, 1];
-    var mat_shine = [50];
-
     this.transform();
 
-    shaderProgram.light_posUniform = gl.getUniformLocation(shaderProgram, "light_pos");
-
-    gl.uniform4f(shaderProgram.light_posUniform, light_pos[0], light_pos[1], light_pos[2], light_pos[3]);
-    gl.uniform4f(shaderProgram.ambient_coefUniform, mat_ambient[0], mat_ambient[1], mat_ambient[2], 1.0);
-    gl.uniform4f(shaderProgram.diffuse_coefUniform, mat_diffuse[0], mat_diffuse[1], mat_diffuse[2], 1.0);
-    gl.uniform4f(shaderProgram.specular_coefUniform, mat_specular[0], mat_specular[1], mat_specular[2], 1.0);
-    gl.uniform1f(shaderProgram.shininess_coefUniform, mat_shine[0]);
-
-    gl.uniform4f(shaderProgram.light_ambientUniform, light_ambient[0], light_ambient[1], light_ambient[2], 1.0);
-    gl.uniform4f(shaderProgram.light_diffuseUniform, light_diffuse[0], light_diffuse[1], light_diffuse[2], 1.0);
-    gl.uniform4f(shaderProgram.light_specularUniform, light_specular[0], light_specular[1], light_specular[2], 1.0);
-
+    gl.uniform4f(shaderProgram.light_ambientUniform, this.light_ambient[0], this.light_ambient[1], this.light_ambient[2], 1.0);
+    gl.uniform4f(shaderProgram.light_diffuseUniform, this.light_diffuse[0], this.light_diffuse[1], this.light_diffuse[2], 1.0);
+    gl.uniform4f(shaderProgram.light_specularUniform, this.light_specular[0], this.light_specular[1], this.light_specular[2], 1.0);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
     gl.vertexAttribPointer(
@@ -190,6 +173,7 @@ function Geometry() {
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
 
+    this.setMaterialProperties();
     this.setMatrixUniforms(); // pass the modelview mattrix and projection matrix to the shader
     gl.uniform1i(shaderProgram.use_textureUniform, use_texture);
 
@@ -208,6 +192,13 @@ function Geometry() {
     } else if (draw_type == 2) {
       gl.drawElements(gl.TRIANGLES, this.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
     }
+  }
+
+  this.setMaterialProperties = function() {
+    gl.uniform4f(shaderProgram.ambient_coefUniform, this.mat_ambient[0], this.mat_ambient[1], this.mat_ambient[2], this.mat_ambient[3]);
+    gl.uniform4f(shaderProgram.diffuse_coefUniform, this.mat_diffuse[0], this.mat_diffuse[1], this.mat_diffuse[2], this.mat_diffuse[3]);
+    gl.uniform4f(shaderProgram.specular_coefUniform, this.mat_specular[0], this.mat_specular[1], this.mat_specular[2], this.mat_specular[3]);
+    gl.uniform1f(shaderProgram.shininess_coefUniform, this.mat_shine[0]);
   }
 
   this.setMatrixUniforms = function() {
@@ -232,17 +223,21 @@ function Geometry() {
     buffer.numItems = data.length / itemSize;
   }
 
+  /**
+   * Initializes buffers from geometry.
+   */
   this.initBuffers = function(geometry) {
-    this.getThreeJSIndices(geometry);
+    //this.getThreeJSIndices(geometry);
+    this.vertexIndices = [].concat.apply([], geometry.faces);
     this.vertices = geometry.vertices;
-    this.uvs = geometry.uvs[0];
+    this.uvs = geometry.texturecoords[0];
     this.normals = geometry.normals;
 
-    this.vertexBuffer = gl.createBuffer();
+    this.vertexBuffer = gl.createBuffer();  // 0
     this.initArrayBuffer(this.vertexBuffer, this.vertices, 3);
-    this.normalBuffer = gl.createBuffer();
+    this.normalBuffer = gl.createBuffer();  // 1
     this.initArrayBuffer(this.normalBuffer, this.normals, 3);
-    this.textureBuffer = gl.createBuffer();
+    this.textureBuffer = gl.createBuffer();  // 2
     this.initArrayBuffer(this.textureBuffer, this.uvs, 2);
     this.indexBuffer = gl.createBuffer();
     this.initElementArrayBuffer(this.indexBuffer, this.vertexIndices, 1);
