@@ -1,19 +1,5 @@
-function Geometry() {
-  this.textures = [];
-  this.indices = [];
-  this.vertices;
-  this.uvs;
-  this.normals;
-  this.xMin;
-  this.xMax;
-  this.yMin;
-  this.yMax;
-  this.zMin;
-  this.zMax;
-  this.vertexBuffer;
-  this.normalBuffer;
-  this.textureBuffer;
-  this.indexBuffer;
+function Scene() {
+  this.objects = [];
 
   this.initJSON = function(file) {
     var request = new XMLHttpRequest();
@@ -31,6 +17,40 @@ function Geometry() {
       }.bind(this);
     request.send();
   }
+
+  this.handleLoadedGeometry = function(geometryData) {
+      for (var i = 0; i < geometryData.geometries.length; i++) {
+        myObject = new Geometry();
+        myObject.initTexture("Textures/earth.png", false);
+        myObject.initTexture("Textures/brick.png", true);
+        myObject.initBuffers(geometryData.geometries[i].data);
+        this.objects.push(myObject);
+      }
+  }
+
+  this.draw = function() {
+    for (var i = 0; i < this.objects.length; i++) {
+      this.objects[i].draw();
+    }
+  }
+}
+
+function Geometry() {
+  this.textures = [];
+  this.indices = [];
+  this.vertices;
+  this.uvs;
+  this.normals;
+  this.xMin;
+  this.xMax;
+  this.yMin;
+  this.yMax;
+  this.zMin;
+  this.zMax;
+  this.vertexBuffer;
+  this.normalBuffer;
+  this.textureBuffer;
+  this.indexBuffer;
 
   this.handleLoadedTeapot = function(teapotData) {
     teapotVertexPositionBuffer = gl.createBuffer();
@@ -59,8 +79,116 @@ function Geometry() {
 
     this.find_range(teapotData.vertexPositions);
 
-    drawScene();
+    this.draw();
 
+  }
+
+  this.draw = function() {
+    gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+    if (this.vertexBuffer == null || this.normalBuffer == null || this.indexBuffer == null) {
+      return;
+    }
+
+    pMatrix = mat4.perspective(60, 1.0, 0.1, 100, pMatrix); // set up the projection matrix
+
+    vMatrix = mat4.lookAt([0, 0, 5], [0, 0, 0], [0, 1, 0], vMatrix); // set up the view matrix, multiply into the modelview matrix
+
+    mat4.identity(mMatrix);
+
+
+    mMatrix = mat4.translate(mMatrix, [0, 0, -75]);
+
+    mMatrix = mat4.scale(mMatrix, [1 / 50, 1 / 50, 1 / 50]);
+
+    mMatrix = mat4.rotate(mMatrix, degToRad(Z_angle), [0, 1, 1]); // now set up the model matrix
+
+    mat4.identity(nMatrix);
+    nMatrix = mat4.multiply(nMatrix, vMatrix);
+    nMatrix = mat4.multiply(nMatrix, mMatrix);
+    nMatrix = mat4.inverse(nMatrix);
+    nMatrix = mat4.transpose(nMatrix);
+
+    mat4.identity(v2wMatrix);
+    v2wMatrix = mat4.multiply(v2wMatrix, vMatrix);
+    v2wMatrix = mat4.transpose(v2wMatrix);
+
+    shaderProgram.light_posUniform = gl.getUniformLocation(shaderProgram, "light_pos");
+
+    gl.uniform4f(shaderProgram.light_posUniform, light_pos[0], light_pos[1], light_pos[2], light_pos[3]);
+    gl.uniform4f(shaderProgram.ambient_coefUniform, mat_ambient[0], mat_ambient[1], mat_ambient[2], 1.0);
+    gl.uniform4f(shaderProgram.diffuse_coefUniform, mat_diffuse[0], mat_diffuse[1], mat_diffuse[2], 1.0);
+    gl.uniform4f(shaderProgram.specular_coefUniform, mat_specular[0], mat_specular[1], mat_specular[2], 1.0);
+    gl.uniform1f(shaderProgram.shininess_coefUniform, mat_shine[0]);
+
+    gl.uniform4f(shaderProgram.light_ambientUniform, light_ambient[0], light_ambient[1], light_ambient[2], 1.0);
+    gl.uniform4f(shaderProgram.light_diffuseUniform, light_diffuse[0], light_diffuse[1], light_diffuse[2], 1.0);
+    gl.uniform4f(shaderProgram.light_specularUniform, light_specular[0], light_specular[1], light_specular[2], 1.0);
+
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
+    gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, this.normalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.textureBuffer);
+    gl.vertexAttribPointer(shaderProgram.vertexTexCoordsAttribute, this.textureBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+
+    setMatrixUniforms(); // pass the modelview mattrix and projection matrix to the shader
+    gl.uniform1i(shaderProgram.use_textureUniform, use_texture);
+
+    gl.activeTexture(gl.TEXTURE0); // set texture unit 0 to use
+    gl.bindTexture(gl.TEXTURE_2D, this.textures[0]); // bind the texture object to the texture unit
+    gl.uniform1i(shaderProgram.textureUniform, 0); // pass the texture unit to the shader
+
+    gl.activeTexture(gl.TEXTURE1); // set texture unit 1 to use
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.textures[1]); // bind the texture object to the texture unit
+    gl.uniform1i(shaderProgram.cube_map_textureUniform, 1); // pass the texture unit to the shader
+
+    if (draw_type == 1) gl.drawArrays(gl.LINE_LOOP, 0, this.vertexBuffer.numItems);
+    else if (draw_type == 0) gl.drawArrays(gl.POINTS, 0, this.vertexBuffer.numItems);
+    else if (draw_type == 2) gl.drawElements(gl.TRIANGLES, this.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+  }
+
+  this.initBuffers = function(geometry) {
+    console.log(geometry);
+    this.vertices = geometry.vertices;
+    this.getThreeJSIndices(geometry);
+    this.uvs = this.buildItemsFromIndex(this.indices[2], geometry.uvs[0]);
+    this.normals = this.buildItemsFromIndex(this.indices[1], geometry.normals);
+
+    this.vertexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
+    this.vertexBuffer.itemSize = 3;
+    this.vertexBuffer.numItems = this.vertices.length / 3;
+
+    this.normalBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normals), gl.STATIC_DRAW);
+    this.normalBuffer.itemSize = 3;
+    this.normalBuffer.numItems = this.normals.length / 3;
+
+    this.textureBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, this.textureBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.uvs), gl.STATIC_DRAW);
+    this.textureBuffer.itemSize = 2;
+    this.textureBuffer.numItems = this.uvs.length / 2;
+
+    this.indexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.indices[0]), gl.STATIC_DRAW);
+    this.indexBuffer.itemSize = 1;
+    this.indexBuffer.numItems = this.indices[0].length;
+
+    this.find_range(this.vertices);
+
+    this.draw();
   }
 
   this.getThreeJSIndices = function(geometry) {
@@ -105,44 +233,6 @@ function Geometry() {
       items.fill(0);
     }
     return items;
-  }
-
-  this.handleLoadedGeometry = function(geometryData) {
-    var geometry = geometryData.geometries[6].data
-
-    this.vertices = geometry.vertices;
-    this.getThreeJSIndices(geometry);
-    this.uvs = this.buildItemsFromIndex(this.indices[2], geometry.uvs[0]);
-    this.normals = this.buildItemsFromIndex(this.indices[1], geometry.normals);
-
-    this.vertexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
-    this.vertexBuffer.itemSize = 3;
-    this.vertexBuffer.numItems = this.vertices.length / 3;
-
-    this.normalBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normals), gl.STATIC_DRAW);
-    this.normalBuffer.itemSize = 3;
-    this.normalBuffer.numItems = this.normals.length / 3;
-
-    this.textureBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.textureBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.uvs), gl.STATIC_DRAW);
-    this.textureBuffer.itemSize = 2;
-    this.textureBuffer.numItems = this.uvs.length / 2;
-
-    this.indexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.indices[0]), gl.STATIC_DRAW);
-    this.indexBuffer.itemSize = 1;
-    this.indexBuffer.numItems = this.indices[0].length;
-
-    this.find_range(this.vertices);
-
-    drawScene();
-    console.log(this);
   }
 
   /**

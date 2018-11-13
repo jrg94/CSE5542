@@ -48,80 +48,6 @@ function degToRad(degrees) {
   return degrees * Math.PI / 180;
 }
 
-function drawScene() {
-
-  gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-  if (scene.vertexBuffer == null || scene.normalBuffer == null || scene.indexBuffer == null) {
-    return;
-  }
-
-  pMatrix = mat4.perspective(60, 1.0, 0.1, 100, pMatrix); // set up the projection matrix
-
-  vMatrix = mat4.lookAt([0, 0, 5], [0, 0, 0], [0, 1, 0], vMatrix); // set up the view matrix, multiply into the modelview matrix
-
-  mat4.identity(mMatrix);
-
-
-  mMatrix = mat4.translate(mMatrix, [0, 0, -75]);
-
-  mMatrix = mat4.scale(mMatrix, [1 / 50, 1 / 50, 1 / 50]);
-
-  mMatrix = mat4.rotate(mMatrix, degToRad(Z_angle), [0, 1, 1]); // now set up the model matrix
-
-  mat4.identity(nMatrix);
-  nMatrix = mat4.multiply(nMatrix, vMatrix);
-  nMatrix = mat4.multiply(nMatrix, mMatrix);
-  nMatrix = mat4.inverse(nMatrix);
-  nMatrix = mat4.transpose(nMatrix);
-
-  mat4.identity(v2wMatrix);
-  v2wMatrix = mat4.multiply(v2wMatrix, vMatrix);
-  v2wMatrix = mat4.transpose(v2wMatrix);
-
-  shaderProgram.light_posUniform = gl.getUniformLocation(shaderProgram, "light_pos");
-
-  gl.uniform4f(shaderProgram.light_posUniform, light_pos[0], light_pos[1], light_pos[2], light_pos[3]);
-  gl.uniform4f(shaderProgram.ambient_coefUniform, mat_ambient[0], mat_ambient[1], mat_ambient[2], 1.0);
-  gl.uniform4f(shaderProgram.diffuse_coefUniform, mat_diffuse[0], mat_diffuse[1], mat_diffuse[2], 1.0);
-  gl.uniform4f(shaderProgram.specular_coefUniform, mat_specular[0], mat_specular[1], mat_specular[2], 1.0);
-  gl.uniform1f(shaderProgram.shininess_coefUniform, mat_shine[0]);
-
-  gl.uniform4f(shaderProgram.light_ambientUniform, light_ambient[0], light_ambient[1], light_ambient[2], 1.0);
-  gl.uniform4f(shaderProgram.light_diffuseUniform, light_diffuse[0], light_diffuse[1], light_diffuse[2], 1.0);
-  gl.uniform4f(shaderProgram.light_specularUniform, light_specular[0], light_specular[1], light_specular[2], 1.0);
-
-
-  gl.bindBuffer(gl.ARRAY_BUFFER, scene.vertexBuffer);
-  gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, scene.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-  gl.bindBuffer(gl.ARRAY_BUFFER, scene.normalBuffer);
-  gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, scene.normalBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-  gl.bindBuffer(gl.ARRAY_BUFFER, scene.textureBuffer);
-  gl.vertexAttribPointer(shaderProgram.vertexTexCoordsAttribute, scene.textureBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
-
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, scene.indexBuffer);
-
-  setMatrixUniforms(); // pass the modelview mattrix and projection matrix to the shader
-  gl.uniform1i(shaderProgram.use_textureUniform, use_texture);
-
-  gl.activeTexture(gl.TEXTURE0); // set texture unit 0 to use
-  gl.bindTexture(gl.TEXTURE_2D, scene.textures[0]); // bind the texture object to the texture unit
-  gl.uniform1i(shaderProgram.textureUniform, 0); // pass the texture unit to the shader
-
-  gl.activeTexture(gl.TEXTURE1); // set texture unit 1 to use
-  gl.bindTexture(gl.TEXTURE_CUBE_MAP, scene.textures[1]); // bind the texture object to the texture unit
-  gl.uniform1i(shaderProgram.cube_map_textureUniform, 1); // pass the texture unit to the shader
-
-  if (draw_type == 1) gl.drawArrays(gl.LINE_LOOP, 0, scene.vertexBuffer.numItems);
-  else if (draw_type == 0) gl.drawArrays(gl.POINTS, 0, scene.vertexBuffer.numItems);
-  else if (draw_type == 2) gl.drawElements(gl.TRIANGLES, scene.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
-
-}
-
 function onDocumentMouseDown(event) {
   event.preventDefault();
   document.addEventListener('mousemove', onDocumentMouseMove, false);
@@ -147,7 +73,7 @@ function onDocumentMouseMove(event) {
   lastMouseX = mouseX;
   lastMouseY = mouseY;
 
-  drawScene();
+  scene.draw()
 }
 
 function onDocumentMouseUp(event) {
@@ -198,35 +124,32 @@ function webGLStart() {
   shaderProgram.cube_map_textureUniform = gl.getUniformLocation(shaderProgram, "cubeMap");
   shaderProgram.use_textureUniform = gl.getUniformLocation(shaderProgram, "use_texture");
 
-  //initJSON("Objects/plane.json");
-  scene = new Geometry();
+  scene = new Scene();
   scene.initJSON("Objects/plane.json");
-  scene.initTexture("Textures/earth.png", false);
-  scene.initTexture("Textures/brick.png", true);
 
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
   document.addEventListener('mousedown', onDocumentMouseDown, false);
 
-  drawScene();
+  scene.draw();
 }
 
 function BG(red, green, blue) {
   gl.clearColor(red, green, blue, 1.0);
-  drawScene();
+  scene.draw();
 }
 
 function redraw() {
   Z_angle = 0;
-  drawScene();
+  scene.draw();
 }
 
 function geometry(type) {
   draw_type = type;
-  drawScene();
+  scene.draw();
 }
 
 function texture(value) {
   use_texture = value;
-  drawScene();
+  scene.draw();
 }
