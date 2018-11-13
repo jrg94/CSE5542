@@ -25,6 +25,7 @@ function Scene() {
   }
 
   this.handleLoadedGeometry = function(geometryData) {
+    console.log(geometryData);
     for (var i = 0; i < geometryData.geometries.length; i++) {
       myObject = new Geometry();
       myObject.initTexture("Textures/earth.png", false);
@@ -78,7 +79,7 @@ function Scene() {
 function Geometry() {
   this.textures = [];
   this.indices = [];
-  this.vertices;
+  this.vertices = [];
   this.uvs;
   this.normals;
   this.xMin;
@@ -105,9 +106,11 @@ function Geometry() {
 
     mat4.identity(this.mMatrix);
 
-    this.mMatrix = mat4.translate(this.mMatrix, [0, 0, -75]);
+    //this.mMatrix = mat4.translate(this.mMatrix, [0, 0, -75]);
+    this.mMatrix = mat4.translate(this.mMatrix, [0, 0, -5]);
 
-    this.mMatrix = mat4.scale(this.mMatrix, [1 / 70, 1 / 70, 1 / 70]);
+    // Plane Scaling
+    //this.mMatrix = mat4.scale(this.mMatrix, [1 / 70, 1 / 70, 1 / 70]);
 
     this.mMatrix = mat4.rotate(this.mMatrix, degToRad(this.z_angle), [0, 1, 1]); // now set up the model matrix
 
@@ -223,6 +226,16 @@ function Geometry() {
     console.log(this);
   }
 
+  this.mapIndices = function(tempIndices) {
+    var outIndices = [];
+    for (var i = 0; i < tempIndices.length; i++) {
+      outIndices.push(tempIndices[i] * 3)
+      outIndices.push(tempIndices[i] * 3 + 1)
+      outIndices.push(tempIndices[i] * 3 + 2)
+    }
+    return outIndices;
+  }
+
   this.getThreeJSIndices = function(geometry) {
     var vertIndices = [];
     var uvIndices = [];
@@ -230,24 +243,24 @@ function Geometry() {
     var i = 0;
     while (i < geometry.faces.length) {
       if (geometry.faces[i] == 42) {
-        vertIndices.push(...geometry.faces.slice(i + 1, i + 4));
-        uvIndices.push(...geometry.faces.slice(i + 5, i + 8));
-        normalIndices.push(...geometry.faces.slice(i + 8, i + 11));
+        vertIndices.push(...this.mapIndices(geometry.faces.slice(i + 1, i + 4)));
+        uvIndices.push(...this.mapIndices(geometry.faces.slice(i + 5, i + 8)));
+        normalIndices.push(...this.mapIndices(geometry.faces.slice(i + 8, i + 11)));
         i += 11;
       } else if (geometry.faces[i] == 43) {
-        vertIndices.push(...geometry.faces.slice(i + 1, i + 4));
-        vertIndices.push(...geometry.faces.slice(i + 3, i + 5));
-        vertIndices.push(...geometry.faces.slice(i + 1, i + 2));
-        uvIndices.push(...geometry.faces.slice(i + 6, i + 9));
-        uvIndices.push(...geometry.faces.slice(i + 8, i + 10));
-        uvIndices.push(...geometry.faces.slice(i + 6, i + 7));
-        normalIndices.push(...geometry.faces.slice(i + 10, i + 13));
-        normalIndices.push(...geometry.faces.slice(i + 12, i + 14));
-        normalIndices.push(...geometry.faces.slice(i + 10, i + 11));
+        vertIndices.push(...this.mapIndices(geometry.faces.slice(i + 1, i + 4)));
+        vertIndices.push(...this.mapIndices(geometry.faces.slice(i + 3, i + 5)));
+        vertIndices.push(...this.mapIndices(geometry.faces.slice(i + 1, i + 2)));
+        uvIndices.push(...this.mapIndices(geometry.faces.slice(i + 6, i + 9)));
+        uvIndices.push(...this.mapIndices(geometry.faces.slice(i + 8, i + 10)));
+        uvIndices.push(...this.mapIndices(geometry.faces.slice(i + 6, i + 7)));
+        normalIndices.push(...this.mapIndices(geometry.faces.slice(i + 10, i + 13)));
+        normalIndices.push(...this.mapIndices(geometry.faces.slice(i + 12, i + 14)));
+        normalIndices.push(...this.mapIndices(geometry.faces.slice(i + 10, i + 11)));
         i += 14;
       } else if (geometry.faces[i] = 34) {
-        vertIndices.push(...geometry.faces.slice(i + 1, i + 4));
-        normalIndices.push(...geometry.faces.slice(i + 5, i + 8));
+        vertIndices.push(...this.mapIndices(geometry.faces.slice(i + 1, i + 4)));
+        normalIndices.push(...this.mapIndices(geometry.faces.slice(i + 5, i + 8)));
         i += 8;
       } else {
         console.log("NOT 42 | 43");
@@ -255,6 +268,7 @@ function Geometry() {
       }
     }
 
+    console.log(Math.max(...vertIndices));
     this.indices = [vertIndices, normalIndices, uvIndices];
   }
 
