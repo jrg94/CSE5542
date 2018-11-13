@@ -20,11 +20,6 @@ var nMatrix = mat4.create(); // normal matrix
 var v2wMatrix = mat4.create(); // eye space to world space matrix
 var Z_angle = 0.0;
 
-var teapotVertexPositionBuffer;
-var teapotVertexNormalBuffer;
-var teapotVertexTextureCoordBuffer;
-var teapotVertexIndexBuffer;
-
 var scene;
 
 var lastMouseX = 0;
@@ -58,7 +53,7 @@ function drawScene() {
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-  if (teapotVertexPositionBuffer == null || teapotVertexNormalBuffer == null || teapotVertexIndexBuffer == null) {
+  if (scene.vertexBuffer == null || scene.normalBuffer == null || scene.indexBuffer == null) {
     return;
   }
 
@@ -71,7 +66,7 @@ function drawScene() {
 
   mMatrix = mat4.translate(mMatrix, [0, 0, -75]);
 
-  mMatrix = mat4.scale(mMatrix, [1 / 20, 1 / 20, 1 / 20]);
+  mMatrix = mat4.scale(mMatrix, [1 / 50, 1 / 50, 1 / 50]);
 
   mMatrix = mat4.rotate(mMatrix, degToRad(Z_angle), [0, 1, 1]); // now set up the model matrix
 
@@ -98,17 +93,17 @@ function drawScene() {
   gl.uniform4f(shaderProgram.light_specularUniform, light_specular[0], light_specular[1], light_specular[2], 1.0);
 
 
-  gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexPositionBuffer);
-  gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, teapotVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+  gl.bindBuffer(gl.ARRAY_BUFFER, scene.vertexBuffer);
+  gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, scene.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-  gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexNormalBuffer);
-  gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, teapotVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+  gl.bindBuffer(gl.ARRAY_BUFFER, scene.normalBuffer);
+  gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, scene.normalBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-  gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexTextureCoordBuffer);
-  gl.vertexAttribPointer(shaderProgram.vertexTexCoordsAttribute, teapotVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+  gl.bindBuffer(gl.ARRAY_BUFFER, scene.textureBuffer);
+  gl.vertexAttribPointer(shaderProgram.vertexTexCoordsAttribute, scene.textureBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
 
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, teapotVertexIndexBuffer);
+  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, scene.indexBuffer);
 
   setMatrixUniforms(); // pass the modelview mattrix and projection matrix to the shader
   gl.uniform1i(shaderProgram.use_textureUniform, use_texture);
@@ -121,9 +116,9 @@ function drawScene() {
   gl.bindTexture(gl.TEXTURE_CUBE_MAP, scene.textures[1]); // bind the texture object to the texture unit
   gl.uniform1i(shaderProgram.cube_map_textureUniform, 1); // pass the texture unit to the shader
 
-  if (draw_type == 1) gl.drawArrays(gl.LINE_LOOP, 0, teapotVertexPositionBuffer.numItems);
-  else if (draw_type == 0) gl.drawArrays(gl.POINTS, 0, teapotVertexPositionBuffer.numItems);
-  else if (draw_type == 2) gl.drawElements(gl.TRIANGLES, teapotVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+  if (draw_type == 1) gl.drawArrays(gl.LINE_LOOP, 0, scene.vertexBuffer.numItems);
+  else if (draw_type == 0) gl.drawArrays(gl.POINTS, 0, scene.vertexBuffer.numItems);
+  else if (draw_type == 2) gl.drawElements(gl.TRIANGLES, scene.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
 
 }
 
