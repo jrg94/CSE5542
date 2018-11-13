@@ -59,7 +59,7 @@ function initTexture(image, isCube) {
       handleCubemapTextureLoaded(texture);
     }
   } else {
-    texture.image = function() {
+    texture.image.onload = function() {
       handleTextureLoaded(texture);
     }
   }
@@ -87,15 +87,6 @@ function handleCubemapTextureLoaded(texture) {
     texture.image);
   gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
     texture.image);
-}
-
-function initTextures() {
-  sampleTexture = gl.createTexture();
-  sampleTexture.image = new Image();
-  sampleTexture.image.onload = function() {
-    handleTextureLoaded(sampleTexture);
-  }
-  sampleTexture.image.src = "Textures/earth.png";
 }
 
 function handleTextureLoaded(texture) {
@@ -371,8 +362,7 @@ function webGLStart() {
   initJSON("Objects/teapot.json");
   //initJSON("Objects/plane.json");
 
-  initTextures();
-
+  sampleTexture = initTexture("Textures/earth.png", false);
   cubemapTexture = initTexture("Textures/brick.png", true);
 
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
