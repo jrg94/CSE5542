@@ -237,17 +237,16 @@ function Geometry() {
    * Initializes buffers from geometry.
    */
   this.initBuffers = function(geometry) {
-    //this.getThreeJSIndices(geometry);
     this.vertexIndices = [].concat.apply([], geometry.faces);
     this.vertices = geometry.vertices;
     this.uvs = geometry.texturecoords[0];
     this.normals = geometry.normals;
 
-    this.vertexBuffer = gl.createBuffer();  // 0
+    this.vertexBuffer = gl.createBuffer(); // 0
     this.initArrayBuffer(this.vertexBuffer, this.vertices, 3);
-    this.normalBuffer = gl.createBuffer();  // 1
+    this.normalBuffer = gl.createBuffer(); // 1
     this.initArrayBuffer(this.normalBuffer, this.normals, 3);
-    this.textureBuffer = gl.createBuffer();  // 2
+    this.textureBuffer = gl.createBuffer(); // 2
     this.initArrayBuffer(this.textureBuffer, this.uvs, 2);
     this.indexBuffer = gl.createBuffer();
     this.initElementArrayBuffer(this.indexBuffer, this.vertexIndices, 1);
@@ -341,24 +340,11 @@ function Geometry() {
    */
   this.initTexture = function(image, isCube) {
     if (isCube) {
-      var enumArray = [
-        gl.TEXTURE_CUBE_MAP_POSITIVE_X,
-        gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
-        gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
-        gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
-        gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
-        gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
-      ]
+      var texture = gl.createTexture();
       for (var i = 0; i < image.length; i++) {
-        var texture = gl.createTexture();
-        texture.image = new Image();
-        texture.enum = enumArray[i];
-        texture.image.onload = function() {
-          this.handleCubemapTextureLoaded(texture);
-        }.bind(this);
-        texture.image.src = image[i];
-        this.textures.push(texture);
+        this.load(image[i], gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, texture);
       }
+      this.textures.push(texture);
     } else {
       var texture = gl.createTexture();
       texture.image = new Image();
@@ -370,15 +356,18 @@ function Geometry() {
     }
   }
 
-  this.handleCubemapTextureLoaded = function(texture) {
-    gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
-    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.REPEAT);
-    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.REPEAT);
-    //gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_R, gl.REPEAT);
-    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-
-    gl.texImage2D(texture.enum, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
+  this.load = function(url, target, texture) {
+    img = new Image();
+    img.onload = function() {
+      gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
+      gl.texImage2D(target, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
+      gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.REPEAT);
+      gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.REPEAT);
+      //gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_R, gl.REPEAT);
+      gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    };
+    img.src = url;
   }
 
   this.handleTextureLoaded = function(texture) {
