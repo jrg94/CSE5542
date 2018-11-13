@@ -18,39 +18,21 @@ function Scene() {
     request.send();
   }
 
-  this.handleLoadedGeometry = function(geometryData) {
-      for (var i = 0; i < geometryData.geometries.length; i++) {
-        myObject = new Geometry();
-        myObject.initTexture("Textures/earth.png", false);
-        myObject.initTexture("Textures/brick.png", true);
-        myObject.initBuffers(geometryData.geometries[i].data);
-        this.objects.push(myObject);
-      }
-  }
-
-  this.draw = function() {
+  this.rotate = function(diffX) {
     for (var i = 0; i < this.objects.length; i++) {
-      this.objects[i].draw();
+      this.objects[i].z_angle += diffX / 5;
     }
   }
-}
 
-function Geometry() {
-  this.textures = [];
-  this.indices = [];
-  this.vertices;
-  this.uvs;
-  this.normals;
-  this.xMin;
-  this.xMax;
-  this.yMin;
-  this.yMax;
-  this.zMin;
-  this.zMax;
-  this.vertexBuffer;
-  this.normalBuffer;
-  this.textureBuffer;
-  this.indexBuffer;
+  this.handleLoadedGeometry = function(geometryData) {
+    for (var i = 0; i < geometryData.geometries.length; i++) {
+      myObject = new Geometry();
+      myObject.initTexture("Textures/earth.png", false);
+      myObject.initTexture("Textures/brick.png", true);
+      myObject.initBuffers(geometryData.geometries[i].data);
+      this.objects.push(myObject);
+    }
+  }
 
   this.handleLoadedTeapot = function(teapotData) {
     teapotVertexPositionBuffer = gl.createBuffer();
@@ -84,6 +66,60 @@ function Geometry() {
   }
 
   this.draw = function() {
+    for (var i = 0; i < this.objects.length; i++) {
+      this.objects[i].draw();
+    }
+  }
+}
+
+function Geometry() {
+  this.textures = [];
+  this.indices = [];
+  this.vertices;
+  this.uvs;
+  this.normals;
+  this.xMin;
+  this.xMax;
+  this.yMin;
+  this.yMax;
+  this.zMin;
+  this.zMax;
+  this.vertexBuffer;
+  this.normalBuffer;
+  this.textureBuffer;
+  this.indexBuffer;
+  this.mMatrix = mat4.create(); // model matrix
+  this.vMatrix = mat4.create(); // view matrix
+  this.pMatrix = mat4.create(); // projection matrix
+  this.nMatrix = mat4.create(); // normal matrix
+  this.v2wMatrix = mat4.create(); // eye space to world space matrix
+  this.z_angle = 0.0;
+
+  this.transform = function() {
+    this.pMatrix = mat4.perspective(60, 1.0, 0.1, 100, this.pMatrix); // set up the projection matrix
+
+    this.vMatrix = mat4.lookAt([0, 0, 5], [0, 0, 0], [0, 1, 0], this.vMatrix); // set up the view matrix, multiply into the modelview matrix
+
+    mat4.identity(this.mMatrix);
+
+    this.mMatrix = mat4.translate(this.mMatrix, [0, 0, -75]);
+
+    this.mMatrix = mat4.scale(this.mMatrix, [1 / 50, 1 / 50, 1 / 50]);
+
+    this.mMatrix = mat4.rotate(this.mMatrix, degToRad(this.z_angle), [0, 1, 1]); // now set up the model matrix
+
+    mat4.identity(this.nMatrix);
+    this.nMatrix = mat4.multiply(this.nMatrix, this.vMatrix);
+    this.nMatrix = mat4.multiply(this.nMatrix, this.mMatrix);
+    this.nMatrix = mat4.inverse(this.nMatrix);
+    this.nMatrix = mat4.transpose(this.nMatrix);
+
+    mat4.identity(this.v2wMatrix);
+    this.v2wMatrix = mat4.multiply(this.v2wMatrix, this.vMatrix);
+    this.v2wMatrix = mat4.transpose(this.v2wMatrix);
+  }
+
+  this.draw = function() {
     gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
@@ -91,28 +127,17 @@ function Geometry() {
       return;
     }
 
-    pMatrix = mat4.perspective(60, 1.0, 0.1, 100, pMatrix); // set up the projection matrix
+    var light_ambient = [0, 0, 0, 1];
+    var light_diffuse = [.8, .8, .8, 1];
+    var light_specular = [1, 1, 1, 1];
+    var light_pos = [0, 0, 0, 1]; // eye space position
 
-    vMatrix = mat4.lookAt([0, 0, 5], [0, 0, 0], [0, 1, 0], vMatrix); // set up the view matrix, multiply into the modelview matrix
+    var mat_ambient = [0, 0, 0, 1];
+    var mat_diffuse = [1, 1, 0, 1];
+    var mat_specular = [.9, .9, .9, 1];
+    var mat_shine = [50];
 
-    mat4.identity(mMatrix);
-
-
-    mMatrix = mat4.translate(mMatrix, [0, 0, -75]);
-
-    mMatrix = mat4.scale(mMatrix, [1 / 50, 1 / 50, 1 / 50]);
-
-    mMatrix = mat4.rotate(mMatrix, degToRad(Z_angle), [0, 1, 1]); // now set up the model matrix
-
-    mat4.identity(nMatrix);
-    nMatrix = mat4.multiply(nMatrix, vMatrix);
-    nMatrix = mat4.multiply(nMatrix, mMatrix);
-    nMatrix = mat4.inverse(nMatrix);
-    nMatrix = mat4.transpose(nMatrix);
-
-    mat4.identity(v2wMatrix);
-    v2wMatrix = mat4.multiply(v2wMatrix, vMatrix);
-    v2wMatrix = mat4.transpose(v2wMatrix);
+    this.transform();
 
     shaderProgram.light_posUniform = gl.getUniformLocation(shaderProgram, "light_pos");
 
@@ -139,7 +164,7 @@ function Geometry() {
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
 
-    setMatrixUniforms(); // pass the modelview mattrix and projection matrix to the shader
+    this.setMatrixUniforms(); // pass the modelview mattrix and projection matrix to the shader
     gl.uniform1i(shaderProgram.use_textureUniform, use_texture);
 
     gl.activeTexture(gl.TEXTURE0); // set texture unit 0 to use
@@ -153,6 +178,14 @@ function Geometry() {
     if (draw_type == 1) gl.drawArrays(gl.LINE_LOOP, 0, this.vertexBuffer.numItems);
     else if (draw_type == 0) gl.drawArrays(gl.POINTS, 0, this.vertexBuffer.numItems);
     else if (draw_type == 2) gl.drawElements(gl.TRIANGLES, this.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+  }
+
+  this.setMatrixUniforms = function() {
+    gl.uniformMatrix4fv(shaderProgram.mMatrixUniform, false, this.mMatrix);
+    gl.uniformMatrix4fv(shaderProgram.vMatrixUniform, false, this.vMatrix);
+    gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, this.pMatrix);
+    gl.uniformMatrix4fv(shaderProgram.nMatrixUniform, false, this.nMatrix);
+    gl.uniformMatrix4fv(shaderProgram.v2wMatrixUniform, false, this.v2wMatrix);
   }
 
   this.initBuffers = function(geometry) {
@@ -202,7 +235,7 @@ function Geometry() {
         uvIndices.push(...geometry.faces.slice(i + 5, i + 8));
         normalIndices.push(...geometry.faces.slice(i + 8, i + 11));
         i += 11;
-      } else if (geometry.faces[i] == 43){
+      } else if (geometry.faces[i] == 43) {
         vertIndices.push(...geometry.faces.slice(i + 1, i + 4));
         vertIndices.push(...geometry.faces.slice(i + 2, i + 5));
         uvIndices.push(...geometry.faces.slice(i + 6, i + 9));
@@ -225,7 +258,7 @@ function Geometry() {
 
   this.buildItemsFromIndex = function(index, collection) {
     var items = [];
-    for (var i = 0; i < index.length ; i++) {
+    for (var i = 0; i < index.length; i++) {
       items.push(collection[index[i]]);
     }
     if (items.length == 0) {

@@ -3,23 +3,6 @@ var shaderProgram;
 var draw_type = 2;
 var use_texture = 0;
 
-var light_ambient = [0, 0, 0, 1];
-var light_diffuse = [.8, .8, .8, 1];
-var light_specular = [1, 1, 1, 1];
-var light_pos = [0, 0, 0, 1]; // eye space position
-
-var mat_ambient = [0, 0, 0, 1];
-var mat_diffuse = [1, 1, 0, 1];
-var mat_specular = [.9, .9, .9, 1];
-var mat_shine = [50];
-
-var mMatrix = mat4.create(); // model matrix
-var vMatrix = mat4.create(); // view matrix
-var pMatrix = mat4.create(); // projection matrix
-var nMatrix = mat4.create(); // normal matrix
-var v2wMatrix = mat4.create(); // eye space to world space matrix
-var Z_angle = 0.0;
-
 var scene;
 
 var lastMouseX = 0;
@@ -34,14 +17,6 @@ function initGL(canvas) {
   if (!gl) {
     alert("Could not initialise WebGL, sorry :-(");
   }
-}
-
-function setMatrixUniforms() {
-  gl.uniformMatrix4fv(shaderProgram.mMatrixUniform, false, mMatrix);
-  gl.uniformMatrix4fv(shaderProgram.vMatrixUniform, false, vMatrix);
-  gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, pMatrix);
-  gl.uniformMatrix4fv(shaderProgram.nMatrixUniform, false, nMatrix);
-  gl.uniformMatrix4fv(shaderProgram.v2wMatrixUniform, false, v2wMatrix);
 }
 
 function degToRad(degrees) {
@@ -68,7 +43,7 @@ function onDocumentMouseMove(event) {
   var diffX = mouseX - lastMouseX;
   var diffY = mouseY - lastMouseY;
 
-  Z_angle = Z_angle + diffX / 5;
+  scene.rotate(diffX);
 
   lastMouseX = mouseX;
   lastMouseY = mouseY;
