@@ -1,16 +1,8 @@
-//////////////////////////////////////////////////////////////////
-//
-//  This example is similar to code03.html, but I am showing you how to
-//  use gl elemenntary array, i.e, triangle indices, to draw faces
-//
-
 var gl;
 var shaderProgram;
 var draw_type = 2;
 var use_texture = 0;
 
-
-// set up the parameters for lighting
 var light_ambient = [0, 0, 0, 1];
 var light_diffuse = [.8, .8, .8, 1];
 var light_specular = [1, 1, 1, 1];
@@ -21,7 +13,26 @@ var mat_diffuse = [1, 1, 0, 1];
 var mat_specular = [.9, .9, .9, 1];
 var mat_shine = [50];
 
-//////////// Init OpenGL Context etc. ///////////////
+var mMatrix = mat4.create(); // model matrix
+var vMatrix = mat4.create(); // view matrix
+var pMatrix = mat4.create(); // projection matrix
+var nMatrix = mat4.create(); // normal matrix
+var v2wMatrix = mat4.create(); // eye space to world space matrix
+var Z_angle = 0.0;
+
+var cubemapTexture;
+
+var sampleTexture;
+
+var teapotVertexPositionBuffer;
+var teapotVertexNormalBuffer;
+var teapotVertexTextureCoordBuffer;
+var teapotVertexIndexBuffer;
+
+var xmin, xmax, ymin, ymax, zmin, zmax;
+
+var lastMouseX = 0;
+var lastMouseY = 0;
 
 function initGL(canvas) {
   try {
@@ -34,26 +45,33 @@ function initGL(canvas) {
   }
 }
 
-
-///////////////////////////////////////////////////////////////
-
-var cubemapTexture;
-
-function initCubeMap() {
-  cubemapTexture = gl.createTexture();
-  cubemapTexture.image = new Image();
-  cubemapTexture.image.onload = function() {
-    handleCubemapTextureLoaded(cubemapTexture);
+/**
+ * Initializes a texture object
+ *
+ * @param {Image} image an image url
+ * @param {boolean} isCube a boolean to determine if the texture is a cube map
+ */
+function initTexture(image, isCube) {
+  var texture = gl.createTexture();
+  texture.image = new Image();
+  if (isCube) {
+    texture.image.onload = function() {
+      handleCubemapTextureLoaded(texture);
+    }
+  } else {
+    texture.image = function() {
+      handleTextureLoaded(texture);
+    }
   }
-  cubemapTexture.image.src = "Textures/brick.png";
-  console.log("loading cubemap texture....")
+  texture.image.src = image;
+  return texture;
 }
 
 function handleCubemapTextureLoaded(texture) {
   gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
   gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.REPEAT);
   gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.REPEAT);
-  gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_R, gl.REPEAT);
+  //gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_R, gl.REPEAT);
   gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
   gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
@@ -71,11 +89,6 @@ function handleCubemapTextureLoaded(texture) {
     texture.image);
 }
 
-
-///////////////////////////////////////////////////////////////
-
-var sampleTexture;
-
 function initTextures() {
   sampleTexture = gl.createTexture();
   sampleTexture.image = new Image();
@@ -83,7 +96,6 @@ function initTextures() {
     handleTextureLoaded(sampleTexture);
   }
   sampleTexture.image.src = "Textures/earth.png";
-  console.log("loading texture....")
 }
 
 function handleTextureLoaded(texture) {
@@ -93,15 +105,6 @@ function handleTextureLoaded(texture) {
   gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
   gl.bindTexture(gl.TEXTURE_2D, null);
 }
-
-///////////////////////////////////////////////////////////
-
-var teapotVertexPositionBuffer;
-var teapotVertexNormalBuffer;
-var teapotVertexTextureCoordBuffer;
-var teapotVertexIndexBuffer;
-
-var xmin, xmax, ymin, ymax, zmin, zmax;
 
 function find_range(positions) {
   xmin = xmax = positions[0];
@@ -175,13 +178,11 @@ function handleLoadedGeometry(geometryData) {
 }
 
 function handleLoadedTeapot(teapotData) {
-
   teapotVertexPositionBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexPositionBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(teapotData.vertexPositions), gl.STATIC_DRAW);
   teapotVertexPositionBuffer.itemSize = 3;
   teapotVertexPositionBuffer.numItems = teapotData.vertexPositions.length / 3;
-  console.log(geometry.faces);
 
   teapotVertexNormalBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexNormalBuffer);
@@ -191,8 +192,7 @@ function handleLoadedTeapot(teapotData) {
 
   teapotVertexTextureCoordBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexTextureCoordBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(teapotData.vertexTextureCoords),
-    gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(teapotData.vertexTextureCoords), gl.STATIC_DRAW);
   teapotVertexTextureCoordBuffer.itemSize = 2;
   teapotVertexTextureCoordBuffer.numItems = teapotData.vertexTextureCoords.length / 2;
 
@@ -208,17 +208,6 @@ function handleLoadedTeapot(teapotData) {
 
 }
 
-
-///////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////
-
-var mMatrix = mat4.create(); // model matrix
-var vMatrix = mat4.create(); // view matrix
-var pMatrix = mat4.create(); // projection matrix
-var nMatrix = mat4.create(); // normal matrix
-var v2wMatrix = mat4.create(); // eye space to world space matrix
-var Z_angle = 0.0;
-
 function setMatrixUniforms() {
   gl.uniformMatrix4fv(shaderProgram.mMatrixUniform, false, mMatrix);
   gl.uniformMatrix4fv(shaderProgram.vMatrixUniform, false, vMatrix);
@@ -231,13 +220,10 @@ function degToRad(degrees) {
   return degrees * Math.PI / 180;
 }
 
-///////////////////////////////////////////////////////////////
-
 function drawScene() {
 
   gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
 
   if (teapotVertexPositionBuffer == null || teapotVertexNormalBuffer == null || teapotVertexIndexBuffer == null) {
     return;
@@ -262,7 +248,6 @@ function drawScene() {
 
   mat4.identity(v2wMatrix);
   v2wMatrix = mat4.multiply(v2wMatrix, vMatrix);
-  //        v2wMatrix = mat4.inverse(v2wMatrix);
   v2wMatrix = mat4.transpose(v2wMatrix);
 
   shaderProgram.light_posUniform = gl.getUniformLocation(shaderProgram, "light_pos");
@@ -293,33 +278,19 @@ function drawScene() {
   setMatrixUniforms(); // pass the modelview mattrix and projection matrix to the shader
   gl.uniform1i(shaderProgram.use_textureUniform, use_texture);
 
-
-
-
-  gl.activeTexture(gl.TEXTURE1); // set texture unit 1 to use
-  gl.bindTexture(gl.TEXTURE_CUBE_MAP, cubemapTexture); // bind the texture object to the texture unit
-  gl.uniform1i(shaderProgram.cube_map_textureUniform, 1); // pass the texture unit to the shader
-
   gl.activeTexture(gl.TEXTURE0); // set texture unit 0 to use
   gl.bindTexture(gl.TEXTURE_2D, sampleTexture); // bind the texture object to the texture unit
   gl.uniform1i(shaderProgram.textureUniform, 0); // pass the texture unit to the shader
 
-
-
+  gl.activeTexture(gl.TEXTURE1); // set texture unit 1 to use
+  gl.bindTexture(gl.TEXTURE_CUBE_MAP, cubemapTexture); // bind the texture object to the texture unit
+  gl.uniform1i(shaderProgram.cube_map_textureUniform, 1); // pass the texture unit to the shader
 
   if (draw_type == 1) gl.drawArrays(gl.LINE_LOOP, 0, teapotVertexPositionBuffer.numItems);
   else if (draw_type == 0) gl.drawArrays(gl.POINTS, 0, teapotVertexPositionBuffer.numItems);
   else if (draw_type == 2) gl.drawElements(gl.TRIANGLES, teapotVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
 
 }
-
-
-///////////////////////////////////////////////////////////////
-
-var lastMouseX = 0,
-  lastMouseY = 0;
-
-///////////////////////////////////////////////////////////////
 
 function onDocumentMouseDown(event) {
   event.preventDefault();
@@ -360,8 +331,6 @@ function onDocumentMouseOut(event) {
   document.removeEventListener('mouseup', onDocumentMouseUp, false);
   document.removeEventListener('mouseout', onDocumentMouseOut, false);
 }
-
-///////////////////////////////////////////////////////////////
 
 function webGLStart() {
   var canvas = document.getElementById("code13-canvas");
@@ -404,23 +373,18 @@ function webGLStart() {
 
   initTextures();
 
-  initCubeMap();
-
-
+  cubemapTexture = initTexture("Textures/brick.png", true);
 
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
-  document.addEventListener('mousedown', onDocumentMouseDown,
-    false);
+  document.addEventListener('mousedown', onDocumentMouseDown, false);
 
   drawScene();
 }
 
 function BG(red, green, blue) {
-
   gl.clearColor(red, green, blue, 1.0);
   drawScene();
-
 }
 
 function redraw() {
@@ -428,17 +392,12 @@ function redraw() {
   drawScene();
 }
 
-
 function geometry(type) {
-
   draw_type = type;
   drawScene();
-
 }
 
 function texture(value) {
-
   use_texture = value;
   drawScene();
-
 }
