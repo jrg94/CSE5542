@@ -64,30 +64,30 @@ function Geometry() {
 
     console.log(geometry);
 
-    var indices = [];
+    var vertIndices = [];
     var uvs = [];
     var normals = [];
     var i = 0;
     while (i < geometry.faces.length) {
       if (geometry.faces[i] == 42) {
-        indices.push(...geometry.faces.slice(i + 1, i + 4));
+        vertIndices.push(...geometry.faces.slice(i + 1, i + 4));
         uvs.push(...geometry.faces.slice(i + 5, i + 8));
         normals.push(...geometry.faces.slice(i + 8, i + 11));
         i += 11;
       } else if (geometry.faces[i] == 43){
-        indices.push(...geometry.faces.slice(i + 1, i + 4));
-        indices.push(...geometry.faces.slice(i + 2, i + 5));
-        uvs.push(...geometry.faces.slice(i + 6, i + 9));
-        uvs.push(...geometry.faces.slice(i + 7, i + 10));
-        normals.push(...geometry.faces.slice(i + 10, i + 13));
-        normals.push(...geometry.faces.slice(i + 11, i + 14));
+        //indices.push(...geometry.faces.slice(i + 1, i + 4));
+        //indices.push(...geometry.faces.slice(i + 2, i + 5));
+        //uvs.push(...geometry.faces.slice(i + 6, i + 9));
+        //uvs.push(...geometry.faces.slice(i + 7, i + 10));
+        //normals.push(...geometry.faces.slice(i + 10, i + 13));
+        //normals.push(...geometry.faces.slice(i + 11, i + 14));
         i += 14;
       } else {
         console.log("NOT 42 | 43");
       }
     }
 
-    console.log(indices);
+    console.log(vertIndices);
     console.log(uvs);
     console.log(normals);
 
@@ -111,9 +111,9 @@ function Geometry() {
 
     this.indexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(indices), gl.STATIC_DRAW);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertIndices), gl.STATIC_DRAW);
     this.indexBuffer.itemSize = 1;
-    this.indexBuffer.numItems = indices.length;
+    this.indexBuffer.numItems = vertIndices.length;
 
     this.find_range(geometry.vertices);
 
