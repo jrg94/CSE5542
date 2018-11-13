@@ -29,7 +29,17 @@ function Scene() {
     for (var i = 0; i < geometryData.meshes.length; i++) {
       myObject = new Geometry();
       myObject.initTexture("Textures/camo.png", false);
-      myObject.initTexture("Textures/brick.png", true);
+      myObject.initTexture(
+        [
+          "Textures/brick.png",
+          "Textures/brick.png",
+          "Textures/brick.png",
+          "Textures/brick.png",
+          "Textures/brick.png",
+          "Textures/brick.png"
+        ],
+        true
+      );
       myObject.initBuffers(geometryData.meshes[i]);
       this.objects.push(myObject);
     }
@@ -330,41 +340,45 @@ function Geometry() {
    * @param {boolean} isCube a boolean to determine if the texture is a cube map
    */
   this.initTexture = function(image, isCube) {
-    var texture = gl.createTexture();
-    texture.image = new Image();
     if (isCube) {
-      texture.image.onload = function() {
-        this.handleCubemapTextureLoaded(texture);
-      }.bind(this);
+      var enumArray = [
+        gl.TEXTURE_CUBE_MAP_POSITIVE_X,
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_X,
+        gl.TEXTURE_CUBE_MAP_POSITIVE_Y,
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_Y,
+        gl.TEXTURE_CUBE_MAP_POSITIVE_Z,
+        gl.TEXTURE_CUBE_MAP_NEGATIVE_Z
+      ]
+      for (var i = 0; i < image.length; i++) {
+        var texture = gl.createTexture();
+        texture.image = new Image();
+        texture.enum = enumArray[i];
+        texture.image.onload = function() {
+          this.handleCubemapTextureLoaded(texture);
+        }.bind(this);
+        texture.image.src = image[i];
+        this.textures.push(texture);
+      }
     } else {
+      var texture = gl.createTexture();
+      texture.image = new Image();
       texture.image.onload = function() {
         this.handleTextureLoaded(texture);
       }.bind(this);
+      texture.image.src = image;
+      this.textures.push(texture);
     }
-    texture.image.src = image;
-    this.textures.push(texture);
   }
 
   this.handleCubemapTextureLoaded = function(texture) {
     gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
     gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.REPEAT);
     gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.REPEAT);
-    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_R, gl.REPEAT);
+    //gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_R, gl.REPEAT);
     gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
 
-    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
-      texture.image);
-    gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
-      texture.image);
-    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
-      texture.image);
-    gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
-      texture.image);
-    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
-      texture.image);
-    gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
-      texture.image);
+    gl.texImage2D(texture.enum, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
   }
 
   this.handleTextureLoaded = function(texture) {
