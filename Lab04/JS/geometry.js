@@ -108,11 +108,11 @@ function Geometry() {
 
     mat4.identity(this.mMatrix);
 
-    this.mMatrix = mat4.translate(this.mMatrix, [0, 0, -75]);
-    //this.mMatrix = mat4.translate(this.mMatrix, [0, 0, -5]);
+    //this.mMatrix = mat4.translate(this.mMatrix, [0, 0, -75]);
+    this.mMatrix = mat4.translate(this.mMatrix, [0, 0, -5]);
 
     // Plane Scaling
-    this.mMatrix = mat4.scale(this.mMatrix, [1 / 70, 1 / 70, 1 / 70]);
+    //this.mMatrix = mat4.scale(this.mMatrix, [1 / 70, 1 / 70, 1 / 70]);
 
     this.mMatrix = mat4.rotate(this.mMatrix, degToRad(this.z_angle), [0, 1, 1]); // now set up the model matrix
 
@@ -238,28 +238,14 @@ function Geometry() {
     this.uvs = geometry.uvs[0];
     this.normals = geometry.normals;
 
-    if (this.vertices.length != this.normals.length) {
-      console.error("Verts and normals don't match");
-    }
-
-    if (2 * (this.vertices.length / 3) != this.uvs.length) {
-      console.error("Verts and uvs don't match");
-    }
-
     this.vertexBuffer = gl.createBuffer();
     this.initArrayBuffer(this.vertexBuffer, this.vertices, 3);
-
     this.normalBuffer = gl.createBuffer();
     this.initArrayBuffer(this.normalBuffer, this.normals, 3);
-
     this.textureBuffer = gl.createBuffer();
     this.initArrayBuffer(this.textureBuffer, this.uvs, 2);
-
     this.indexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.vertexIndices), gl.STATIC_DRAW);
-    this.indexBuffer.itemSize = 1;
-    this.indexBuffer.numItems = this.vertexIndices.length;
+    this.initElementArrayBuffer(this.indexBuffer, this.vertexIndices, 1);
 
     this.find_range(this.vertices);
     console.log(this);
