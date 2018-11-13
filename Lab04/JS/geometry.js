@@ -218,6 +218,20 @@ function Geometry() {
     gl.uniformMatrix4fv(shaderProgram.v2wMatrixUniform, false, this.v2wMatrix);
   }
 
+  this.initArrayBuffer = function(buffer, data, itemSize) {
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
+    buffer.itemSize = itemSize;
+    buffer.numItems = data.length / itemSize;
+  }
+
+  this.initElementArrayBuffer = function(buffer, data, itemSize) {
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(data), gl.STATIC_DRAW);
+    buffer.itemsize = itemSize;
+    buffer.numItems = data.length / itemSize;
+  }
+
   this.initBuffers = function(geometry) {
     this.getThreeJSIndices(geometry);
     this.vertices = geometry.vertices;
@@ -233,22 +247,13 @@ function Geometry() {
     }
 
     this.vertexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
-    this.vertexBuffer.itemSize = 3;
-    this.vertexBuffer.numItems = this.vertices.length / 3;
+    this.initArrayBuffer(this.vertexBuffer, this.vertices, 3);
 
     this.normalBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normals), gl.STATIC_DRAW);
-    this.normalBuffer.itemSize = 3;
-    this.normalBuffer.numItems = this.normals.length / 3;
+    this.initArrayBuffer(this.normalBuffer, this.normals, 3);
 
     this.textureBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.textureBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.uvs), gl.STATIC_DRAW);
-    this.textureBuffer.itemSize = 2;
-    this.textureBuffer.numItems = this.uvs.length / 2;
+    this.initArrayBuffer(this.textureBuffer, this.uvs, 2);
 
     this.indexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
