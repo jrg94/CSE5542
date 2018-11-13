@@ -34,6 +34,130 @@ var xmin, xmax, ymin, ymax, zmin, zmax;
 var lastMouseX = 0;
 var lastMouseY = 0;
 
+function Geometry() {
+  this.sampleTexture;
+  this.cubemapTexture;
+
+  this.initJSON = function(file) {
+    var request = new XMLHttpRequest();
+    request.open("GET", file);
+    request.onreadystatechange =
+      function() {
+        if (request.readyState == 4) {
+          geometry = JSON.parse(request.responseText);
+          if (file === "Objects/teapot.json") {
+            this.handleLoadedTeapot(geometry);
+          } else {
+            this.handleLoadedGeometry(geometry)
+          }
+        }
+      }.bind(this);
+    request.send();
+  }
+
+  this.handleLoadedTeapot = function(teapotData) {
+    teapotVertexPositionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexPositionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(teapotData.vertexPositions), gl.STATIC_DRAW);
+    teapotVertexPositionBuffer.itemSize = 3;
+    teapotVertexPositionBuffer.numItems = teapotData.vertexPositions.length / 3;
+
+    teapotVertexNormalBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexNormalBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(teapotData.vertexNormals), gl.STATIC_DRAW);
+    teapotVertexNormalBuffer.itemSize = 3;
+    teapotVertexNormalBuffer.numItems = teapotData.vertexNormals.length / 3;
+
+    teapotVertexTextureCoordBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexTextureCoordBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(teapotData.vertexTextureCoords), gl.STATIC_DRAW);
+    teapotVertexTextureCoordBuffer.itemSize = 2;
+    teapotVertexTextureCoordBuffer.numItems = teapotData.vertexTextureCoords.length / 2;
+
+    teapotVertexIndexBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, teapotVertexIndexBuffer);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(teapotData.indices), gl.STATIC_DRAW);
+    teapotVertexIndexBuffer.itemSize = 1;
+    teapotVertexIndexBuffer.numItems = teapotData.indices.length;
+
+    this.find_range(teapotData.vertexPositions);
+
+    drawScene();
+
+  }
+
+  /**
+   * Initializes a texture object
+   *
+   * @param {Image} image an image url
+   * @param {boolean} isCube a boolean to determine if the texture is a cube map
+   */
+  this.initTexture = function(image, isCube) {
+    var texture = gl.createTexture();
+    texture.image = new Image();
+    if (isCube) {
+      texture.image.onload = function() {
+        this.handleCubemapTextureLoaded(texture);
+      }.bind(this);
+    } else {
+      texture.image.onload = function() {
+        this.handleTextureLoaded(texture);
+      }.bind(this);
+    }
+    texture.image.src = image;
+    return texture;
+  }
+
+  this.handleCubemapTextureLoaded = function(texture) {
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
+    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.REPEAT);
+    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.REPEAT);
+    //gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_R, gl.REPEAT);
+    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
+      texture.image);
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
+      texture.image);
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
+      texture.image);
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
+      texture.image);
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
+      texture.image);
+    gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
+      texture.image);
+  }
+
+  this.handleTextureLoaded = function(texture) {
+    gl.bindTexture(gl.TEXTURE_2D, texture);
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+  }
+
+  this.find_range = function(positions) {
+    xmin = xmax = positions[0];
+    ymin = ymax = positions[1];
+    zmin = zmax = positions[2];
+    for (i = 0; i < positions.length / 3; i++) {
+      if (positions[i * 3] < xmin) xmin = positions[i * 3];
+      if (positions[i * 3] > xmax) xmax = positions[i * 3];
+
+      if (positions[i * 3 + 1] < ymin) ymin = positions[i * 3 + 1];
+      if (positions[i * 3 + 1] > ymax) ymax = positions[i * 3 + 1];
+
+      if (positions[i * 3 + 2] < zmin) zmin = positions[i * 3 + 2];
+      if (positions[i * 3 + 2] > zmax) zmax = positions[i * 3 + 2];
+    }
+    console.log("*****xmin = " + xmin + "xmax = " + xmax);
+    console.log("*****ymin = " + ymin + "ymax = " + ymax);
+    console.log("*****zmin = " + zmin + "zmax = " + zmax);
+  }
+}
+
 function initGL(canvas) {
   try {
     gl = canvas.getContext("experimental-webgl");
@@ -43,94 +167,6 @@ function initGL(canvas) {
   if (!gl) {
     alert("Could not initialise WebGL, sorry :-(");
   }
-}
-
-/**
- * Initializes a texture object
- *
- * @param {Image} image an image url
- * @param {boolean} isCube a boolean to determine if the texture is a cube map
- */
-function initTexture(image, isCube) {
-  var texture = gl.createTexture();
-  texture.image = new Image();
-  if (isCube) {
-    texture.image.onload = function() {
-      handleCubemapTextureLoaded(texture);
-    }
-  } else {
-    texture.image.onload = function() {
-      handleTextureLoaded(texture);
-    }
-  }
-  texture.image.src = image;
-  return texture;
-}
-
-function handleCubemapTextureLoaded(texture) {
-  gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
-  gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.REPEAT);
-  gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.REPEAT);
-  //gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_R, gl.REPEAT);
-  gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-  gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-
-  gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
-    texture.image);
-  gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_X, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
-    texture.image);
-  gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Y, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
-    texture.image);
-  gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
-    texture.image);
-  gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_Z, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
-    texture.image);
-  gl.texImage2D(gl.TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE,
-    texture.image);
-}
-
-function handleTextureLoaded(texture) {
-  gl.bindTexture(gl.TEXTURE_2D, texture);
-  gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-  gl.bindTexture(gl.TEXTURE_2D, null);
-}
-
-function find_range(positions) {
-  xmin = xmax = positions[0];
-  ymin = ymax = positions[1];
-  zmin = zmax = positions[2];
-  for (i = 0; i < positions.length / 3; i++) {
-    if (positions[i * 3] < xmin) xmin = positions[i * 3];
-    if (positions[i * 3] > xmax) xmax = positions[i * 3];
-
-    if (positions[i * 3 + 1] < ymin) ymin = positions[i * 3 + 1];
-    if (positions[i * 3 + 1] > ymax) ymax = positions[i * 3 + 1];
-
-    if (positions[i * 3 + 2] < zmin) zmin = positions[i * 3 + 2];
-    if (positions[i * 3 + 2] > zmax) zmax = positions[i * 3 + 2];
-  }
-  console.log("*****xmin = " + xmin + "xmax = " + xmax);
-  console.log("*****ymin = " + ymin + "ymax = " + ymax);
-  console.log("*****zmin = " + zmin + "zmax = " + zmax);
-}
-
-function initJSON(file) {
-  var request = new XMLHttpRequest();
-  request.open("GET", file);
-  request.onreadystatechange =
-    function() {
-      if (request.readyState == 4) {
-        geometry = JSON.parse(request.responseText);
-        if (file === "Objects/teapot.json") {
-          handleLoadedTeapot(geometry);
-        } else {
-          handleLoadedGeometry(geometry)
-        }
-      }
-    }
-  request.send();
 }
 
 function handleLoadedGeometry(geometryData) {
@@ -168,36 +204,7 @@ function handleLoadedGeometry(geometryData) {
   drawScene();
 }
 
-function handleLoadedTeapot(teapotData) {
-  teapotVertexPositionBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexPositionBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(teapotData.vertexPositions), gl.STATIC_DRAW);
-  teapotVertexPositionBuffer.itemSize = 3;
-  teapotVertexPositionBuffer.numItems = teapotData.vertexPositions.length / 3;
 
-  teapotVertexNormalBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexNormalBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(teapotData.vertexNormals), gl.STATIC_DRAW);
-  teapotVertexNormalBuffer.itemSize = 3;
-  teapotVertexNormalBuffer.numItems = teapotData.vertexNormals.length / 3;
-
-  teapotVertexTextureCoordBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexTextureCoordBuffer);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(teapotData.vertexTextureCoords), gl.STATIC_DRAW);
-  teapotVertexTextureCoordBuffer.itemSize = 2;
-  teapotVertexTextureCoordBuffer.numItems = teapotData.vertexTextureCoords.length / 2;
-
-  teapotVertexIndexBuffer = gl.createBuffer();
-  gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, teapotVertexIndexBuffer);
-  gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(teapotData.indices), gl.STATIC_DRAW);
-  teapotVertexIndexBuffer.itemSize = 1;
-  teapotVertexIndexBuffer.numItems = teapotData.indices.length;
-
-  find_range(teapotData.vertexPositions);
-
-  drawScene();
-
-}
 
 function setMatrixUniforms() {
   gl.uniformMatrix4fv(shaderProgram.mMatrixUniform, false, mMatrix);
@@ -359,11 +366,11 @@ function webGLStart() {
   shaderProgram.cube_map_textureUniform = gl.getUniformLocation(shaderProgram, "cubeMap");
   shaderProgram.use_textureUniform = gl.getUniformLocation(shaderProgram, "use_texture");
 
-  initJSON("Objects/teapot.json");
   //initJSON("Objects/plane.json");
-
-  sampleTexture = initTexture("Textures/earth.png", false);
-  cubemapTexture = initTexture("Textures/brick.png", true);
+  var geometry = new Geometry();
+  geometry.initJSON("Objects/teapot.json");
+  geometry.initTexture("Textures/earth.png", false);
+  geometry.initTexture("Textures/brick.png", true);
 
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
