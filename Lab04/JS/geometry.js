@@ -159,14 +159,34 @@ function Geometry() {
 
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-    gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, this.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(
+      shaderProgram.vertexPositionAttribute, // Attribute location
+      this.vertexBuffer.itemSize, // # of elements per attribute
+      gl.FLOAT, // Type of elements
+      false,
+      0, // Size of individual vertex
+      0 // Offset
+    );
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
-    gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, this.normalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(
+      shaderProgram.vertexNormalAttribute,
+      this.normalBuffer.itemSize,
+      gl.FLOAT,
+      false,
+      0,
+      0
+    );
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.textureBuffer);
-    gl.vertexAttribPointer(shaderProgram.vertexTexCoordsAttribute, this.textureBuffer.itemSize, gl.FLOAT, false, 0, 0);
-
+    gl.vertexAttribPointer(
+      shaderProgram.vertexTexCoordsAttribute,
+      this.textureBuffer.itemSize,
+      gl.FLOAT,
+      false,
+      0,
+      0
+    );
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
 
@@ -181,9 +201,13 @@ function Geometry() {
     gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.textures[1]); // bind the texture object to the texture unit
     gl.uniform1i(shaderProgram.cube_map_textureUniform, 1); // pass the texture unit to the shader
 
-    if (draw_type == 1) gl.drawArrays(gl.LINE_LOOP, 0, this.vertexBuffer.numItems);
-    else if (draw_type == 0) gl.drawArrays(gl.POINTS, 0, this.vertexBuffer.numItems);
-    else if (draw_type == 2) gl.drawElements(gl.TRIANGLES, this.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    if (draw_type == 1) {
+      gl.drawArrays(gl.LINE_LOOP, 0, this.vertexBuffer.numItems);
+    } else if (draw_type == 0) {
+      gl.drawArrays(gl.POINTS, 0, this.vertexBuffer.numItems);
+    } else if (draw_type == 2) {
+      gl.drawElements(gl.TRIANGLES, this.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    }
   }
 
   this.setMatrixUniforms = function() {
@@ -196,9 +220,9 @@ function Geometry() {
 
   this.initBuffers = function(geometry) {
     this.getThreeJSIndices(geometry);
-    this.vertices = geometry.vertices.slice();
-    this.uvs = this.buildItemsFromIndex(this.uvIndices, geometry.uvs[0], 2);
-    this.normals = geometry.normals.slice();
+    this.vertices = geometry.vertices;
+    this.uvs = geometry.uvs[0];
+    this.normals = geometry.normals;
 
     if (this.vertices.length != this.normals.length) {
       console.error("Verts and normals don't match");
