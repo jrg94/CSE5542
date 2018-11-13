@@ -20,14 +20,12 @@ var nMatrix = mat4.create(); // normal matrix
 var v2wMatrix = mat4.create(); // eye space to world space matrix
 var Z_angle = 0.0;
 
-var cubemapTexture;
-
-var sampleTexture;
-
 var teapotVertexPositionBuffer;
 var teapotVertexNormalBuffer;
 var teapotVertexTextureCoordBuffer;
 var teapotVertexIndexBuffer;
+
+var scene;
 
 var xmin, xmax, ymin, ymax, zmin, zmax;
 
@@ -35,8 +33,7 @@ var lastMouseX = 0;
 var lastMouseY = 0;
 
 function Geometry() {
-  this.sampleTexture;
-  this.cubemapTexture;
+  this.textures = [];
 
   this.initJSON = function(file) {
     var request = new XMLHttpRequest();
@@ -105,7 +102,7 @@ function Geometry() {
       }.bind(this);
     }
     texture.image.src = image;
-    return texture;
+    this.textures.push(texture);
   }
 
   this.handleCubemapTextureLoaded = function(texture) {
@@ -277,11 +274,11 @@ function drawScene() {
   gl.uniform1i(shaderProgram.use_textureUniform, use_texture);
 
   gl.activeTexture(gl.TEXTURE0); // set texture unit 0 to use
-  gl.bindTexture(gl.TEXTURE_2D, sampleTexture); // bind the texture object to the texture unit
+  gl.bindTexture(gl.TEXTURE_2D, scene.textures[0]); // bind the texture object to the texture unit
   gl.uniform1i(shaderProgram.textureUniform, 0); // pass the texture unit to the shader
 
   gl.activeTexture(gl.TEXTURE1); // set texture unit 1 to use
-  gl.bindTexture(gl.TEXTURE_CUBE_MAP, cubemapTexture); // bind the texture object to the texture unit
+  gl.bindTexture(gl.TEXTURE_CUBE_MAP, scene.textures[1]); // bind the texture object to the texture unit
   gl.uniform1i(shaderProgram.cube_map_textureUniform, 1); // pass the texture unit to the shader
 
   if (draw_type == 1) gl.drawArrays(gl.LINE_LOOP, 0, teapotVertexPositionBuffer.numItems);
@@ -367,10 +364,10 @@ function webGLStart() {
   shaderProgram.use_textureUniform = gl.getUniformLocation(shaderProgram, "use_texture");
 
   //initJSON("Objects/plane.json");
-  var geometry = new Geometry();
-  geometry.initJSON("Objects/teapot.json");
-  geometry.initTexture("Textures/earth.png", false);
-  geometry.initTexture("Textures/brick.png", true);
+  scene = new Geometry();
+  scene.initJSON("Objects/teapot.json");
+  scene.initTexture("Textures/earth.png", false);
+  scene.initTexture("Textures/brick.png", true);
 
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
