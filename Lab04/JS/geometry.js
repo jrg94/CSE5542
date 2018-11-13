@@ -28,7 +28,7 @@ function Scene() {
     console.log(geometryData);
     for (var i = 0; i < geometryData.meshes.length; i++) {
       myObject = new Geometry();
-      myObject.initTexture("Textures/earth.png", false);
+      myObject.initTexture("Textures/camo.png", false);
       myObject.initTexture("Textures/brick.png", true);
       myObject.initBuffers(geometryData.meshes[i]);
       this.objects.push(myObject);
@@ -115,9 +115,9 @@ function Geometry() {
 
     mat4.identity(this.mMatrix);
     //this.mMatrix = mat4.translate(this.mMatrix, [0, 0, -75]);
-    this.mMatrix = mat4.translate(this.mMatrix, [0, 0, -25]);
+    this.mMatrix = mat4.translate(this.mMatrix, [0, 0, -10]);
     this.mMatrix = mat4.scale(this.mMatrix, [1 / 50, 1 / 50, 1 / 50]);
-    this.mMatrix = mat4.rotate(this.mMatrix, degToRad(this.z_angle), [1, 0, 0]); // now set up the model matrix
+    this.mMatrix = mat4.rotate(this.mMatrix, degToRad(this.z_angle), [0, 1, 1]); // now set up the model matrix
 
     mat4.identity(this.nMatrix);
     this.nMatrix = mat4.multiply(this.nMatrix, this.vMatrix);
