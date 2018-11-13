@@ -107,7 +107,7 @@ function Geometry() {
 
     this.mMatrix = mat4.translate(this.mMatrix, [0, 0, -75]);
 
-    this.mMatrix = mat4.scale(this.mMatrix, [1 / 50, 1 / 50, 1 / 50]);
+    this.mMatrix = mat4.scale(this.mMatrix, [1 / 70, 1 / 70, 1 / 70]);
 
     this.mMatrix = mat4.rotate(this.mMatrix, degToRad(this.z_angle), [0, 1, 1]); // now set up the model matrix
 
@@ -236,11 +236,14 @@ function Geometry() {
         i += 11;
       } else if (geometry.faces[i] == 43) {
         vertIndices.push(...geometry.faces.slice(i + 1, i + 4));
-        vertIndices.push(...geometry.faces.slice(i + 2, i + 5));
+        vertIndices.push(...geometry.faces.slice(i + 3, i + 5));
+        vertIndices.push(...geometry.faces.slice(i + 1, i + 2));
         uvIndices.push(...geometry.faces.slice(i + 6, i + 9));
-        uvIndices.push(...geometry.faces.slice(i + 7, i + 10));
+        uvIndices.push(...geometry.faces.slice(i + 8, i + 10));
+        uvIndices.push(...geometry.faces.slice(i + 6, i + 7));
         normalIndices.push(...geometry.faces.slice(i + 10, i + 13));
-        normalIndices.push(...geometry.faces.slice(i + 11, i + 14));
+        normalIndices.push(...geometry.faces.slice(i + 12, i + 14));
+        normalIndices.push(...geometry.faces.slice(i + 10, i + 11));
         i += 14;
       } else if (geometry.faces[i] = 34) {
         vertIndices.push(...geometry.faces.slice(i + 1, i + 4));
@@ -251,7 +254,7 @@ function Geometry() {
         i = geometry.faces.length;
       }
     }
-    console.log("RUN");
+
     this.indices = [vertIndices, normalIndices, uvIndices];
   }
 
