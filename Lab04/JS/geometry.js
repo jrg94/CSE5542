@@ -1,5 +1,9 @@
 function Geometry() {
   this.textures = [];
+  this.indices = [];
+  this.vertices;
+  this.uvs;
+  this.normals;
   this.xMin;
   this.xMax;
   this.yMin;
@@ -59,11 +63,7 @@ function Geometry() {
 
   }
 
-  this.handleLoadedGeometry = function(geometryData) {
-    var geometry = geometryData.geometries[4].data
-
-    console.log(geometry);
-
+  this.getThreeJSIndices = function(geometry) {
     var vertIndices = [];
     var uvIndices = [];
     var normalIndices = [];
@@ -75,56 +75,74 @@ function Geometry() {
         normalIndices.push(...geometry.faces.slice(i + 8, i + 11));
         i += 11;
       } else if (geometry.faces[i] == 43){
-        //vertIndices.push(...geometry.faces.slice(i + 1, i + 4));
-        //vertIndices.push(...geometry.faces.slice(i + 2, i + 5));
-        //uvIndices.push(...geometry.faces.slice(i + 6, i + 9));
-        //uvIndices.push(...geometry.faces.slice(i + 7, i + 10));
-        //normalIndices.push(...geometry.faces.slice(i + 10, i + 13));
-        //normalIndices.push(...geometry.faces.slice(i + 11, i + 14));
+        vertIndices.push(...geometry.faces.slice(i + 1, i + 4));
+        vertIndices.push(...geometry.faces.slice(i + 2, i + 5));
+        uvIndices.push(...geometry.faces.slice(i + 6, i + 9));
+        uvIndices.push(...geometry.faces.slice(i + 7, i + 10));
+        normalIndices.push(...geometry.faces.slice(i + 10, i + 13));
+        normalIndices.push(...geometry.faces.slice(i + 11, i + 14));
         i += 14;
+      } else if (geometry.faces[i] = 34) {
+        vertIndices.push(...geometry.faces.slice(i + 1, i + 4));
+        normalIndices.push(...geometry.faces.slice(i + 5, i + 8));
+        i += 8;
       } else {
         console.log("NOT 42 | 43");
+        i = geometry.faces.length;
       }
     }
 
-    var uvs = [];
-    var normals = [];
-    for (var i = 0; i < uvIndices.length; i++) {
-      uvs.push(geometry.uvs[0][uvIndices[i]]);
-      normals.push(geometry.normals[normalIndices[i]]);
-    }
+    this.indices = [vertIndices, normalIndices, uvIndices];
+  }
 
-    console.log(vertIndices);
-    console.log(uvs);
-    console.log(normals);
+  this.buildItemsFromIndex = function(index, collection) {
+    var items = [];
+    for (var i = 0; i < index.length ; i++) {
+      items.push(collection[index[i]]);
+    }
+    if (items.length == 0) {
+      items = new Array(this.indices[0].length);
+      items.fill(0);
+    }
+    return items;
+  }
+
+  this.handleLoadedGeometry = function(geometryData) {
+    var geometry = geometryData.geometries[6].data
+
+    this.vertices = geometry.vertices;
+    this.getThreeJSIndices(geometry);
+    this.uvs = this.buildItemsFromIndex(this.indices[2], geometry.uvs[0]);
+    this.normals = this.buildItemsFromIndex(this.indices[1], geometry.normals);
 
     this.vertexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geometry.vertices), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.vertices), gl.STATIC_DRAW);
     this.vertexBuffer.itemSize = 3;
-    this.vertexBuffer.numItems = geometry.vertices.length / 3;
+    this.vertexBuffer.numItems = this.vertices.length / 3;
 
     this.normalBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.normals), gl.STATIC_DRAW);
     this.normalBuffer.itemSize = 3;
-    this.normalBuffer.numItems = normals.length / 3;
+    this.normalBuffer.numItems = this.normals.length / 3;
 
     this.textureBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, this.textureBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(uvs), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(this.uvs), gl.STATIC_DRAW);
     this.textureBuffer.itemSize = 2;
-    this.textureBuffer.numItems = uvs.length / 2;
+    this.textureBuffer.numItems = this.uvs.length / 2;
 
     this.indexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(vertIndices), gl.STATIC_DRAW);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(this.indices[0]), gl.STATIC_DRAW);
     this.indexBuffer.itemSize = 1;
-    this.indexBuffer.numItems = vertIndices.length;
+    this.indexBuffer.numItems = this.indices[0].length;
 
-    this.find_range(geometry.vertices);
+    this.find_range(this.vertices);
 
     drawScene();
+    console.log(this);
   }
 
   /**
