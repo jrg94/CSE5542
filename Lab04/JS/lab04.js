@@ -27,13 +27,17 @@ var teapotVertexIndexBuffer;
 
 var scene;
 
-var xmin, xmax, ymin, ymax, zmin, zmax;
-
 var lastMouseX = 0;
 var lastMouseY = 0;
 
 function Geometry() {
   this.textures = [];
+  this.xMin;
+  this.xMax;
+  this.yMin;
+  this.yMax;
+  this.zMin;
+  this.zMax;
 
   this.initJSON = function(file) {
     var request = new XMLHttpRequest();
@@ -136,22 +140,34 @@ function Geometry() {
   }
 
   this.find_range = function(positions) {
-    xmin = xmax = positions[0];
-    ymin = ymax = positions[1];
-    zmin = zmax = positions[2];
+    this.xMin = this.xMax = positions[0];
+    this.yMin = this.yMax = positions[1];
+    this.zMin = this.zMax = positions[2];
     for (i = 0; i < positions.length / 3; i++) {
-      if (positions[i * 3] < xmin) xmin = positions[i * 3];
-      if (positions[i * 3] > xmax) xmax = positions[i * 3];
+      if (positions[i * 3] < this.xMin) {
+        this.xMin = positions[i * 3];
+      }
+      if (positions[i * 3] > this.xMax) {
+        this.xMax = positions[i * 3];
+      }
 
-      if (positions[i * 3 + 1] < ymin) ymin = positions[i * 3 + 1];
-      if (positions[i * 3 + 1] > ymax) ymax = positions[i * 3 + 1];
+      if (positions[i * 3 + 1] < this.yMin) {
+        this.yMin = positions[i * 3 + 1];
+      }
+      if (positions[i * 3 + 1] > this.yMax) {
+        this.yMax = positions[i * 3 + 1];
+      }
 
-      if (positions[i * 3 + 2] < zmin) zmin = positions[i * 3 + 2];
-      if (positions[i * 3 + 2] > zmax) zmax = positions[i * 3 + 2];
+      if (positions[i * 3 + 2] < this.zMin) {
+        this.zMin = positions[i * 3 + 2];
+      }
+      if (positions[i * 3 + 2] > this.zMax) {
+        this.zMax = positions[i * 3 + 2];
+      }
     }
-    console.log("*****xmin = " + xmin + "xmax = " + xmax);
-    console.log("*****ymin = " + ymin + "ymax = " + ymax);
-    console.log("*****zmin = " + zmin + "zmax = " + zmax);
+    console.log("*****xmin = " + this.xMin + "xmax = " + this.xMax);
+    console.log("*****ymin = " + this.yMin + "ymax = " + this.yMax);
+    console.log("*****zmin = " + this.zMin + "zmax = " + this.zMax);
   }
 }
 
@@ -200,8 +216,6 @@ function handleLoadedGeometry(geometryData) {
 
   drawScene();
 }
-
-
 
 function setMatrixUniforms() {
   gl.uniformMatrix4fv(shaderProgram.mMatrixUniform, false, mMatrix);
