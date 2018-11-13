@@ -196,9 +196,17 @@ function Geometry() {
 
   this.initBuffers = function(geometry) {
     this.getThreeJSIndices(geometry);
-    this.vertices = this.buildItemsFromIndex(this.vertexIndices, geometry.vertices);
-    this.uvs = this.buildItemsFromIndex(this.uvIndices, geometry.uvs[0]);
-    this.normals = this.buildItemsFromIndex(this.normalIndices, geometry.normals);
+    this.vertices = geometry.vertices.slice();
+    this.uvs = this.buildItemsFromIndex(this.uvIndices, geometry.uvs[0].slice(), 2);
+    this.normals = geometry.normals.slice();
+
+    if (this.vertices.length != this.normals.length) {
+      console.error("Verts and normals don't match");
+    }
+
+    if (2 * (this.vertices.length / 3) != this.uvs.length) {
+      console.error("Verts and uvs don't match");
+    }
 
     this.vertexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
@@ -243,44 +251,60 @@ function Geometry() {
     var uvIndices = [];
     var normalIndices = [];
     var i = 0;
+    var numFaces = 0;
     while (i < geometry.faces.length) {
       if (geometry.faces[i] == 42) {
-        vertIndices.push(...this.mapIndices(geometry.faces.slice(i + 1, i + 4)));
-        uvIndices.push(...this.mapIndices(geometry.faces.slice(i + 5, i + 8)));
-        normalIndices.push(...this.mapIndices(geometry.faces.slice(i + 8, i + 11)));
+        vertIndices.push(...geometry.faces.slice(i + 1, i + 4));
+        uvIndices.push(...geometry.faces.slice(i + 5, i + 8));
+        normalIndices.push(...geometry.faces.slice(i + 8, i + 11));
         i += 11;
       } else if (geometry.faces[i] == 43) {
-        vertIndices.push(...this.mapIndices(geometry.faces.slice(i + 1, i + 4)));
-        vertIndices.push(...this.mapIndices(geometry.faces.slice(i + 3, i + 5)));
-        vertIndices.push(...this.mapIndices(geometry.faces.slice(i + 1, i + 2)));
-        uvIndices.push(...this.mapIndices(geometry.faces.slice(i + 6, i + 9)));
-        uvIndices.push(...this.mapIndices(geometry.faces.slice(i + 8, i + 10)));
-        uvIndices.push(...this.mapIndices(geometry.faces.slice(i + 6, i + 7)));
-        normalIndices.push(...this.mapIndices(geometry.faces.slice(i + 10, i + 13)));
-        normalIndices.push(...this.mapIndices(geometry.faces.slice(i + 12, i + 14)));
-        normalIndices.push(...this.mapIndices(geometry.faces.slice(i + 10, i + 11)));
+        vertIndices.push(...geometry.faces.slice(i + 1, i + 4));
+        vertIndices.push(...geometry.faces.slice(i + 3, i + 5));
+        vertIndices.push(...geometry.faces.slice(i + 1, i + 2));
+        uvIndices.push(...geometry.faces.slice(i + 6, i + 9));
+        uvIndices.push(...geometry.faces.slice(i + 8, i + 10));
+        uvIndices.push(...geometry.faces.slice(i + 6, i + 7));
+        normalIndices.push(...geometry.faces.slice(i + 10, i + 13));
+        normalIndices.push(...geometry.faces.slice(i + 12, i + 14));
+        normalIndices.push(...geometry.faces.slice(i + 10, i + 11));
         i += 14;
       } else if (geometry.faces[i] = 34) {
-        vertIndices.push(...this.mapIndices(geometry.faces.slice(i + 1, i + 4)));
-        normalIndices.push(...this.mapIndices(geometry.faces.slice(i + 5, i + 8)));
+        vertIndices.push(geometry.faces.slice(i + 1, i + 4));
+        normalIndices.push(geometry.faces.slice(i + 5, i + 8));
         i += 8;
       } else {
         console.log("NOT 42 | 43");
         i = geometry.faces.length;
       }
+      numFaces++;
     }
 
     this.vertexIndices = vertIndices;
     this.normalIndices = normalIndices;
     this.uvIndices = uvIndices;
 
-    console.log(Math.max(...vertIndices));
+    if (numFaces != geometry.metadata.faces) {
+      console.error("Number of faces is not correct!");
+    }
+
+    if (this.normalIndices.length != this.vertexIndices.length) {
+      console.error("Number of indices is not correct!: " + this.normalIndices.length + " != " + this.vertexIndices.length);
+    }
+
+    if (this.uvIndices.length != this.vertexIndices.length) {
+      console.error("Number of indices is not correct!: " + this.uv.length + " != " + this.vertexIndices.length);
+    }
   }
 
-  this.buildItemsFromIndex = function(index, collection) {
-    var items = [];
+  this.buildItemsFromIndex = function(index, collection, itemSize) {
+    var items = new Array(2 * (this.vertices.length / 3));
     for (var i = 0; i < index.length; i++) {
-      items.push(collection[index[i]]);
+      var currIndex = index[i];
+      var mapping = collection[currIndex];
+      for (var j = 0; j < itemSize; j++) {
+        items[currIndex + j] = mapping;
+      }
     }
     if (items.length == 0) {
       items = new Array(this.indices[0].length);
