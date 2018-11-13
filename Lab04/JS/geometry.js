@@ -6,6 +6,10 @@ function Geometry() {
   this.yMax;
   this.zMin;
   this.zMax;
+  this.vertexBuffer;
+  this.normalBuffer;
+  this.textureBuffer;
+  this.faceBuffer;
 
   this.initJSON = function(file) {
     var request = new XMLHttpRequest();
@@ -56,34 +60,39 @@ function Geometry() {
   }
 
   this.handleLoadedGeometry = function(geometryData) {
-    var geometry = geometryData.geometries[geometryData.geometries.length - 1].data
+    var geometry = geometryData.geometries[4].data
 
     console.log(geometry);
+
+    var faces = [];
+    for (var i = 0; i < geometry.faces.length; i+= 11) {
+      faces.push(...geometry.faces.slice(i + 1, i + 4));
+    }
+    console.log(faces);
 
     teapotVertexPositionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexPositionBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geometry.vertices), gl.STATIC_DRAW);
     teapotVertexPositionBuffer.itemSize = 3;
-    teapotVertexPositionBuffer.numItems = geometry.metadata.vertices;
+    teapotVertexPositionBuffer.numItems = geometry.vertices.length / 3;
 
     teapotVertexNormalBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexNormalBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geometry.normals), gl.STATIC_DRAW);
     teapotVertexNormalBuffer.itemSize = 3;
-    teapotVertexNormalBuffer.numItems = geometry.metadata.normals;
+    teapotVertexNormalBuffer.numItems = geometry.normals.length / 3;
 
     teapotVertexTextureCoordBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexTextureCoordBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geometry.uvs),
-      gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(geometry.uvs[0]), gl.STATIC_DRAW);
     teapotVertexTextureCoordBuffer.itemSize = 2;
-    teapotVertexTextureCoordBuffer.numItems = geometry.metadata.uvs;
+    teapotVertexTextureCoordBuffer.numItems = geometry.uvs.length / 2;
 
     teapotVertexIndexBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, teapotVertexIndexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(geometry.faces), gl.STATIC_DRAW);
+    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(faces), gl.STATIC_DRAW);
     teapotVertexIndexBuffer.itemSize = 1;
-    teapotVertexIndexBuffer.numItems = geometry.metadata.faces;
+    teapotVertexIndexBuffer.numItems = faces.length;
 
     this.find_range(geometry.vertices);
 

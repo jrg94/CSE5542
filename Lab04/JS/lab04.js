@@ -69,7 +69,9 @@ function drawScene() {
   mat4.identity(mMatrix);
 
 
-  mMatrix = mat4.scale(mMatrix, [1 / 10, 1 / 10, 1 / 10]);
+  mMatrix = mat4.translate(mMatrix, [0, 0, -75]);
+
+  mMatrix = mat4.scale(mMatrix, [1 / 20, 1 / 20, 1 / 20]);
 
   mMatrix = mat4.rotate(mMatrix, degToRad(Z_angle), [0, 1, 1]); // now set up the model matrix
 
