@@ -29,12 +29,12 @@ function Scene() {
       myObject = new Geometry();
       myObject.initTexture("Textures/camo.png", false);
       var imageMap = [
-        ["Textures/morning_bk.png", gl.TEXTURE_CUBE_MAP_POSITIVE_X],
-        ["Textures/morning_bk.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_X],
-        ["Textures/morning_bk.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Y],
-        ["Textures/morning_bk.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Y],
-        ["Textures/morning_bk.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Z],
-        ["Textures/morning_bk.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Z]
+        ["Textures/brick.png", gl.TEXTURE_CUBE_MAP_POSITIVE_X],
+        ["Textures/brick.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_X],
+        ["Textures/camo.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Y],
+        ["Textures/camo.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Y],
+        ["Textures/brick.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Z],
+        ["Textures/brick.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Z]
       ]
       myObject.initTexture(imageMap, true);
       myObject.initBuffers(geometryData.meshes[i]);
@@ -323,38 +323,75 @@ function Geometry() {
    * @param {boolean} isCube a boolean to determine if the texture is a cube map
    */
   this.initTexture = function(image, isCube) {
+    var texture = gl.createTexture();
     if (isCube) {
-      var texture = gl.createTexture();
-      gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
-      gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.REPEAT);
-      gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.REPEAT);
-      gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      this.bindEmptyTexture(gl.TEXTURE_CUBE_MAP, texture, image);
       for (var i = 0; i < image.length; i++) {
         this.load(image[i][0], image[i][1], texture);
       }
       this.textures.push(texture);
     } else {
-      var texture = gl.createTexture();
+      this.bindEmptyTexture(gl.TEXTURE_2D, texture);
       texture.image = new Image();
+      texture.image.src = image;
       texture.image.onload = function() {
         this.handleTextureLoaded(texture);
       }.bind(this);
-      texture.image.src = image;
       this.textures.push(texture);
+    }
+    return texture;
+  }
+
+  this.bindEmptyTexture = function(type, texture, targets) {
+    gl.bindTexture(type, texture);
+    const level = 0;
+    const internalFormat = gl.RGBA;
+    const width = 1;
+    const height = 1;
+    const border = 0;
+    const srcFormat = gl.RGBA;
+    const srcType = gl.UNSIGNED_BYTE;
+    const pixel = new Uint8Array([0, 0, 255, 255]);  // opaque blue
+    if (type == gl.TEXTURE_CUBE_MAP) {
+      for (var i = 0; i < targets.length; i++) {
+        gl.texImage2D(
+          targets[i][1],
+          level,
+          internalFormat,
+          width,
+          height,
+          border,
+          srcFormat,
+          srcType,
+          pixel
+        );
+      }
+    } else {
+      gl.texImage2D(
+        type,
+        level,
+        internalFormat,
+        width,
+        height,
+        border,
+        srcFormat,
+        srcType,
+        pixel
+      );
     }
   }
 
   this.load = function(url, target, texture) {
     var img = new Image();
+    img.src = url;
     img.onload = function(texture, target, image) {
       return function() {
-        gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+        gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
         gl.texImage2D(target, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image );
+        gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
       }
     } (texture, target, img);
-    img.src = url;
   }
 
   this.handleTextureLoaded = function(texture) {
