@@ -30,12 +30,12 @@ function Scene() {
       myObject = new Geometry();
       myObject.initTexture("Textures/camo.png", false);
       var imageMap = [
-        ["Textures/morning_rt.png", gl.TEXTURE_CUBE_MAP_POSITIVE_X],
-        ["Textures/morning_lf.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_X],
-        ["Textures/morning_up.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Y],
-        ["Textures/morning_dn.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Y],
-        ["Textures/morning_bk.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Z],
-        ["Textures/morning_ft.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Z]
+        ["Textures/brick.png", gl.TEXTURE_CUBE_MAP_POSITIVE_X],
+        ["Textures/brick.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_X],
+        ["Textures/brick.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Y],
+        ["Textures/brick.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Y],
+        ["Textures/brick.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Z],
+        ["Textures/brick.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Z]
       ]
       myObject.initTexture(imageMap, true);
       myObject.initBuffers(geometryData.meshes[i]);
@@ -338,7 +338,9 @@ function Geometry() {
    */
   this.initTexture = function(image, isCube) {
     if (isCube) {
+      console.log("Creating texture");
       var texture = gl.createTexture();
+      console.log("Binding texture");
       gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
       gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.REPEAT);
       gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.REPEAT);
@@ -360,12 +362,12 @@ function Geometry() {
   }
 
   this.load = function(url, target, texture) {
-    img = new Image();
-    img.onload = function(texture, target, image) {
+    console.log("Loading image: " + url + " at " + target);
+    var img = new Image();
+    img.onload = function() {
       gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
-      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
-      gl.texImage2D(target, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-    }(texture, target, img);
+      gl.texImage2D(target, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img );
+    };
     img.src = url;
   }
 
