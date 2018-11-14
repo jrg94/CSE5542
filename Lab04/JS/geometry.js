@@ -1,5 +1,6 @@
 function Scene() {
   this.objects = [];
+  this.statics = []
 
   this.initJSON = function(file) {
     var request = new XMLHttpRequest();
@@ -43,47 +44,19 @@ function Scene() {
     this.draw();
   }
 
-  this.handleLoadedTeapot = function(teapotData) {
-    teapotVertexPositionBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexPositionBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(teapotData.vertexPositions), gl.STATIC_DRAW);
-    teapotVertexPositionBuffer.itemSize = 3;
-    teapotVertexPositionBuffer.numItems = teapotData.vertexPositions.length / 3;
-
-    teapotVertexNormalBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexNormalBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(teapotData.vertexNormals), gl.STATIC_DRAW);
-    teapotVertexNormalBuffer.itemSize = 3;
-    teapotVertexNormalBuffer.numItems = teapotData.vertexNormals.length / 3;
-
-    teapotVertexTextureCoordBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexTextureCoordBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(teapotData.vertexTextureCoords), gl.STATIC_DRAW);
-    teapotVertexTextureCoordBuffer.itemSize = 2;
-    teapotVertexTextureCoordBuffer.numItems = teapotData.vertexTextureCoords.length / 2;
-
-    teapotVertexIndexBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, teapotVertexIndexBuffer);
-    gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(teapotData.indices), gl.STATIC_DRAW);
-    teapotVertexIndexBuffer.itemSize = 1;
-    teapotVertexIndexBuffer.numItems = teapotData.indices.length;
-
-    this.find_range(teapotData.vertexPositions);
-
-    this.draw();
-
-  }
-
   this.draw = function() {
     gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+    for (var i = 0; i < this.statics.length; i++) {
+      this.statics[i].draw();
+    }
     for (var i = 0; i < this.objects.length; i++) {
       this.objects[i].draw();
     }
   }
 }
 
-function Geometry() {
+function Geometry(isEnvironment) {
   this.textures = [];
   this.vertexIndices = [];
   this.uvIndices = [];
@@ -259,61 +232,6 @@ function Geometry() {
       outIndices.push(tempIndices[i] * 3 + 2)
     }
     return outIndices;
-  }
-
-  this.getThreeJSIndices = function(geometry) {
-    var vertIndices = [];
-    var uvIndices = [];
-    var normalIndices = [];
-    var i = 0;
-    var numFaces = 0;
-    while (i < geometry.faces.length) {
-      if (geometry.faces[i] == 42) {
-        vertIndices.push(...geometry.faces.slice(i + 1, i + 4));
-        uvIndices.push(...geometry.faces.slice(i + 5, i + 8));
-        normalIndices.push(...geometry.faces.slice(i + 8, i + 11));
-        i += 11;
-      } else if (geometry.faces[i] == 43) {
-        vertIndices.push(...geometry.faces.slice(i + 1, i + 4));
-        vertIndices.push(...geometry.faces.slice(i + 3, i + 5));
-        vertIndices.push(...geometry.faces.slice(i + 1, i + 2));
-        uvIndices.push(...geometry.faces.slice(i + 6, i + 9));
-        uvIndices.push(...geometry.faces.slice(i + 8, i + 10));
-        uvIndices.push(...geometry.faces.slice(i + 6, i + 7));
-        normalIndices.push(...geometry.faces.slice(i + 10, i + 13));
-        normalIndices.push(...geometry.faces.slice(i + 12, i + 14));
-        normalIndices.push(...geometry.faces.slice(i + 10, i + 11));
-        i += 14;
-      } else if (geometry.faces[i] = 34) {
-        vertIndices.push(geometry.faces.slice(i + 1, i + 4));
-        normalIndices.push(geometry.faces.slice(i + 5, i + 8));
-        i += 8;
-      } else {
-        console.log("NOT 42 | 43");
-        i = geometry.faces.length;
-      }
-      numFaces++;
-    }
-
-    this.vertexIndices = vertIndices;
-    this.normalIndices = normalIndices;
-    this.uvIndices = uvIndices;
-  }
-
-  this.buildItemsFromIndex = function(index, collection, itemSize) {
-    var items = new Array(2 * (this.vertices.length / 3));
-    for (var i = 0; i < index.length; i++) {
-      var currIndex = index[i];
-      var mapping = collection[currIndex];
-      for (var j = 0; j < itemSize; j++) {
-        items[currIndex + j] = mapping;
-      }
-    }
-    if (items.length == 0) {
-      items = new Array(this.vertexIndices.length);
-      items.fill(0);
-    }
-    return items;
   }
 
   /**
