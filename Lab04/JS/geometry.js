@@ -324,6 +324,11 @@ function Geometry(isEnvironment) {
     gl.bindTexture(gl.TEXTURE_2D, null);
   }
 
+  /**
+   * Determines the range of the model.
+   *
+   * @param {!Array[number]} positions a list of positions in x, y, z format
+   */
   this.find_range = function(positions) {
     this.xMin = this.xMax = positions[0];
     this.yMin = this.yMax = positions[1];
