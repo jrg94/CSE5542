@@ -29,12 +29,12 @@ function Scene() {
       myObject = new Geometry();
       myObject.initTexture("Textures/camo.png", false);
       var imageMap = [
-        ["Textures/morning_bk.png", gl.TEXTURE_CUBE_MAP_POSITIVE_X],
-        ["Textures/morning_bk.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_X],
-        ["Textures/morning_bk.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Y],
+        ["Textures/morning_rt.png", gl.TEXTURE_CUBE_MAP_POSITIVE_X],
+        ["Textures/morning_lf.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_X],
+        ["Textures/morning_up.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Y],
         ["Textures/morning_dn.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Y],
         ["Textures/morning_bk.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Z],
-        ["Textures/morning_bk.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Z]
+        ["Textures/morning_ft.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Z]
       ]
       myObject.initTexture(imageMap, true);
       myObject.initBuffers(geometryData.meshes[i]);
