@@ -29,12 +29,12 @@ function Scene() {
       myObject = new Geometry();
       myObject.initTexture("Textures/camo.png", false);
       var imageMap = [
-        ["Textures/brick.png", gl.TEXTURE_CUBE_MAP_POSITIVE_X],
-        ["Textures/brick.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_X],
+        ["Textures/camo.png", gl.TEXTURE_CUBE_MAP_POSITIVE_X],
+        ["Textures/camo.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_X],
         ["Textures/camo.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Y],
         ["Textures/camo.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Y],
-        ["Textures/brick.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Z],
-        ["Textures/brick.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Z]
+        ["Textures/camo.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Z],
+        ["Textures/camo.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Z]
       ]
       myObject.initTexture(imageMap, true);
       myObject.initBuffers(geometryData.meshes[i]);
@@ -353,6 +353,10 @@ function Geometry() {
     const srcType = gl.UNSIGNED_BYTE;
     const pixel = new Uint8Array([0, 0, 255, 255]);  // opaque blue
     if (type == gl.TEXTURE_CUBE_MAP) {
+      gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
       for (var i = 0; i < targets.length; i++) {
         gl.texImage2D(
           targets[i][1],
