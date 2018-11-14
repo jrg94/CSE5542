@@ -29,17 +29,15 @@ function Scene() {
     for (var i = 0; i < geometryData.meshes.length; i++) {
       myObject = new Geometry();
       myObject.initTexture("Textures/camo.png", false);
-      myObject.initTexture(
-        [
-          "Textures/morning_rt.png",
-          "Textures/morning_lf.png",
-          "Textures/morning_up.png",
-          "Textures/morning_dn.png",
-          "Textures/morning_bk.png",
-          "Textures/morning_ft.png"
-        ],
-        true
-      );
+      var imageMap = [
+        ["Textures/morning_rt.png", gl.TEXTURE_CUBE_MAP_POSITIVE_X],
+        ["Textures/morning_lf.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_X],
+        ["Textures/morning_up.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Y],
+        ["Textures/morning_dn.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Y],
+        ["Textures/morning_bk.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Z],
+        ["Textures/morning_ft.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Z]
+      ]
+      myObject.initTexture(imageMap, true);
       myObject.initBuffers(geometryData.meshes[i]);
       this.objects.push(myObject);
     }
@@ -341,8 +339,13 @@ function Geometry() {
   this.initTexture = function(image, isCube) {
     if (isCube) {
       var texture = gl.createTexture();
+      gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
+      gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.REPEAT);
+      gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.REPEAT);
+      gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
       for (var i = 0; i < image.length; i++) {
-        this.load(image[i], gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, texture);
+        this.load(image[i][0], image[i][1], texture);
       }
       this.textures.push(texture);
     } else {
@@ -358,15 +361,11 @@ function Geometry() {
 
   this.load = function(url, target, texture) {
     img = new Image();
-    img.onload = function() {
+    img.onload = function(texture, target, image) {
       gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
       gl.texImage2D(target, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img);
-      gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.REPEAT);
-      gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.REPEAT);
-      //gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_R, gl.REPEAT);
-      gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-      gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    };
+    }(texture, target, img);
     img.src = url;
   }
 
