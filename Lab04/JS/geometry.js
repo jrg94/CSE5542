@@ -149,6 +149,12 @@ function Geometry(isEnvironment) {
     }
   }
 
+  /**
+   * A helper method which sets the three main attributes for this object:
+   * 1. Vertices
+   * 2. Normals
+   * 3. Texture Coordinates
+   */
   this.setVertexAttributes = function() {
     this.setVertexAttribute(this.vertexBuffer, shaderProgram.vertexPositionAttribute, this.vertexBuffer.itemSize);
     this.setVertexAttribute(this.normalBuffer, shaderProgram.vertexNormalAttribute, this.normalBuffer.itemSize);
