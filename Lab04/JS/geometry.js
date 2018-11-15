@@ -196,6 +196,13 @@ function Geometry(isEnvironment) {
     buffer.numItems = data.length / itemSize;
   }
 
+  /**
+   * Initializes the element array buffer.
+   *
+   * @param buffer the element buffer
+   * @param data the data to be bound
+   * @param itemSize the number of items
+   */
   this.initElementArrayBuffer = function(buffer, data, itemSize) {
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, buffer);
     gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(data), gl.STATIC_DRAW);
@@ -205,6 +212,8 @@ function Geometry(isEnvironment) {
 
   /**
    * Initializes buffers from geometry.
+   *
+   * @param {Object} a collection of geometry information
    */
   this.initBuffers = function(geometry) {
     this.vertexIndices = [].concat.apply([], geometry.faces);
