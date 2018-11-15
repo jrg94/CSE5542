@@ -114,10 +114,6 @@ function Geometry(isEnvironment) {
    * Draws the geometry.
    */
   this.draw = function() {
-    if (this.vertexBuffer == null || this.normalBuffer == null || this.indexBuffer == null) {
-      return;
-    }
-
     this.transform();
     this.setVertexAttributes();
 
