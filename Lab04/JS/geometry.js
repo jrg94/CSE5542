@@ -128,6 +128,14 @@ function Geometry(isEnvironment) {
     this.drawByType(draw_type);
   }
 
+  /**
+   * A helper method which sets and binds a texture.
+   *
+   * @param {number} index the current texture index
+   * @param texture the current texture object
+   * @param type the type of texture object
+   * @param attribute the shader attribute to be bound to this texture
+   */
   this.setTexture = function(index, texture, type, attribute) {
     gl.activeTexture(gl.TEXTURE0 + index); // set texture unit 0 to use
     gl.bindTexture(type, texture); // bind the texture object to the texture unit
