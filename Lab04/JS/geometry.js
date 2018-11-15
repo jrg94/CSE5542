@@ -120,35 +120,9 @@ function Geometry(isEnvironment) {
 
     this.transform();
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
-    gl.vertexAttribPointer(
-      shaderProgram.vertexPositionAttribute, // Attribute location
-      this.vertexBuffer.itemSize, // # of elements per attribute
-      gl.FLOAT, // Type of elements
-      false,
-      0, // Size of individual vertex
-      0 // Offset
-    );
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.normalBuffer);
-    gl.vertexAttribPointer(
-      shaderProgram.vertexNormalAttribute,
-      this.normalBuffer.itemSize,
-      gl.FLOAT,
-      false,
-      0,
-      0
-    );
-
-    gl.bindBuffer(gl.ARRAY_BUFFER, this.textureBuffer);
-    gl.vertexAttribPointer(
-      shaderProgram.vertexTexCoordsAttribute,
-      this.textureBuffer.itemSize,
-      gl.FLOAT,
-      false,
-      0,
-      0
-    );
+    this.setVertexAttribute(this.vertexBuffer, shaderProgram.vertexPositionAttribute, this.vertexBuffer.itemSize);
+    this.setVertexAttribute(this.normalBuffer, shaderProgram.vertexNormalAttribute, this.normalBuffer.itemSize);
+    this.setVertexAttribute(this.textureBuffer, shaderProgram.vertexTexCoordsAttribute, this.textureBuffer.itemSize);
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
 
@@ -172,6 +146,18 @@ function Geometry(isEnvironment) {
     } else if (draw_type == 2) {
       gl.drawElements(gl.TRIANGLES, this.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
     }
+  }
+
+  this.setVertexAttribute = function(buffer, attribute, itemSize) {
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.vertexAttribPointer(
+      attribute, // Attribute location
+      itemSize, // # of elements per attribute
+      gl.FLOAT, // Type of elements
+      false,
+      0, // Size of individual vertex
+      0 // Offset
+    );
   }
 
   /**
