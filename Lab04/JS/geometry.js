@@ -37,10 +37,7 @@ function Scene() {
     }
     geometry.move();
     geometry.twist();
-    window.setInterval(function(){
-      this.rotateObjects(1);
-      this.draw();
-    }.bind(this), 50);
+    geometry.animate();
   }
 
   this.rotateObjects = function(diffX) {
@@ -68,6 +65,11 @@ function Parent() {
   this.children = [];
   this.location = [0, 0, 0];
   this.rotation = [0, 0, 0];
+  this.animation = function(){};
+
+  this.setAnimation = function(animation) {
+    this.animation = animation;
+  }
 
   this.setRotation = function(rotation) {
     this.rotation = rotation;
@@ -83,6 +85,10 @@ function Parent() {
     for (var i = 0; i < this.children.length; i++) {
       this.children[i].rotateObjects(diffX);
     }
+  }
+
+  this.animate = function() {
+    this.animation(this);
   }
 
   this.twist = function() {
@@ -173,12 +179,6 @@ function Geometry(isStatic) {
     this.setTextureIndex();
     this.setTextures();
     this.drawByType(draw_type);
-  }
-
-
-
-  this.animate = function(someFunction) {
-    // TODO
   }
 
   /**

@@ -101,15 +101,29 @@ function webGLStart() {
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
   document.addEventListener('mousedown', onDocumentMouseDown, false);
 
-  generateScene();
+  scene = generateScene();
+  scheduleDraw(scene);
+}
+
+function scheduleDraw(scene) {
+  window.setInterval(function(){
+    scene.draw();
+  }.bind(this), 50);
+}
+
+function animate(parent) {
+  window.setInterval(function(){
+    parent.rotateObjects(1);
+  }.bind(this), 50);
 }
 
 function generateScene() {
-  scene = new Scene();
+  var scene = new Scene();
   scene
     .addObject("Objects/plane.json", false, "Textures/camo.png")
     .setLocation([-1, -1, -1])
-    .setRotation([0, 0, 0]);
+    .setRotation([0, 0, 0])
+    .setAnimation(animate);
   scene
     .addObject("Objects/quad.json", true, "Textures/morning_rt.png")
     .setLocation([-2, 0, 0])
@@ -134,6 +148,7 @@ function generateScene() {
     .addObject("Objects/quad.json", true, "Textures/morning_bk.png")
     .setLocation([0, 0, 2])
     .setRotation([0, degToRad(180), 0]);
+  return scene;
 }
 
 function BG(red, green, blue) {
