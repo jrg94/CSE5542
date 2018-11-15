@@ -59,6 +59,9 @@ function Scene() {
   }
 }
 
+/**
+ * A parent object contains all child geometry.
+ */
 function Parent() {
   this.children = [];
   this.location = [0, 0, 0];
@@ -66,6 +69,9 @@ function Parent() {
   this.scale = [1, 1, 1];
   this.animation = function(){};
 
+  /**
+   * Initializes all children based on the Parent
+   */
   this.initialize = function() {
     this.move();
     this.twist();
@@ -73,21 +79,41 @@ function Parent() {
     this.animate();
   }
 
+  /**
+   * Sets the scale of this parent.
+   *
+   * @param scale some x, y, z scale
+   */
   this.setScale = function(scale) {
     this.scale = scale;
     return this;
   }
 
+  /**
+   * Sets the animation of this parent.
+   *
+   * @param animation some animation function.
+   */
   this.setAnimation = function(animation) {
     this.animation = animation;
     return this;
   }
 
+  /**
+   * Sets the rotation of this parent.
+   *
+   * @param rotation an x, y, z rotation
+   */
   this.setRotation = function(rotation) {
     this.rotation = rotation;
     return this;
   }
 
+  /**
+   * Sets the location of this parent.
+   *
+   * @param location an x, y, z position
+   */
   this.setLocation = function(location) {
     this.location = location;
     return this;
