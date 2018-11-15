@@ -1,6 +1,16 @@
+/**
+ * A scene object.
+ */
 function Scene() {
   this.objects = [];
 
+  /**
+   * Adds an object to the scene.
+   *
+   * @param file some json file
+   * @param isStatic the state of this object
+   * @param baseTecxture the default texture file
+   */
   this.addObject = function(file, isStatic, baseTexture) {
     var myObject = new Parent();
     this.objects.push(myObject);
