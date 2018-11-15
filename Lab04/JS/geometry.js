@@ -139,6 +139,11 @@ function Geometry(isEnvironment) {
     this.drawByType(draw_type);
   }
 
+  /**
+   * A reusable helper method which avoids global variables.
+   *
+   * @param {number} type the type of drawing (i.e. point/line/face)
+   */
   this.drawByType = function(type) {
     if (type == 1) {
       gl.drawArrays(gl.LINE_LOOP, 0, this.vertexBuffer.numItems);
