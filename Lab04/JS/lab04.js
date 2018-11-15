@@ -99,19 +99,17 @@ function webGLStart() {
   shaderProgram.cube_map_textureUniform = gl.getUniformLocation(shaderProgram, "cubeMap");
   shaderProgram.use_textureUniform = gl.getUniformLocation(shaderProgram, "use_texture");
 
-  scene = new Scene();
-  scene.initJSON("Objects/plane.json");
-  scene.initJSON("Objects/quad.json");
-  scene.initJSON("Objects/quad.json");
-  scene.initJSON("Objects/quad.json");
-  scene.initJSON("Objects/quad.json");
-  scene.initJSON("Objects/quad.json");
-  scene.initJSON("Objects/quad.json");
-
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
-
   document.addEventListener('mousedown', onDocumentMouseDown, false);
 
+  scene = new Scene();
+  scene.addObject("Objects/plane.json", [0, 0, -5], false);
+  scene.addObject("Objects/quad.json", [0, 0, -5], true);
+  scene.addObject("Objects/quad.json", [0, 0, -5], true);
+  scene.addObject("Objects/quad.json", [0, 0, -5], true);
+  scene.addObject("Objects/quad.json", [0, 0, -5], true);
+  scene.addObject("Objects/quad.json", [0, 0, -5], true);
+  scene.addObject("Objects/quad.json", [0, 0, -5], true);
   scene.draw();
 }
 
