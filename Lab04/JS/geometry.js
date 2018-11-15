@@ -110,16 +110,15 @@ function Geometry(isEnvironment) {
     this.v2wMatrix = mat4.transpose(this.v2wMatrix);
   }
 
+  /**
+   * Draws the geometry.
+   */
   this.draw = function() {
     if (this.vertexBuffer == null || this.normalBuffer == null || this.indexBuffer == null) {
       return;
     }
 
     this.transform();
-
-    gl.uniform4f(shaderProgram.light_ambientUniform, this.light_ambient[0], this.light_ambient[1], this.light_ambient[2], 1.0);
-    gl.uniform4f(shaderProgram.light_diffuseUniform, this.light_diffuse[0], this.light_diffuse[1], this.light_diffuse[2], 1.0);
-    gl.uniform4f(shaderProgram.light_specularUniform, this.light_specular[0], this.light_specular[1], this.light_specular[2], 1.0);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, this.vertexBuffer);
     gl.vertexAttribPointer(
@@ -153,6 +152,7 @@ function Geometry(isEnvironment) {
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
 
+    this.setLightProperties();
     this.setMaterialProperties();
     this.setMatrixUniforms(); // pass the modelview mattrix and projection matrix to the shader
     gl.uniform1i(shaderProgram.use_textureUniform, use_texture);
@@ -174,6 +174,18 @@ function Geometry(isEnvironment) {
     }
   }
 
+  /**
+   * Sets the light properties of the object (currently hardcoded).
+   */
+  this.setLightProperties = function() {
+    gl.uniform4f(shaderProgram.light_ambientUniform, this.light_ambient[0], this.light_ambient[1], this.light_ambient[2], 1.0);
+    gl.uniform4f(shaderProgram.light_diffuseUniform, this.light_diffuse[0], this.light_diffuse[1], this.light_diffuse[2], 1.0);
+    gl.uniform4f(shaderProgram.light_specularUniform, this.light_specular[0], this.light_specular[1], this.light_specular[2], 1.0);
+  }
+
+  /**
+   * Sets the material properties of the object (currently hardcoded).
+   */
   this.setMaterialProperties = function() {
     gl.uniform4f(shaderProgram.ambient_coefUniform, this.mat_ambient[0], this.mat_ambient[1], this.mat_ambient[2], this.mat_ambient[3]);
     gl.uniform4f(shaderProgram.diffuse_coefUniform, this.mat_diffuse[0], this.mat_diffuse[1], this.mat_diffuse[2], this.mat_diffuse[3]);
