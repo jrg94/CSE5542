@@ -1,23 +1,23 @@
 function Scene() {
   this.objects = [];
 
-  this.addObject = function(file, initialPosition, initialRotation, isStatic) {
+  this.addObject = function(file, initialPosition, initialRotation, isStatic, baseTexture) {
     var request = new XMLHttpRequest();
     request.open("GET", file);
     request.onreadystatechange =
       function() {
         if (request.readyState == 4) {
           geometry = JSON.parse(request.responseText);
-          this.handleLoadedGeometry(geometry, initialPosition, initialRotation, isStatic);
+          this.handleLoadedGeometry(geometry, initialPosition, initialRotation, isStatic, baseTexture);
         }
       }.bind(this);
     request.send();
   }
 
-  this.handleLoadedGeometry = function(geometryData, initialPosition, initialRotation, isStatic) {
+  this.handleLoadedGeometry = function(geometryData, initialPosition, initialRotation, isStatic, baseTexture) {
     for (var i = 0; i < geometryData.meshes.length; i++) {
       var myObject = new Geometry(initialPosition, initialRotation, isStatic);
-      myObject.initTexture("Textures/camo.png", false);
+      myObject.initTexture(baseTexture, false);
       var imageMap = [
         ["Textures/morning_rt.png", gl.TEXTURE_CUBE_MAP_POSITIVE_X],
         ["Textures/morning_lf.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_X],
@@ -150,7 +150,11 @@ function Geometry(initialPosition, initialRotation, isStatic) {
    * Sets the current active texture.
    */
   this.setTextureIndex = function() {
-    gl.uniform1i(shaderProgram.use_textureUniform, use_texture);
+    if (this.isStatic) {
+      gl.uniform1i(shaderProgram.use_textureUniform, 1);
+    } else {
+      gl.uniform1i(shaderProgram.use_textureUniform, use_texture);
+    }
   }
 
   /**
