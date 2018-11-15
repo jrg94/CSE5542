@@ -9,11 +9,7 @@ function Scene() {
       function() {
         if (request.readyState == 4) {
           geometry = JSON.parse(request.responseText);
-          if (file === "Objects/teapot.json") {
-            this.handleLoadedTeapot(geometry);
-          } else {
-            this.handleLoadedGeometry(geometry)
-          }
+          this.handleLoadedGeometry(geometry)
         }
       }.bind(this);
     request.send();

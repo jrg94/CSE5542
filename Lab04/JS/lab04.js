@@ -101,6 +101,12 @@ function webGLStart() {
 
   scene = new Scene();
   scene.initJSON("Objects/plane.json");
+  scene.initJSON("Objects/quad.json");
+  scene.initJSON("Objects/quad.json");
+  scene.initJSON("Objects/quad.json");
+  scene.initJSON("Objects/quad.json");
+  scene.initJSON("Objects/quad.json");
+  scene.initJSON("Objects/quad.json");
 
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
 
