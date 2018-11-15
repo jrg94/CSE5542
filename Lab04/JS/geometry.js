@@ -126,9 +126,9 @@ function Geometry(initialPosition, initialRotation, isStatic) {
     mat4.identity(this.mMatrix);
     this.mMatrix = mat4.translate(this.mMatrix, this.initialPosition);
     if (this.isStatic) {
-      this.mMatrix = mat4.rotate(this.mMatrix, this.initialRotation[0], [1, 0, 0]);
-      this.mMatrix = mat4.rotate(this.mMatrix, this.initialRotation[1], [0, 1, 0]);
-      this.mMatrix = mat4.rotate(this.mMatrix, this.initialRotation[2], [0, 0, 1]);
+      this.mMatrix = mat4.rotateX(this.mMatrix, this.initialRotation[0]);
+      this.mMatrix = mat4.rotateY(this.mMatrix, this.initialRotation[1]);
+      this.mMatrix = mat4.rotateZ(this.mMatrix, this.initialRotation[2]);
       this.mMatrix = mat4.scale(this.mMatrix, [4, 4, 4]);
     } else {
       this.mMatrix = mat4.scale(this.mMatrix, [1 / 200, 1 / 200, 1 / 200]);

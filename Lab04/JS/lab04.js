@@ -108,7 +108,7 @@ function webGLStart() {
   scene.addObject("Objects/quad.json", [0, -2, 0], [degToRad(-90), 0, 0], true);
   scene.addObject("Objects/quad.json", [0, 2, 0], [degToRad(90), 0, 0 ], true);
   scene.addObject("Objects/quad.json", [0, 0, -2], [0, 0, 0], true);
-  scene.addObject("Objects/quad.json", [0, 0, 2], [0, 0, degToRad(180)], true);  // TODO FIX
+  scene.addObject("Objects/quad.json", [0, 0, 2], [0, degToRad(180), 0], true);  // TODO FIX
 }
 
 function BG(red, green, blue) {
