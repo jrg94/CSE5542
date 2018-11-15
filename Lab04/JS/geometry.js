@@ -35,9 +35,7 @@ function Scene() {
       child.initBuffers(geometryData.meshes[i]);
       geometry.children.push(child);
     }
-    geometry.move();
-    geometry.twist();
-    geometry.animate();
+    geometry.initialize();
   }
 
   this.rotateObjects = function(diffX) {
@@ -65,10 +63,24 @@ function Parent() {
   this.children = [];
   this.location = [0, 0, 0];
   this.rotation = [0, 0, 0];
+  this.scale = [1, 1, 1];
   this.animation = function(){};
+
+  this.initialize = function() {
+    this.move();
+    this.twist();
+    this.expand();
+    this.animate();
+  }
+
+  this.setScale = function(scale) {
+    this.scale = scale;
+    return this;
+  }
 
   this.setAnimation = function(animation) {
     this.animation = animation;
+    return this;
   }
 
   this.setRotation = function(rotation) {
@@ -84,6 +96,12 @@ function Parent() {
   this.rotateObjects = function(diffX) {
     for (var i = 0; i < this.children.length; i++) {
       this.children[i].rotateObjects(diffX);
+    }
+  }
+
+  this.expand = function() {
+    for (var i = 0; i < this.children.length; i++) {
+      this.children[i].scale = this.scale;
     }
   }
 
@@ -131,6 +149,8 @@ function Geometry(isStatic) {
   this.position = this.initialPosition;
   this.initialRotation = [0, 0, 0];
   this.rotation = this.initialRotation;
+  this.initialScale = [1, 1, 1];
+  this.scale = this.initialScale;
   this.isStatic = isStatic;
   this.textures = [];
   this.vertexIndices = [];
@@ -196,7 +216,7 @@ function Geometry(isStatic) {
       this.mMatrix = mat4.rotateX(this.mMatrix, this.rotation[0]);
       this.mMatrix = mat4.rotateY(this.mMatrix, this.rotation[1]);
       this.mMatrix = mat4.rotateZ(this.mMatrix, this.rotation[2]);
-      this.mMatrix = mat4.scale(this.mMatrix, [4, 4, 4]);
+      this.mMatrix = mat4.scale(this.mMatrix, this.scale);
     } else {
       this.mMatrix = mat4.scale(this.mMatrix, [1 / 200, 1 / 200, 1 / 200]);
       this.mMatrix = mat4.rotate(this.mMatrix, degToRad(this.object_angle), [0, 1, 1]);
