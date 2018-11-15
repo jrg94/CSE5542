@@ -45,7 +45,7 @@ function Scene() {
   this.rotateCamera = function(diffX, diffY) {
     for (var i = 0; i < this.objects.length; i++) {
       this.objects[i].camera_angle_x += diffX / 5;
-      this.objects[i].camera_angle_y += diffX / 5;
+      this.objects[i].camera_angle_y += diffY / 5;
     }
   }
 
@@ -120,6 +120,8 @@ function Geometry(initialPosition, initialRotation, isStatic) {
   this.transform = function() {
     this.pMatrix = mat4.perspective(60, 1.0, 0.1, 100, this.pMatrix);
     this.vMatrix = mat4.lookAt([1, 1, 1], [-1, -1, -1], [0, 1, 0], this.vMatrix);
+    this.vMatrix = mat4.rotate(this.vMatrix, degToRad(this.camera_angle_x), [0, -1, 0]);
+    this.vMatrix = mat4.rotate(this.vMatrix, degToRad(this.camera_angle_y), [-1, 0, 0]);
 
     mat4.identity(this.mMatrix);
     this.mMatrix = mat4.translate(this.mMatrix, this.initialPosition);

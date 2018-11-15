@@ -37,7 +37,7 @@ function onDocumentMouseDown(event) {
 
 function onDocumentMouseMove(event) {
   var mouseX = event.clientX;
-  var mouseY = event.ClientY;
+  var mouseY = event.clientY;
 
   var diffX = mouseX - lastMouseX;
   var diffY = mouseY - lastMouseY;
@@ -104,11 +104,11 @@ function webGLStart() {
   scene = new Scene();
   scene.addObject("Objects/plane.json", [-1, -1, -1], [0, 0, 0], false);
   scene.addObject("Objects/quad.json", [-2, 0, 0], [0, degToRad(90), 0], true);
-  scene.addObject("Objects/quad.json", [2, 0, 0], [0, degToRad(90), 0], true);
+  scene.addObject("Objects/quad.json", [2, 0, 0], [0, degToRad(-90), 0], true);
   scene.addObject("Objects/quad.json", [0, -2, 0], [degToRad(-90), 0, 0], true);
   scene.addObject("Objects/quad.json", [0, 2, 0], [degToRad(90), 0, 0 ], true);
   scene.addObject("Objects/quad.json", [0, 0, -2], [0, 0, 0], true);
-  scene.addObject("Objects/quad.json", [0, 0, 2], [0, 0, 0], true);
+  scene.addObject("Objects/quad.json", [0, 0, 2], [0, 0, degToRad(180)], true);  // TODO FIX
 }
 
 function BG(red, green, blue) {
