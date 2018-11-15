@@ -260,6 +260,14 @@ function Geometry(isEnvironment) {
     return texture;
   }
 
+  /**
+   * A helper method which binds a 1x1 texture while we wait for
+   * the image textures to load.
+   *
+   * @param {number} a GL enum
+   * @param {texture} a GL texture object
+   * @param {!Array[number]} a list of GL enums
+   */
   this.bindEmptyTexture = function(type, texture, targets) {
     gl.bindTexture(type, texture);
     const level = 0;
