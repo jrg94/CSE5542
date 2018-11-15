@@ -38,9 +38,9 @@ function Scene() {
     geometry.initialize();
   }
 
-  this.rotateObjects = function(diffX) {
+  this.rotateObjects = function(diffX, diffY, diffZ) {
     for (var i = 0; i < this.objects.length; i++) {
-      this.objects[i].rotateObjects(diffX);
+      this.objects[i].rotateObjects(diffX, diffY, diffZ);
     }
   }
 
@@ -93,9 +93,9 @@ function Parent() {
     return this;
   }
 
-  this.rotateObjects = function(diffX) {
+  this.rotateObjects = function(diffX, diffY, diffZ) {
     for (var i = 0; i < this.children.length; i++) {
-      this.children[i].rotateObjects(diffX);
+      this.children[i].rotateObjects(diffX, diffY, diffZ);
     }
   }
 
@@ -134,10 +134,11 @@ function Parent() {
     }
   }
 
-  this.rotateObjects = function(diffX) {
+  this.rotateObjects = function(diffX, diffY, diffZ) {
     for (var i = 0; i < this.children.length; i++) {
-      this.children[i].rotation[1] += diffX / 500;
-      this.children[i].rotation[2] += diffX / 500;
+      this.children[i].rotation[0] += diffX / 500;
+      this.children[i].rotation[1] += diffY / 500;
+      this.children[i].rotation[2] += diffZ / 500;
     }
   }
 }

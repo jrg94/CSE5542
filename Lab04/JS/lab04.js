@@ -113,8 +113,8 @@ function scheduleDraw(scene) {
 
 function animate(parent) {
   window.setInterval(function(){
-    parent.rotateObjects(1);
-  }.bind(this), 50);
+    parent.rotateObjects(1, 0, 0);
+  }.bind(this), 200);
 }
 
 function generateScene() {
