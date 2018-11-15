@@ -1,7 +1,7 @@
 function Scene() {
   this.objects = [];
 
-  this.addObject = function(file, initialRotation, isStatic, baseTexture) {
+  this.addObject = function(file, isStatic, baseTexture) {
     var myObject = new Parent();
     this.objects.push(myObject);
 
@@ -11,7 +11,7 @@ function Scene() {
       function() {
         if (request.readyState == 4) {
           geometry = JSON.parse(request.responseText);
-          this.handleLoadedGeometry(geometry, initialRotation, isStatic, baseTexture, myObject);
+          this.handleLoadedGeometry(geometry, isStatic, baseTexture, myObject);
         }
       }.bind(this);
     request.send();
@@ -19,9 +19,9 @@ function Scene() {
     return myObject;
   }
 
-  this.handleLoadedGeometry = function(geometryData, initialRotation, isStatic, baseTexture, geometry) {
+  this.handleLoadedGeometry = function(geometryData, isStatic, baseTexture, geometry) {
     for (var i = 0; i < geometryData.meshes.length; i++) {
-      var child = new Geometry(initialRotation, isStatic);
+      var child = new Geometry(isStatic);
       child.initTexture(baseTexture, false);
       var imageMap = [
         ["Textures/morning_rt.png", gl.TEXTURE_CUBE_MAP_POSITIVE_X],
@@ -36,6 +36,7 @@ function Scene() {
       geometry.children.push(child);
     }
     geometry.move();
+    geometry.twist();
     window.setInterval(function(){
       this.rotateObjects(1);
       this.draw();
@@ -66,9 +67,28 @@ function Scene() {
 function Parent() {
   this.children = [];
   this.location = [0, 0, 0];
+  this.rotation = [0, 0, 0];
+
+  this.setRotation = function(rotation) {
+    this.rotation = rotation;
+    return this;
+  }
 
   this.setLocation = function(location) {
     this.location = location;
+    return this;
+  }
+
+  this.rotateObjects = function(diffX) {
+    for (var i = 0; i < this.children.length; i++) {
+      this.children[i].rotateObjects(diffX);
+    }
+  }
+
+  this.twist = function() {
+    for (var i = 0; i < this.children.length; i++) {
+      this.children[i].rotation = this.rotation;
+    }
   }
 
   this.move = function() {
@@ -100,10 +120,11 @@ function Parent() {
 /**
  * A geometry object.
  */
-function Geometry(initialRotation, isStatic) {
+function Geometry(isStatic) {
   this.initialPosition = [0, 0, 0];
   this.position = this.initialPosition;
-  this.initialRotation = initialRotation;
+  this.initialRotation = [0, 0, 0];
+  this.rotation = this.initialRotation;
   this.isStatic = isStatic;
   this.textures = [];
   this.vertexIndices = [];
@@ -172,9 +193,9 @@ function Geometry(initialRotation, isStatic) {
     mat4.identity(this.mMatrix);
     this.mMatrix = mat4.translate(this.mMatrix, this.position);
     if (this.isStatic) {
-      this.mMatrix = mat4.rotateX(this.mMatrix, this.initialRotation[0]);
-      this.mMatrix = mat4.rotateY(this.mMatrix, this.initialRotation[1]);
-      this.mMatrix = mat4.rotateZ(this.mMatrix, this.initialRotation[2]);
+      this.mMatrix = mat4.rotateX(this.mMatrix, this.rotation[0]);
+      this.mMatrix = mat4.rotateY(this.mMatrix, this.rotation[1]);
+      this.mMatrix = mat4.rotateZ(this.mMatrix, this.rotation[2]);
       this.mMatrix = mat4.scale(this.mMatrix, [4, 4, 4]);
     } else {
       this.mMatrix = mat4.scale(this.mMatrix, [1 / 200, 1 / 200, 1 / 200]);
