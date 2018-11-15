@@ -56,7 +56,10 @@ function Scene() {
   }
 }
 
-function Geometry(isEnvironment) {
+/**
+ * A geometry object.
+ */
+function Geometry() {
   this.textures = [];
   this.vertexIndices = [];
   this.uvIndices = [];
@@ -89,15 +92,32 @@ function Geometry(isEnvironment) {
   this.light_specular = [1, 1, 1, 1];
   this.light_pos = [0, 0, 0, 1]; // eye space position
 
+  /**
+   * Draws the geometry.
+   */
+  this.draw = function() {
+    this.transform();
+    this.setVertexAttributes();
+    this.setElementAttributes();
+    this.setLightProperties();
+    this.setMaterialProperties();
+    this.setMatrixUniforms();
+    this.setTexture(0, this.textures[0], gl.TEXTURE_2D, shaderProgram.textureUniform);
+    this.setTexture(1, this.textures[1], gl.TEXTURE_CUBE_MAP, shaderProgram.cube_map_textureUniform);
+    this.drawByType(draw_type);
+  }
+
+  /**
+   * Transforms this geometry (currently hardcoded).
+   */
   this.transform = function() {
-    this.pMatrix = mat4.perspective(60, 1.0, 0.1, 100, this.pMatrix); // set up the projection matrix
-    this.vMatrix = mat4.lookAt([0, 0, 5], [0, 0, 0], [0, 1, 0], this.vMatrix); // set up the view matrix, multiply into the modelview matrix
+    this.pMatrix = mat4.perspective(60, 1.0, 0.1, 100, this.pMatrix);
+    this.vMatrix = mat4.lookAt([0, 0, 5], [0, 0, 0], [0, 1, 0], this.vMatrix);
 
     mat4.identity(this.mMatrix);
-    //this.mMatrix = mat4.translate(this.mMatrix, [0, 0, -75]);
     this.mMatrix = mat4.translate(this.mMatrix, [0, 0, -10]);
     this.mMatrix = mat4.scale(this.mMatrix, [1 / 50, 1 / 50, 1 / 50]);
-    this.mMatrix = mat4.rotate(this.mMatrix, degToRad(this.z_angle), [0, 1, 1]); // now set up the model matrix
+    this.mMatrix = mat4.rotate(this.mMatrix, degToRad(this.z_angle), [0, 1, 1]);
 
     mat4.identity(this.nMatrix);
     this.nMatrix = mat4.multiply(this.nMatrix, this.vMatrix);
@@ -108,21 +128,6 @@ function Geometry(isEnvironment) {
     mat4.identity(this.v2wMatrix);
     this.v2wMatrix = mat4.multiply(this.v2wMatrix, this.vMatrix);
     this.v2wMatrix = mat4.transpose(this.v2wMatrix);
-  }
-
-  /**
-   * Draws the geometry.
-   */
-  this.draw = function() {
-    this.transform();
-    this.setVertexAttributes();
-    this.setElementAttributes();
-    this.setLightProperties();
-    this.setMaterialProperties();
-    this.setMatrixUniforms(); 
-    this.setTexture(0, this.textures[0], gl.TEXTURE_2D, shaderProgram.textureUniform);
-    this.setTexture(1, this.textures[1], gl.TEXTURE_CUBE_MAP, shaderProgram.cube_map_textureUniform);
-    this.drawByType(draw_type);
   }
 
   /**
