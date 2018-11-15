@@ -102,6 +102,7 @@ function Geometry() {
     this.setLightProperties();
     this.setMaterialProperties();
     this.setMatrixUniforms();
+    this.setCurrentTexture();
     this.setTexture(0, this.textures[0], gl.TEXTURE_2D, shaderProgram.textureUniform);
     this.setTexture(1, this.textures[1], gl.TEXTURE_CUBE_MAP, shaderProgram.cube_map_textureUniform);
     this.drawByType(draw_type);
