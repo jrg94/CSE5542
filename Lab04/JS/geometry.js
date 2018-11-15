@@ -107,7 +107,7 @@ function Geometry(initialPosition, initialRotation, isStatic) {
    */
   this.transform = function() {
     this.pMatrix = mat4.perspective(60, 1.0, 0.1, 100, this.pMatrix);
-    this.vMatrix = mat4.lookAt([0, 0, 5], [0, 0, 0], [0, 1, 0], this.vMatrix);
+    this.vMatrix = mat4.lookAt([1, 1, 1], [-1, -1, -1], [0, 1, 0], this.vMatrix);
 
     mat4.identity(this.mMatrix);
     this.mMatrix = mat4.translate(this.mMatrix, this.initialPosition);
@@ -115,8 +115,9 @@ function Geometry(initialPosition, initialRotation, isStatic) {
       this.mMatrix = mat4.rotate(this.mMatrix, this.initialRotation[0], [1, 0, 0]);
       this.mMatrix = mat4.rotate(this.mMatrix, this.initialRotation[1], [0, 1, 0]);
       this.mMatrix = mat4.rotate(this.mMatrix, this.initialRotation[2], [0, 0, 1]);
+      this.mMatrix = mat4.scale(this.mMatrix, [4, 4, 4]);
     } else {
-      this.mMatrix = mat4.scale(this.mMatrix, [1 / 50, 1 / 50, 1 / 50]);
+      this.mMatrix = mat4.scale(this.mMatrix, [1 / 200, 1 / 200, 1 / 200]);
       this.mMatrix = mat4.rotate(this.mMatrix, degToRad(this.z_angle), [0, 1, 1]);
     }
 

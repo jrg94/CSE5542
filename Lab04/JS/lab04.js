@@ -103,13 +103,13 @@ function webGLStart() {
   document.addEventListener('mousedown', onDocumentMouseDown, false);
 
   scene = new Scene();
-  scene.addObject("Objects/plane.json", [0, 0, -5], [0, 0, 0], false);
-  scene.addObject("Objects/quad.json", [-1, 0, 0], [0, degToRad(90), 0], true);
-  scene.addObject("Objects/quad.json", [1, 0, 0], [0, degToRad(90), 0], true);
-  scene.addObject("Objects/quad.json", [0, -1, 0], [degToRad(90), 0, 0], true);
-  scene.addObject("Objects/quad.json", [0, 1, 0], [degToRad(90), 0, 0 ], true);
-  scene.addObject("Objects/quad.json", [0, 0, -1], [0, 0, 0], true);
-  scene.addObject("Objects/quad.json", [0, 0, 1], [0, 0, 0], true);
+  scene.addObject("Objects/plane.json", [-1, -1, -1], [0, 0, 0], false);
+  scene.addObject("Objects/quad.json", [-2, 0, 0], [0, degToRad(90), 0], true);
+  scene.addObject("Objects/quad.json", [2, 0, 0], [0, degToRad(90), 0], true);
+  scene.addObject("Objects/quad.json", [0, -2, 0], [degToRad(90), 0, 0], true);
+  scene.addObject("Objects/quad.json", [0, 2, 0], [degToRad(90), 0, 0 ], true);
+  scene.addObject("Objects/quad.json", [0, 0, -2], [0, 0, 0], true);
+  scene.addObject("Objects/quad.json", [0, 0, 2], [0, 0, 0], true);
   scene.draw();
 }
 
