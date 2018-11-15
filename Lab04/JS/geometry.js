@@ -19,6 +19,14 @@ function Scene() {
     return myObject;
   }
 
+  /**
+   * Handles the geometry that was just loaded from json.
+   *
+   * @param geometry a collection of geometry data
+   * @param isStatic the state of the geometry
+   * @param baseTexture the baseTexture of the object
+   * @param geometry the geometry object that holds all this data
+   */
   this.handleLoadedGeometry = function(geometryData, isStatic, baseTexture, geometry) {
     for (var i = 0; i < geometryData.meshes.length; i++) {
       var child = new Geometry(isStatic);
