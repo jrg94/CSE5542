@@ -13,15 +13,16 @@ file to launch a local server to `localhost:8000`.
 
 With the solution open, you can begin playing with the following controls:
 
-- left click + drag: rotate objects
-- a, s, d, f, q, e: translate light
+- left click + drag: rotate camera
+
+In addition, there are buttons for the various texture options.
 
 The solution should render as follows:
 
 ![Sample Scene][1]
 
 Source credit goes to Dr. Han-Wei Shen who provided the template code via their
-[OSU course website][2]. Namely, [`code08.html`][3], [`code08.js`][4],
+[OSU course website][2]. Namely, [`code12.html`][3], [`code12.js`][4],
 and [`shader_setup_5.js`][7].
 
 Changes to these templates included:
