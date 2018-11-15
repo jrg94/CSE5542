@@ -119,13 +119,17 @@ function Geometry(isEnvironment) {
     this.setElementAttributes();
     this.setLightProperties();
     this.setMaterialProperties();
-    this.setMatrixUniforms(); // pass the modelview mattrix and projection matrix to the shader
-    gl.uniform1i(shaderProgram.use_textureUniform, use_texture);
-
+    this.setMatrixUniforms(); 
     this.setTexture(0, this.textures[0], gl.TEXTURE_2D, shaderProgram.textureUniform);
     this.setTexture(1, this.textures[1], gl.TEXTURE_CUBE_MAP, shaderProgram.cube_map_textureUniform);
-
     this.drawByType(draw_type);
+  }
+
+  /**
+   * Sets the current active texture.
+   */
+  this.setCurrentTexture = function() {
+    gl.uniform1i(shaderProgram.use_textureUniform, use_texture);
   }
 
   /**
