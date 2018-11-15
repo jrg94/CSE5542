@@ -121,39 +121,39 @@ function generateScene() {
   var scene = new Scene();
   scene
     .addObject("Objects/plane.json", false, "Textures/camo.png")
-    .setLocation([-1, -1, -1])
-    .setRotation([0, 0, 0])
+    .setLocation([0, 0, 1])
+    .setRotation([degToRad(90), 0, 0])
     .setScale([1 / 200, 1 / 200, 1 / 200])
     .setAnimation(animate);
   scene
     .addObject("Objects/quad.json", true, "Textures/morning_rt.png")
-    .setLocation([-2, 0, 0])
-    .setRotation([0, degToRad(90), 0])
+    .setLocation([2, 0, 0])
+    .setRotation([0, degToRad(270), degToRad(180)])
     .setScale([4, 4, 4]);
   scene
     .addObject("Objects/quad.json", true, "Textures/morning_lf.png")
-    .setLocation([2, 0, 0])
-    .setRotation([0, degToRad(-90), 0])
+    .setLocation([-2, 0, 0])
+    .setRotation([0, degToRad(-270), degToRad(180)])
     .setScale([4, 4, 4]);
   scene
     .addObject("Objects/quad.json", true, "Textures/morning_up.png")
-    .setLocation([0, -2, 0])
-    .setRotation([degToRad(-90), 0, degToRad(90)])
+    .setLocation([0, 2, 0])
+    .setRotation([degToRad(-270), 0, 0])
     .setScale([4, 4, 4]);
   scene
     .addObject("Objects/quad.json", true, "Textures/morning_dn.png")
-    .setLocation([0, 2, 0])
+    .setLocation([0, -2, 0])
     .setRotation([degToRad(90), 0, degToRad(270) ])
     .setScale([4, 4, 4]);
   scene
     .addObject("Objects/quad.json", true, "Textures/morning_ft.png")
     .setLocation([0, 0, -2])
-    .setRotation([0, 0, 0])
+    .setRotation([0, 0, degToRad(180)])
     .setScale([4, 4, 4]);
   scene
     .addObject("Objects/quad.json", true, "Textures/morning_bk.png")
     .setLocation([0, 0, 2])
-    .setRotation([0, degToRad(180), 0])
+    .setRotation([0, degToRad(180), degToRad(180)])
     .setScale([4, 4, 4]);
   return scene;
 }

@@ -28,8 +28,8 @@ function Scene() {
         ["Textures/morning_lf.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_X],
         ["Textures/morning_up.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Y],
         ["Textures/morning_dn.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Y],
-        ["Textures/morning_bk.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Z],
-        ["Textures/morning_ft.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Z]
+        ["Textures/morning_ft.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Z],
+        ["Textures/morning_bk.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Z]
       ]
       child.initTexture(imageMap, true);
       child.initBuffers(geometryData.meshes[i]);
@@ -208,7 +208,7 @@ function Geometry(isStatic) {
    */
   this.transform = function() {
     this.pMatrix = mat4.perspective(60, 1.0, 0.1, 100, this.pMatrix);
-    this.vMatrix = mat4.lookAt([1, 1, 1], [-1, -1, -1], [0, -1, 0], this.vMatrix);
+    this.vMatrix = mat4.lookAt([0, 0, -1], [0, 0, 0], [0, -1, 0], this.vMatrix);
     this.vMatrix = mat4.rotateY(this.vMatrix, degToRad(this.camera_angle_x));
     this.vMatrix = mat4.rotateX(this.vMatrix, degToRad(this.camera_angle_y));
 
