@@ -8,6 +8,9 @@ var scene;
 var lastMouseX = 0;
 var lastMouseY = 0;
 
+/**
+ * Initializes the gl context.
+ */
 function initGL(canvas) {
   try {
     gl = canvas.getContext("experimental-webgl");
@@ -19,10 +22,18 @@ function initGL(canvas) {
   }
 }
 
+/**
+ * A helper function for computing degrees to radians.
+ *
+ * @param degrees an integer denoting degrees
+ */
 function degToRad(degrees) {
   return degrees * Math.PI / 180;
 }
 
+/**
+ * Binds listeners to mouse event.
+ */
 function onDocumentMouseDown(event) {
   event.preventDefault();
   document.addEventListener('mousemove', onDocumentMouseMove, false);
@@ -35,6 +46,9 @@ function onDocumentMouseDown(event) {
   lastMouseY = mouseY;
 }
 
+/**
+ * Uses listeners on mouse event.
+ */
 function onDocumentMouseMove(event) {
   var mouseX = event.clientX;
   var mouseY = event.clientY;
@@ -50,18 +64,27 @@ function onDocumentMouseMove(event) {
   scene.draw()
 }
 
+/**
+ * Removes listeners on mouse event.
+ */
 function onDocumentMouseUp(event) {
   document.removeEventListener('mousemove', onDocumentMouseMove, false);
   document.removeEventListener('mouseup', onDocumentMouseUp, false);
   document.removeEventListener('mouseout', onDocumentMouseOut, false);
 }
 
+/**
+ * Removes listeners on mouse event.
+ */
 function onDocumentMouseOut(event) {
   document.removeEventListener('mousemove', onDocumentMouseMove, false);
   document.removeEventListener('mouseup', onDocumentMouseUp, false);
   document.removeEventListener('mouseout', onDocumentMouseOut, false);
 }
 
+/**
+ * Sets up the scene for drawing.
+ */
 function webGLStart() {
   var canvas = document.getElementById("code13-canvas");
   initGL(canvas);
@@ -105,18 +128,27 @@ function webGLStart() {
   scheduleDraw(scene);
 }
 
+/**
+ * A periodic drawing function.
+ */
 function scheduleDraw(scene) {
   window.setInterval(function(){
     scene.draw();
   }.bind(this), 50);
 }
 
+/**
+ * A plane animation function.
+ */
 function animate(parent) {
   window.setInterval(function(){
     parent.rotateObjects(1, 1, 0);
   }.bind(this), 200);
 }
 
+/**
+ * A scene generation function.
+ */
 function generateScene() {
   var scene = new Scene();
   scene
@@ -158,20 +190,32 @@ function generateScene() {
   return scene;
 }
 
+/**
+ * A function for setting the background color.
+ */
 function BG(red, green, blue) {
   gl.clearColor(red, green, blue, 1.0);
   scene.draw();
 }
 
+/**
+ * A function for redrawing the scene.
+ */
 function redraw() {
   scene.draw();
 }
 
+/**
+ * A function for setting the draw type
+ */
 function drawType(type) {
   draw_type = type;
   scene.draw();
 }
 
+/**
+ * A function for setting the active texture.
+ */
 function texture(value) {
   use_texture = value;
   scene.draw();
