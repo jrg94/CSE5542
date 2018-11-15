@@ -101,14 +101,32 @@ function webGLStart() {
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
   document.addEventListener('mousedown', onDocumentMouseDown, false);
 
+  generateScene();
+}
+
+function generateScene() {
   scene = new Scene();
-  scene.addObject("Objects/plane.json", [-1, -1, -1], [0, 0, 0], false, "Textures/camo.png");
-  scene.addObject("Objects/quad.json", [-2, 0, 0], [0, degToRad(90), 0], true, "Textures/morning_rt.png");
-  scene.addObject("Objects/quad.json", [2, 0, 0], [0, degToRad(-90), 0], true, "Textures/morning_lf.png");
-  scene.addObject("Objects/quad.json", [0, -2, 0], [degToRad(-90), 0, degToRad(90)], true, "Textures/morning_up.png");
-  scene.addObject("Objects/quad.json", [0, 2, 0], [degToRad(90), 0, degToRad(270) ], true, "Textures/morning_dn.png");
-  scene.addObject("Objects/quad.json", [0, 0, -2], [0, 0, 0], true, "Textures/morning_ft.png");
-  scene.addObject("Objects/quad.json", [0, 0, 2], [0, degToRad(180), 0], true, "Textures/morning_bk.png");
+  scene
+    .addObject("Objects/plane.json", [0, 0, 0], false, "Textures/camo.png")
+    .setLocation([-1, -1, -1]);
+  scene
+    .addObject("Objects/quad.json", [0, degToRad(90), 0], true, "Textures/morning_rt.png")
+    .setLocation([-2, 0, 0]);
+  scene
+    .addObject("Objects/quad.json", [0, degToRad(-90), 0], true, "Textures/morning_lf.png")
+    .setLocation([2, 0, 0]);
+  scene
+    .addObject("Objects/quad.json", [degToRad(-90), 0, degToRad(90)], true, "Textures/morning_up.png")
+    .setLocation([0, -2, 0]);
+  scene
+    .addObject("Objects/quad.json", [degToRad(90), 0, degToRad(270) ], true, "Textures/morning_dn.png")
+    .setLocation([0, 2, 0]);
+  scene
+    .addObject("Objects/quad.json", [0, 0, 0], true, "Textures/morning_ft.png")
+    .setLocation([0, 0, -2]);
+  scene
+    .addObject("Objects/quad.json", [0, degToRad(180), 0], true, "Textures/morning_bk.png")
+    .setLocation([0, 0, 2]);
 }
 
 function BG(red, green, blue) {

@@ -1,23 +1,28 @@
 function Scene() {
   this.objects = [];
 
-  this.addObject = function(file, initialPosition, initialRotation, isStatic, baseTexture) {
+  this.addObject = function(file, initialRotation, isStatic, baseTexture) {
+    var myObject = new Parent();
+    this.objects.push(myObject);
+
     var request = new XMLHttpRequest();
     request.open("GET", file);
     request.onreadystatechange =
       function() {
         if (request.readyState == 4) {
           geometry = JSON.parse(request.responseText);
-          this.handleLoadedGeometry(geometry, initialPosition, initialRotation, isStatic, baseTexture);
+          this.handleLoadedGeometry(geometry, initialRotation, isStatic, baseTexture, myObject);
         }
       }.bind(this);
     request.send();
+
+    return myObject;
   }
 
-  this.handleLoadedGeometry = function(geometryData, initialPosition, initialRotation, isStatic, baseTexture) {
+  this.handleLoadedGeometry = function(geometryData, initialRotation, isStatic, baseTexture, geometry) {
     for (var i = 0; i < geometryData.meshes.length; i++) {
-      var myObject = new Geometry(initialPosition, initialRotation, isStatic);
-      myObject.initTexture(baseTexture, false);
+      var child = new Geometry(initialRotation, isStatic);
+      child.initTexture(baseTexture, false);
       var imageMap = [
         ["Textures/morning_rt.png", gl.TEXTURE_CUBE_MAP_POSITIVE_X],
         ["Textures/morning_lf.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_X],
@@ -26,10 +31,11 @@ function Scene() {
         ["Textures/morning_bk.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Z],
         ["Textures/morning_ft.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Z]
       ]
-      myObject.initTexture(imageMap, true);
-      myObject.initBuffers(geometryData.meshes[i]);
-      this.objects.push(myObject);
+      child.initTexture(imageMap, true);
+      child.initBuffers(geometryData.meshes[i]);
+      geometry.children.push(child);
     }
+    geometry.move();
     window.setInterval(function(){
       this.rotateObjects(1);
       this.draw();
@@ -38,14 +44,13 @@ function Scene() {
 
   this.rotateObjects = function(diffX) {
     for (var i = 0; i < this.objects.length; i++) {
-      this.objects[i].object_angle += diffX / 5;
+      this.objects[i].rotateObjects(diffX);
     }
   }
 
   this.rotateCamera = function(diffX, diffY) {
     for (var i = 0; i < this.objects.length; i++) {
-      this.objects[i].camera_angle_x += diffX / 5;
-      this.objects[i].camera_angle_y += diffY / 5;
+      this.objects[i].rotateCamera(diffX, diffY);
     }
   }
 
@@ -58,11 +63,46 @@ function Scene() {
   }
 }
 
+function Parent() {
+  this.children = [];
+  this.location = [0, 0, 0];
+
+  this.setLocation = function(location) {
+    this.location = location;
+  }
+
+  this.move = function() {
+    for (var i = 0; i < this.children.length; i++) {
+      this.children[i].position = this.location;
+    }
+  }
+
+  this.draw = function() {
+    for (var i = 0; i < this.children.length; i++) {
+      this.children[i].draw();
+    }
+  }
+
+  this.rotateCamera = function(diffX, diffY) {
+    for (var i = 0; i < this.children.length; i++) {
+      this.children[i].camera_angle_x += diffX / 5;
+      this.children[i].camera_angle_y += diffY / 5;
+    }
+  }
+
+  this.rotateObjects = function(diffX) {
+    for (var i = 0; i < this.children.length; i++) {
+      this.children[i].object_angle += diffX / 5;
+    }
+  }
+}
+
 /**
  * A geometry object.
  */
-function Geometry(initialPosition, initialRotation, isStatic) {
-  this.initialPosition = initialPosition;
+function Geometry(initialRotation, isStatic) {
+  this.initialPosition = [0, 0, 0];
+  this.position = this.initialPosition;
   this.initialRotation = initialRotation;
   this.isStatic = isStatic;
   this.textures = [];
@@ -114,6 +154,12 @@ function Geometry(initialPosition, initialRotation, isStatic) {
     this.drawByType(draw_type);
   }
 
+
+
+  this.animate = function(someFunction) {
+    // TODO
+  }
+
   /**
    * Transforms this geometry (currently hardcoded).
    */
@@ -124,7 +170,7 @@ function Geometry(initialPosition, initialRotation, isStatic) {
     this.vMatrix = mat4.rotateX(this.vMatrix, degToRad(this.camera_angle_y));
 
     mat4.identity(this.mMatrix);
-    this.mMatrix = mat4.translate(this.mMatrix, this.initialPosition);
+    this.mMatrix = mat4.translate(this.mMatrix, this.position);
     if (this.isStatic) {
       this.mMatrix = mat4.rotateX(this.mMatrix, this.initialRotation[0]);
       this.mMatrix = mat4.rotateY(this.mMatrix, this.initialRotation[1]);
