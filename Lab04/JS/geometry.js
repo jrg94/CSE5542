@@ -224,16 +224,6 @@ function Geometry(isEnvironment) {
     this.find_range(this.vertices);
   }
 
-  this.mapIndices = function(tempIndices) {
-    var outIndices = [];
-    for (var i = 0; i < tempIndices.length; i++) {
-      outIndices.push(tempIndices[i] * 3)
-      outIndices.push(tempIndices[i] * 3 + 1)
-      outIndices.push(tempIndices[i] * 3 + 2)
-    }
-    return outIndices;
-  }
-
   /**
    * Initializes a texture object
    *
