@@ -116,23 +116,22 @@ function Geometry(isEnvironment) {
   this.draw = function() {
     this.transform();
     this.setVertexAttributes();
-
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
-
+    this.setElementAttributes();
     this.setLightProperties();
     this.setMaterialProperties();
     this.setMatrixUniforms(); // pass the modelview mattrix and projection matrix to the shader
     gl.uniform1i(shaderProgram.use_textureUniform, use_texture);
 
-    gl.activeTexture(gl.TEXTURE0); // set texture unit 0 to use
-    gl.bindTexture(gl.TEXTURE_2D, this.textures[0]); // bind the texture object to the texture unit
-    gl.uniform1i(shaderProgram.textureUniform, 0); // pass the texture unit to the shader
-
-    gl.activeTexture(gl.TEXTURE1); // set texture unit 1 to use
-    gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.textures[1]); // bind the texture object to the texture unit
-    gl.uniform1i(shaderProgram.cube_map_textureUniform, 1); // pass the texture unit to the shader
+    this.setTexture(0, this.textures[0], gl.TEXTURE_2D, shaderProgram.textureUniform);
+    this.setTexture(1, this.textures[1], gl.TEXTURE_CUBE_MAP, shaderProgram.cube_map_textureUniform);
 
     this.drawByType(draw_type);
+  }
+
+  this.setTexture = function(index, texture, type, attribute) {
+    gl.activeTexture(gl.TEXTURE0 + index); // set texture unit 0 to use
+    gl.bindTexture(type, texture); // bind the texture object to the texture unit
+    gl.uniform1i(attribute, index); // pass the texture unit to the shader
   }
 
   /**
@@ -148,6 +147,13 @@ function Geometry(isEnvironment) {
     } else if (type == 2) {
       gl.drawElements(gl.TRIANGLES, this.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
     }
+  }
+
+  /**
+   * A helper method which binds the element array buffer.
+   */
+  this.setElementAttributes = function() {
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
   }
 
   /**
