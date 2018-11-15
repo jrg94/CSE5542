@@ -30,7 +30,10 @@ function Scene() {
       myObject.initBuffers(geometryData.meshes[i]);
       this.objects.push(myObject);
     }
-    this.draw();
+    window.setInterval(function(){
+      this.rotate(1);
+      this.draw();
+    }.bind(this), 50);
   }
 
   this.rotate = function(diffX) {

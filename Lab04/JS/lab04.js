@@ -33,7 +33,6 @@ function onDocumentMouseDown(event) {
 
   lastMouseX = mouseX;
   lastMouseY = mouseY;
-
 }
 
 function onDocumentMouseMove(event) {
@@ -106,11 +105,10 @@ function webGLStart() {
   scene.addObject("Objects/plane.json", [-1, -1, -1], [0, 0, 0], false);
   scene.addObject("Objects/quad.json", [-2, 0, 0], [0, degToRad(90), 0], true);
   scene.addObject("Objects/quad.json", [2, 0, 0], [0, degToRad(90), 0], true);
-  scene.addObject("Objects/quad.json", [0, -2, 0], [degToRad(90), 0, 0], true);
+  scene.addObject("Objects/quad.json", [0, -2, 0], [degToRad(-90), 0, 0], true);
   scene.addObject("Objects/quad.json", [0, 2, 0], [degToRad(90), 0, 0 ], true);
   scene.addObject("Objects/quad.json", [0, 0, -2], [0, 0, 0], true);
   scene.addObject("Objects/quad.json", [0, 0, 2], [0, 0, 0], true);
-  scene.draw();
 }
 
 function BG(red, green, blue) {
