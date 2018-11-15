@@ -105,8 +105,8 @@ function webGLStart() {
   scene.addObject("Objects/plane.json", [-1, -1, -1], [0, 0, 0], false, "Textures/camo.png");
   scene.addObject("Objects/quad.json", [-2, 0, 0], [0, degToRad(90), 0], true, "Textures/morning_rt.png");
   scene.addObject("Objects/quad.json", [2, 0, 0], [0, degToRad(-90), 0], true, "Textures/morning_lf.png");
-  scene.addObject("Objects/quad.json", [0, -2, 0], [degToRad(-90), 0, 0], true, "Textures/morning_up.png");
-  scene.addObject("Objects/quad.json", [0, 2, 0], [degToRad(90), 0, 0 ], true, "Textures/morning_dn.png");
+  scene.addObject("Objects/quad.json", [0, -2, 0], [degToRad(-90), 0, degToRad(90)], true, "Textures/morning_up.png");
+  scene.addObject("Objects/quad.json", [0, 2, 0], [degToRad(90), 0, degToRad(270) ], true, "Textures/morning_dn.png");
   scene.addObject("Objects/quad.json", [0, 0, -2], [0, 0, 0], true, "Textures/morning_ft.png");
   scene.addObject("Objects/quad.json", [0, 0, 2], [0, degToRad(180), 0], true, "Textures/morning_bk.png");
 }
