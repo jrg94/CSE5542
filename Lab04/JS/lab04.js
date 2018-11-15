@@ -143,7 +143,7 @@ function scheduleDraw(scene) {
 function animate(parent) {
   window.setInterval(function(){
     parent.rotateObjects(1, 1, 0);
-  }.bind(this), 200);
+  }.bind(this), 100);
 }
 
 /**
