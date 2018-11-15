@@ -181,6 +181,9 @@ function Geometry(isEnvironment) {
     gl.uniform1f(shaderProgram.shininess_coefUniform, this.mat_shine[0]);
   }
 
+  /**
+   * Sets the matrix uniforms from all this geometries matrices.
+   */
   this.setMatrixUniforms = function() {
     gl.uniformMatrix4fv(shaderProgram.mMatrixUniform, false, this.mMatrix);
     gl.uniformMatrix4fv(shaderProgram.vMatrixUniform, false, this.vMatrix);
@@ -189,6 +192,13 @@ function Geometry(isEnvironment) {
     gl.uniformMatrix4fv(shaderProgram.v2wMatrixUniform, false, this.v2wMatrix);
   }
 
+  /**
+   * Initializes an array buffer.
+   *
+   * @param buffer the element buffer
+   * @param data the data to be bound
+   * @param itemSize the number of items
+   */
   this.initArrayBuffer = function(buffer, data, itemSize) {
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(data), gl.STATIC_DRAW);
