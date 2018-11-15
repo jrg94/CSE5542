@@ -137,6 +137,9 @@ function Geometry() {
     gl.uniform1i(shaderProgram.use_textureUniform, use_texture);
   }
 
+  /**
+   * A helper method which binds the two textures to the shader.
+   */
   this.setTextures = function() {
     this.setTexture(0, this.textures[0], gl.TEXTURE_2D, shaderProgram.textureUniform);
     this.setTexture(1, this.textures[1], gl.TEXTURE_CUBE_MAP, shaderProgram.cube_map_textureUniform);
