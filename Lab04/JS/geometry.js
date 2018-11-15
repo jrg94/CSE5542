@@ -155,6 +155,13 @@ function Geometry(isEnvironment) {
     this.setVertexAttribute(this.textureBuffer, shaderProgram.vertexTexCoordsAttribute, this.textureBuffer.itemSize);
   }
 
+  /**
+   * A helper method which abstracts the binding and setting of vertex attributes.
+   *
+   * @param buffer a buffer object
+   * @param attribute the shader attribute
+   * @param itemSize the number of items in the buffer
+   */
   this.setVertexAttribute = function(buffer, attribute, itemSize) {
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.vertexAttribPointer(
