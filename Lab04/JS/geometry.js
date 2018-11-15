@@ -119,10 +119,7 @@ function Geometry(isEnvironment) {
     }
 
     this.transform();
-
-    this.setVertexAttribute(this.vertexBuffer, shaderProgram.vertexPositionAttribute, this.vertexBuffer.itemSize);
-    this.setVertexAttribute(this.normalBuffer, shaderProgram.vertexNormalAttribute, this.normalBuffer.itemSize);
-    this.setVertexAttribute(this.textureBuffer, shaderProgram.vertexTexCoordsAttribute, this.textureBuffer.itemSize);
+    this.setVertexAttributes();
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.indexBuffer);
 
@@ -146,6 +143,12 @@ function Geometry(isEnvironment) {
     } else if (draw_type == 2) {
       gl.drawElements(gl.TRIANGLES, this.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
     }
+  }
+
+  this.setVertexAttributes = function() {
+    this.setVertexAttribute(this.vertexBuffer, shaderProgram.vertexPositionAttribute, this.vertexBuffer.itemSize);
+    this.setVertexAttribute(this.normalBuffer, shaderProgram.vertexNormalAttribute, this.normalBuffer.itemSize);
+    this.setVertexAttribute(this.textureBuffer, shaderProgram.vertexTexCoordsAttribute, this.textureBuffer.itemSize);
   }
 
   this.setVertexAttribute = function(buffer, attribute, itemSize) {
