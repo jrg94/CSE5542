@@ -303,6 +303,13 @@ function Geometry(isEnvironment) {
     }
   }
 
+  /**
+   * A helper method which loads Cube Map textures
+   *
+   * @param {string} url a path to a texture
+   * @param {number} texture face enum (i.e. gl.TEXTURE_CUBE_MAP_POSITIVE_X)
+   * @param {texture} texture a GL texture object
+   */
   this.load = function(url, target, texture) {
     var img = new Image();
     img.src = url;
@@ -316,6 +323,11 @@ function Geometry(isEnvironment) {
     } (texture, target, img);
   }
 
+  /**
+   * Handles loaded 2D texture.
+   *
+   * @param {Texture} texture a GL texture object
+   */
   this.handleTextureLoaded = function(texture) {
     gl.bindTexture(gl.TEXTURE_2D, texture);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, texture.image);
