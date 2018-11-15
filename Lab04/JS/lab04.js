@@ -42,7 +42,7 @@ function onDocumentMouseMove(event) {
   var diffX = mouseX - lastMouseX;
   var diffY = mouseY - lastMouseY;
 
-  scene.rotate(diffX);
+  scene.rotateCamera(diffX, diffY);
 
   lastMouseX = mouseX;
   lastMouseY = mouseY;
@@ -117,7 +117,6 @@ function BG(red, green, blue) {
 }
 
 function redraw() {
-  Z_angle = 0;
   scene.draw();
 }
 

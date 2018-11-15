@@ -31,14 +31,21 @@ function Scene() {
       this.objects.push(myObject);
     }
     window.setInterval(function(){
-      this.rotate(1);
+      this.rotateObjects(1);
       this.draw();
     }.bind(this), 50);
   }
 
-  this.rotate = function(diffX) {
+  this.rotateObjects = function(diffX) {
     for (var i = 0; i < this.objects.length; i++) {
-      this.objects[i].z_angle += diffX / 5;
+      this.objects[i].object_angle += diffX / 5;
+    }
+  }
+
+  this.rotateCamera = function(diffX, diffY) {
+    for (var i = 0; i < this.objects.length; i++) {
+      this.objects[i].camera_angle_x += diffX / 5;
+      this.objects[i].camera_angle_y += diffX / 5;
     }
   }
 
@@ -80,7 +87,9 @@ function Geometry(initialPosition, initialRotation, isStatic) {
   this.pMatrix = mat4.create(); // projection matrix
   this.nMatrix = mat4.create(); // normal matrix
   this.v2wMatrix = mat4.create(); // eye space to world space matrix
-  this.z_angle = 0.0;
+  this.object_angle = 0.0;
+  this.camera_angle_x = 0.0;
+  this.camera_angle_y = 0.0;
   this.mat_ambient = [0, 0, 0, 1];
   this.mat_diffuse = [1, 1, 0, 1];
   this.mat_specular = [.9, .9, .9, 1];
@@ -121,7 +130,7 @@ function Geometry(initialPosition, initialRotation, isStatic) {
       this.mMatrix = mat4.scale(this.mMatrix, [4, 4, 4]);
     } else {
       this.mMatrix = mat4.scale(this.mMatrix, [1 / 200, 1 / 200, 1 / 200]);
-      this.mMatrix = mat4.rotate(this.mMatrix, degToRad(this.z_angle), [0, 1, 1]);
+      this.mMatrix = mat4.rotate(this.mMatrix, degToRad(this.object_angle), [0, 1, 1]);
     }
 
     mat4.identity(this.nMatrix);
