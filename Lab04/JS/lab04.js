@@ -113,7 +113,7 @@ function scheduleDraw(scene) {
 
 function animate(parent) {
   window.setInterval(function(){
-    parent.rotateObjects(1, 0, 0);
+    parent.rotateObjects(1, 1, 0);
   }.bind(this), 200);
 }
 
@@ -121,8 +121,8 @@ function generateScene() {
   var scene = new Scene();
   scene
     .addObject("Objects/plane.json", false, "Textures/camo.png")
-    .setLocation([0, 0, 1])
-    .setRotation([degToRad(90), 0, 0])
+    .setLocation([1, 1, 1])
+    .setRotation([degToRad(90), degToRad(180), 0])
     .setScale([1 / 200, 1 / 200, 1 / 200])
     .setAnimation(animate);
   scene

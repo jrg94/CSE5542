@@ -208,8 +208,8 @@ function Geometry(isStatic) {
    */
   this.transform = function() {
     this.pMatrix = mat4.perspective(60, 1.0, 0.1, 100, this.pMatrix);
-    this.vMatrix = mat4.lookAt([0, 0, -1], [0, 0, 0], [0, -1, 0], this.vMatrix);
-    this.vMatrix = mat4.rotateY(this.vMatrix, degToRad(this.camera_angle_x));
+    this.vMatrix = mat4.lookAt([-1, -1, -1], [1, 1, 1], [0, 1, 0], this.vMatrix);
+    this.vMatrix = mat4.rotateY(this.vMatrix, -degToRad(this.camera_angle_x));
     this.vMatrix = mat4.rotateX(this.vMatrix, degToRad(this.camera_angle_y));
 
     mat4.identity(this.mMatrix);
