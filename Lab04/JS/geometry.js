@@ -136,11 +136,15 @@ function Geometry(isEnvironment) {
     gl.bindTexture(gl.TEXTURE_CUBE_MAP, this.textures[1]); // bind the texture object to the texture unit
     gl.uniform1i(shaderProgram.cube_map_textureUniform, 1); // pass the texture unit to the shader
 
-    if (draw_type == 1) {
+    this.drawByType(draw_type);
+  }
+
+  this.drawByType = function(type) {
+    if (type == 1) {
       gl.drawArrays(gl.LINE_LOOP, 0, this.vertexBuffer.numItems);
-    } else if (draw_type == 0) {
+    } else if (type == 0) {
       gl.drawArrays(gl.POINTS, 0, this.vertexBuffer.numItems);
-    } else if (draw_type == 2) {
+    } else if (type == 2) {
       gl.drawElements(gl.TRIANGLES, this.indexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
     }
   }
