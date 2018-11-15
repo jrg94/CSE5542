@@ -218,7 +218,7 @@ function Geometry(isStatic) {
       this.mMatrix = mat4.rotateZ(this.mMatrix, this.rotation[2]);
       this.mMatrix = mat4.scale(this.mMatrix, this.scale);
     } else {
-      this.mMatrix = mat4.scale(this.mMatrix, [1 / 200, 1 / 200, 1 / 200]);
+      this.mMatrix = mat4.scale(this.mMatrix, this.scale);
       this.mMatrix = mat4.rotate(this.mMatrix, degToRad(this.object_angle), [0, 1, 1]);
     }
 

@@ -123,6 +123,7 @@ function generateScene() {
     .addObject("Objects/plane.json", false, "Textures/camo.png")
     .setLocation([-1, -1, -1])
     .setRotation([0, 0, 0])
+    .setScale([1 / 200, 1 / 200, 1 / 200])
     .setAnimation(animate);
   scene
     .addObject("Objects/quad.json", true, "Textures/morning_rt.png")
