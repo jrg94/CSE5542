@@ -136,7 +136,8 @@ function Parent() {
 
   this.rotateObjects = function(diffX) {
     for (var i = 0; i < this.children.length; i++) {
-      this.children[i].object_angle += diffX / 5;
+      this.children[i].rotation[1] += diffX / 500;
+      this.children[i].rotation[2] += diffX / 500;
     }
   }
 }
@@ -212,15 +213,10 @@ function Geometry(isStatic) {
 
     mat4.identity(this.mMatrix);
     this.mMatrix = mat4.translate(this.mMatrix, this.position);
-    if (this.isStatic) {
-      this.mMatrix = mat4.rotateX(this.mMatrix, this.rotation[0]);
-      this.mMatrix = mat4.rotateY(this.mMatrix, this.rotation[1]);
-      this.mMatrix = mat4.rotateZ(this.mMatrix, this.rotation[2]);
-      this.mMatrix = mat4.scale(this.mMatrix, this.scale);
-    } else {
-      this.mMatrix = mat4.scale(this.mMatrix, this.scale);
-      this.mMatrix = mat4.rotate(this.mMatrix, degToRad(this.object_angle), [0, 1, 1]);
-    }
+    this.mMatrix = mat4.rotateX(this.mMatrix, this.rotation[0]);
+    this.mMatrix = mat4.rotateY(this.mMatrix, this.rotation[1]);
+    this.mMatrix = mat4.rotateZ(this.mMatrix, this.rotation[2]);
+    this.mMatrix = mat4.scale(this.mMatrix, this.scale);
 
     mat4.identity(this.nMatrix);
     this.nMatrix = mat4.multiply(this.nMatrix, this.vMatrix);

@@ -129,8 +129,7 @@ function generateScene() {
     .addObject("Objects/quad.json", true, "Textures/morning_rt.png")
     .setLocation([-2, 0, 0])
     .setRotation([0, degToRad(90), 0])
-    .setScale([4, 4, 4])
-    .setAnimation(animate);
+    .setScale([4, 4, 4]);
   scene
     .addObject("Objects/quad.json", true, "Textures/morning_lf.png")
     .setLocation([2, 0, 0])
