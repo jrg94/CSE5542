@@ -1,22 +1,22 @@
 function Scene() {
   this.objects = [];
 
-  this.addObject = function(file, initialPosition, isStatic) {
+  this.addObject = function(file, initialPosition, initialRotation, isStatic) {
     var request = new XMLHttpRequest();
     request.open("GET", file);
     request.onreadystatechange =
       function() {
         if (request.readyState == 4) {
           geometry = JSON.parse(request.responseText);
-          this.handleLoadedGeometry(geometry, initialPosition, isStatic);
+          this.handleLoadedGeometry(geometry, initialPosition, initialRotation, isStatic);
         }
       }.bind(this);
     request.send();
   }
 
-  this.handleLoadedGeometry = function(geometryData, initialPosition, isStatic) {
+  this.handleLoadedGeometry = function(geometryData, initialPosition, initialRotation, isStatic) {
     for (var i = 0; i < geometryData.meshes.length; i++) {
-      var myObject = new Geometry(initialPosition, isStatic);
+      var myObject = new Geometry(initialPosition, initialRotation, isStatic);
       myObject.initTexture("Textures/camo.png", false);
       var imageMap = [
         ["Textures/morning_rt.png", gl.TEXTURE_CUBE_MAP_POSITIVE_X],
@@ -51,8 +51,9 @@ function Scene() {
 /**
  * A geometry object.
  */
-function Geometry(initialPosition, isStatic) {
+function Geometry(initialPosition, initialRotation, isStatic) {
   this.initialPosition = initialPosition;
+  this.initialRotation = initialRotation;
   this.isStatic = isStatic;
   this.textures = [];
   this.vertexIndices = [];
@@ -110,8 +111,14 @@ function Geometry(initialPosition, isStatic) {
 
     mat4.identity(this.mMatrix);
     this.mMatrix = mat4.translate(this.mMatrix, this.initialPosition);
-    this.mMatrix = mat4.scale(this.mMatrix, [1 / 50, 1 / 50, 1 / 50]);
-    this.mMatrix = mat4.rotate(this.mMatrix, degToRad(this.z_angle), [0, 1, 1]);
+    if (this.isStatic) {
+      this.mMatrix = mat4.rotate(this.mMatrix, this.initialRotation[0], [1, 0, 0]);
+      this.mMatrix = mat4.rotate(this.mMatrix, this.initialRotation[1], [0, 1, 0]);
+      this.mMatrix = mat4.rotate(this.mMatrix, this.initialRotation[2], [0, 0, 1]);
+    } else {
+      this.mMatrix = mat4.scale(this.mMatrix, [1 / 50, 1 / 50, 1 / 50]);
+      this.mMatrix = mat4.rotate(this.mMatrix, degToRad(this.z_angle), [0, 1, 1]);
+    }
 
     mat4.identity(this.nMatrix);
     this.nMatrix = mat4.multiply(this.nMatrix, this.vMatrix);
