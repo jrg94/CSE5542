@@ -38,18 +38,34 @@ function Scene() {
     geometry.initialize();
   }
 
+  /**
+   * Rotates all objects in scene.
+   *
+   * @param diffX some x delta
+   * @param diffY some y delta
+   * @param diffZ some z delta
+   */
   this.rotateObjects = function(diffX, diffY, diffZ) {
     for (var i = 0; i < this.objects.length; i++) {
       this.objects[i].rotateObjects(diffX, diffY, diffZ);
     }
   }
 
+  /**
+   * Rotates the scene camera.
+   *
+   * @param diffX some x delta
+   * @param diffZ some z delta
+   */
   this.rotateCamera = function(diffX, diffY) {
     for (var i = 0; i < this.objects.length; i++) {
       this.objects[i].rotateCamera(diffX, diffY);
     }
   }
 
+  /**
+   * Draws the scene.
+   */
   this.draw = function() {
     gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
