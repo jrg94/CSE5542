@@ -93,22 +93,38 @@ function Parent() {
     return this;
   }
 
+  /**
+   * Rotates all children by some x, y, z
+   *
+   * @param diffX some x delta
+   * @param diffY some y delta
+   * @param diffZ some z delta
+   */
   this.rotateObjects = function(diffX, diffY, diffZ) {
     for (var i = 0; i < this.children.length; i++) {
       this.children[i].rotateObjects(diffX, diffY, diffZ);
     }
   }
 
+  /**
+   * Applies scalling to all children.
+   */
   this.expand = function() {
     for (var i = 0; i < this.children.length; i++) {
       this.children[i].scale = this.scale;
     }
   }
 
+  /**
+   * Applies animation to all children.
+   */
   this.animate = function() {
     this.animation(this);
   }
 
+  /**
+   * Applies rotation to all children.
+   */
   this.twist = function() {
     for (var i = 0; i < this.children.length; i++) {
       this.children[i].rotation = this.rotation;
@@ -121,12 +137,21 @@ function Parent() {
     }
   }
 
+  /**
+   * Draws all children
+   */
   this.draw = function() {
     for (var i = 0; i < this.children.length; i++) {
       this.children[i].draw();
     }
   }
 
+  /**
+   * Rotates the camera for all children.
+   *
+   * @param diffX some x delta
+   * @param diffY some y delta
+   */
   this.rotateCamera = function(diffX, diffY) {
     for (var i = 0; i < this.children.length; i++) {
       this.children[i].camera_angle_x += diffX / 5;
@@ -134,6 +159,13 @@ function Parent() {
     }
   }
 
+  /**
+   * Rotates all children by x, y, z.
+   *
+   * @param diffX some x delta
+   * @param diffY some y delta
+   * @param diffZ some z delta
+   */
   this.rotateObjects = function(diffX, diffY, diffZ) {
     for (var i = 0; i < this.children.length; i++) {
       this.children[i].rotation[0] += diffX / 500;
