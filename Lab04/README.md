@@ -32,7 +32,7 @@ Changes to these templates included:
 
 Solution is freely available under the MIT license.
 
-[1]: phong-lighting.JPG
+[1]: cube-map.JPG
 [2]: http://www.cse.ohio-state.edu/~shen.94/5542
 [3]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/code12.html
 [4]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/code12.js
