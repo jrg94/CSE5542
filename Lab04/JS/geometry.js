@@ -507,6 +507,7 @@ function Geometry(isStatic) {
       this.bindEmptyTexture(gl.TEXTURE_2D, texture);
       texture.image = new Image();
       texture.image.src = image;
+      texture.image.crossOrigin = "anonymous";
       texture.image.onload = function() {
         this.handleTextureLoaded(texture);
       }.bind(this);
@@ -576,6 +577,7 @@ function Geometry(isStatic) {
   this.load = function(url, target, texture) {
     var img = new Image();
     img.src = url;
+    img.crossOrigin = "anonymous";
     img.onload = function(texture, target, image) {
       return function() {
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
