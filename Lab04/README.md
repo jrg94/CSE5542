@@ -1,13 +1,14 @@
 # CSE 5542 Lab 04 Directions
 
 Since all this code is hosted on GitHub, you can run this solution
-using the [RawGit tool][9].
+using the [RawGit tool][9]. Beware that this link may not work. I
+had questionable performance from it (cross-origin errors). 
 
 Alternatively, you can open the solution locally by double-clicking the
 HTML file to run the solution in your browser. Personally,
 I tested on **Google Chrome** and **Windows 10**.
 
-*Warning*: You will need to launch your own local server to get the local JSON.
+**Warning**: You will need to launch your own local server to get the local JSON.
 If you're on Windows and you have Python 3, feel free to use the `server.bat`
 file to launch a local server to `localhost:8000`.
 
