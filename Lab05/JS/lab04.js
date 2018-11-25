@@ -105,7 +105,6 @@ function executeCurrentKeys() {
 
     if (trueMap.size != 0) {
       for (var key of trueMap.keys()) {
-        console.log(key);
         switch (key) {
           case 68: // d
             moveRight(plane);
@@ -114,7 +113,7 @@ function executeCurrentKeys() {
             moveLeft(plane);
             break;
           case 32: // space
-            console.log("pew");
+            // TODO: shoot
             break;
         }
       }
