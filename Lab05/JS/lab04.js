@@ -140,9 +140,19 @@ function scheduleDraw(scene) {
  */
 function animate(parent) {
   window.setInterval(function(){
-    parent.moveObject(0, 0, -.01);
+    moveLeft(parent);
     scene.setCamera(parent);
   }.bind(this), 100);
+}
+
+function moveLeft(parent) {
+  if (parent.location[0] > -1) {
+    parent.moveObject(-.01, 0, 0);
+
+    if (parent.rotation[1] < degToRad(200)) {
+      parent.rotateObject(0, 1, 0);
+    }
+  } 
 }
 
 /**
@@ -157,6 +167,7 @@ function generateScene() {
     .setRotation([degToRad(90), degToRad(180), 0])
     .setScale([1 / 500, 1 / 500, 1 / 500])
     .setAnimation(animate);
+
   scene
     .addObject("Objects/quad.json", true, "Textures/morning_rt.png")
     .setLocation([2, 0, 0])
