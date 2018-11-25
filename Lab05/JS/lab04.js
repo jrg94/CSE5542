@@ -80,9 +80,15 @@ function onKeyDown(event) {
     case 65: // a
       moveLeft(plane);
       break;
+    case 32: // space
+      console.log("pew");
+      break;
   }
 }
 
+/**
+ * Sets the animation for lifting key.
+ */
 function onKeyUp(event) {
   level(plane);
 }
@@ -163,15 +169,6 @@ function scheduleDraw(scene) {
 }
 
 /**
- * A plane animation function.
- */
-function animate(parent) {
-  window.setInterval(function(){
-    //moveLeft(parent);
-  }.bind(this), 100);
-}
-
-/**
  * A function which moves the plane left.
  */
 function moveLeft(parent) {
@@ -226,8 +223,7 @@ function generateScene() {
     .addObject("Objects/plane.json", false, "Textures/camo.png")
     .setLocation([0, 0, 0])
     .setRotation([degToRad(90), degToRad(180), 0])
-    .setScale([1 / 500, 1 / 500, 1 / 500])
-    .setAnimation(animate);
+    .setScale([1 / 500, 1 / 500, 1 / 500]);
 
   scene
     .addObject("Objects/quad.json", true, "Textures/morning_rt.png")
