@@ -151,6 +151,7 @@ function animate(parent) {
  */
 function generateScene() {
   var scene = new Scene();
+  scene.setCamera([-1, -1, -1], [1, 1, 1], [0, 1, 0]);
   scene
     .addObject("Objects/plane.json", false, "Textures/camo.png")
     .setLocation([1, 1, 1])

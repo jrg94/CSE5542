@@ -3,6 +3,15 @@
  */
 function Scene() {
   this.objects = [];
+  this.camera = new Camera();
+
+  /**
+   * Moves the camera
+   */
+  this.setCamera = function(position, look, view) {
+    this.camera.perspective();
+    this.camera.lookAt(position, look, view);
+  }
 
   /**
    * Adds an object to the scene.
@@ -39,7 +48,7 @@ function Scene() {
    */
   this.handleLoadedGeometry = function(geometryData, isStatic, baseTexture, geometry) {
     for (var i = 0; i < geometryData.meshes.length; i++) {
-      var child = new Geometry(isStatic);
+      var child = new Geometry(isStatic, this.camera);
       child.initTexture(baseTexture, false);
       var imageMap = [
         ["Textures/morning_rt.png", gl.TEXTURE_CUBE_MAP_POSITIVE_X],
@@ -236,9 +245,26 @@ function Parent() {
 }
 
 /**
+ * A camera object
+ */
+function Camera() {
+  this.pMatrix = mat4.create();
+  this.vMatrix = mat4.create();
+
+  this.perspective = function() {
+    this.pMatrix = mat4.perspective(60, 1.0, 0.1, 100, this.pMatrix);
+  }
+
+  this.lookAt = function(location, lookAt, viewUp) {
+    this.vMatrix = mat4.lookAt(location, lookAt, viewUp, this.vMatrix);
+  }
+}
+
+/**
  * A geometry object.
  */
-function Geometry(isStatic) {
+function Geometry(isStatic, camera) {
+  this.camera = camera;
   this.initialPosition = [0, 0, 0];
   this.position = this.initialPosition;
   this.initialRotation = [0, 0, 0];
@@ -264,8 +290,6 @@ function Geometry(isStatic) {
   this.textureBuffer;
   this.indexBuffer;
   this.mMatrix = mat4.create(); // model matrix
-  this.vMatrix = mat4.create(); // view matrix
-  this.pMatrix = mat4.create(); // projection matrix
   this.nMatrix = mat4.create(); // normal matrix
   this.v2wMatrix = mat4.create(); // eye space to world space matrix
   this.object_angle = 0.0;
@@ -299,11 +323,6 @@ function Geometry(isStatic) {
    * Transforms this geometry (currently hardcoded).
    */
   this.transform = function() {
-    this.pMatrix = mat4.perspective(60, 1.0, 0.1, 100, this.pMatrix);
-    this.vMatrix = mat4.lookAt([-1, -1, -1], [1, 1, 1], [0, 1, 0], this.vMatrix);
-    this.vMatrix = mat4.rotateY(this.vMatrix, -degToRad(this.camera_angle_x));
-    this.vMatrix = mat4.rotateX(this.vMatrix, degToRad(this.camera_angle_y));
-
     mat4.identity(this.mMatrix);
     this.mMatrix = mat4.translate(this.mMatrix, this.position);
     this.mMatrix = mat4.rotateX(this.mMatrix, this.rotation[0]);
@@ -312,13 +331,13 @@ function Geometry(isStatic) {
     this.mMatrix = mat4.scale(this.mMatrix, this.scale);
 
     mat4.identity(this.nMatrix);
-    this.nMatrix = mat4.multiply(this.nMatrix, this.vMatrix);
+    this.nMatrix = mat4.multiply(this.nMatrix, this.camera.vMatrix);
     this.nMatrix = mat4.multiply(this.nMatrix, this.mMatrix);
     this.nMatrix = mat4.inverse(this.nMatrix);
     this.nMatrix = mat4.transpose(this.nMatrix);
 
     mat4.identity(this.v2wMatrix);
-    this.v2wMatrix = mat4.multiply(this.v2wMatrix, this.vMatrix);
+    this.v2wMatrix = mat4.multiply(this.v2wMatrix, this.camera.vMatrix);
     this.v2wMatrix = mat4.transpose(this.v2wMatrix);
   }
 
@@ -432,8 +451,8 @@ function Geometry(isStatic) {
    */
   this.setMatrixUniforms = function() {
     gl.uniformMatrix4fv(shaderProgram.mMatrixUniform, false, this.mMatrix);
-    gl.uniformMatrix4fv(shaderProgram.vMatrixUniform, false, this.vMatrix);
-    gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, this.pMatrix);
+    gl.uniformMatrix4fv(shaderProgram.vMatrixUniform, false, this.camera.vMatrix);
+    gl.uniformMatrix4fv(shaderProgram.pMatrixUniform, false, this.camera.pMatrix);
     gl.uniformMatrix4fv(shaderProgram.nMatrixUniform, false, this.nMatrix);
     gl.uniformMatrix4fv(shaderProgram.v2wMatrixUniform, false, this.v2wMatrix);
   }
