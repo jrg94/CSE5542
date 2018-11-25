@@ -9,6 +9,8 @@ var plane;
 var lastMouseX = 0;
 var lastMouseY = 0;
 
+var keys = new Map();
+
 /**
  * Initializes the gl context.
  */
@@ -73,24 +75,55 @@ function onDocumentMouseMove(event) {
  * @param event some keyboard event
  */
 function onKeyDown(event) {
-  switch (event.keyCode) {
-    case 68: // d
-      moveRight(plane);
-      break;
-    case 65: // a
-      moveLeft(plane);
-      break;
-    case 32: // space
-      console.log("pew");
-      break;
-  }
+  keys.set(event.keyCode, true);
+  executeCurrentKeys(getTrueMap());
 }
 
 /**
  * Sets the animation for lifting key.
  */
 function onKeyUp(event) {
-  level(plane);
+  keys.set(event.keyCode, false);
+
+  var trueMap = getTrueMap();
+  if (trueMap.size == 0) {
+    switch (event.keyCode) {
+      case 32:
+        break;
+      default:
+        level(plane);
+    }
+  } else {
+    executeCurrentKeys(trueMap);
+  }
+}
+
+function getTrueMap() {
+  const trueMap = new Map(
+    [...keys]
+    .filter(([k, v]) => v == true)
+  );
+  return trueMap;
+}
+
+/**
+ * Executes all functionality based on current keys pressed.
+ */
+function executeCurrentKeys(trueMap) {
+  for (var key of trueMap.keys()) {
+    console.log(key);
+    switch (key) {
+      case 68: // d
+        moveRight(plane);
+        break;
+      case 65: // a
+        moveLeft(plane);
+        break;
+      case 32: // space
+        console.log("pew");
+        break;
+    }
+  }
 }
 
 /**
