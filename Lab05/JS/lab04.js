@@ -79,7 +79,7 @@ function onDocumentMouseMove(event) {
 function onKeyDown(event) {
   switch (event.keyCode) {
     case 68: // d
-      scene.lights[0].transformation.translation[0] += 0.1;
+      moveRight(plane);
       break;
     case 65: // a
       moveLeft(plane);
@@ -189,6 +189,19 @@ function moveLeft(parent) {
 }
 
 /**
+ * A function which moves the plane left.
+ */
+function moveRight(parent) {
+  if (parent.location[0] < 1) {
+    parent.moveObject(.01, 0, 0);
+    if (parent.rotation[1] > degToRad(160)) {
+      parent.rotateObject(0, -1, 0);
+    }
+  }
+  scene.setCamera(parent);
+}
+
+/**
  * Levels the plane.
  */
 function level(parent) {
@@ -199,6 +212,7 @@ function level(parent) {
       scene.setCamera(parent);
     } else if (parent.rotation[1] < degToRad(180)) {
       parent.rotateObject(0, 1, 0);
+      parent.moveObject(.005, 0, 0);
       scene.setCamera(parent);
     } else {
       window.clearInterval(id);
