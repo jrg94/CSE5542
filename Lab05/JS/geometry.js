@@ -198,26 +198,13 @@ function Parent() {
   }
 
   /**
-   * Rotates the camera for all children.
-   *
-   * @param diffX some x delta
-   * @param diffY some y delta
-   */
-  this.rotateCamera = function(diffX, diffY) {
-    for (var i = 0; i < this.children.length; i++) {
-      this.children[i].camera_angle_x += diffX / 5;
-      this.children[i].camera_angle_y += diffY / 5;
-    }
-  }
-
-  /**
    * Rotates all children by x, y, z.
    *
    * @param diffX some x delta
    * @param diffY some y delta
    * @param diffZ some z delta
    */
-  this.rotateObjects = function(diffX, diffY, diffZ) {
+  this.rotateObject = function(diffX, diffY, diffZ) {
     this.rotation[0] += diffX / 50;
     this.rotation[1] += diffY / 50;
     this.rotation[2] += diffZ / 50;
