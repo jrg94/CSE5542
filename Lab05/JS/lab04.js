@@ -4,6 +4,7 @@ var draw_type = 2;
 var use_texture = 0;
 
 var scene;
+var plane;
 
 var lastMouseX = 0;
 var lastMouseY = 0;
@@ -60,6 +61,34 @@ function onDocumentMouseMove(event) {
   lastMouseY = mouseY;
 
   scene.draw()
+}
+
+/**
+ * A keyboard event which manipulates the matrices for translation and
+ * scaling depending on the key pressed.
+ *
+ * d: translates the light by +0.1 on the local x-axis
+ * a: translates the light by -0.1 on the local x-axis
+ * w: translates the light by +0.1 on the local y-axis
+ * s: translates the light by -0.1 on the local y-axis
+ * e: translates the light by +0.1 on the local z-axis
+ * q: translates the light by -0.1 on the local z-axis
+ *
+ * @param event some keyboard event
+ */
+function onKeyDown(event) {
+  switch (event.keyCode) {
+    case 68: // d
+      scene.lights[0].transformation.translation[0] += 0.1;
+      break;
+    case 65: // a
+      moveLeft(plane);
+      break;
+  }
+}
+
+function onKeyUp(event) {
+  level(plane);
 }
 
 /**
@@ -121,6 +150,8 @@ function webGLStart() {
 
   gl.clearColor(0.0, 0.0, 0.0, 1.0);
   document.addEventListener('mousedown', onDocumentMouseDown, false);
+  document.addEventListener('keydown', onKeyDown, false);
+  document.addEventListener('keyup', onKeyUp, false);
 
   scene = generateScene();
   scheduleDraw(scene);
@@ -140,11 +171,13 @@ function scheduleDraw(scene) {
  */
 function animate(parent) {
   window.setInterval(function(){
-    moveLeft(parent);
-    scene.setCamera(parent);
+    //moveLeft(parent);
   }.bind(this), 100);
 }
 
+/**
+ * A function which moves the plane left.
+ */
 function moveLeft(parent) {
   if (parent.location[0] > -1) {
     parent.moveObject(-.01, 0, 0);
@@ -152,9 +185,19 @@ function moveLeft(parent) {
     if (parent.rotation[1] < degToRad(200)) {
       parent.rotateObject(0, 1, 0);
     }
-  } else if (parent.rotation[1] != degToRad(180)){
-    parent.rotateObject(0, -1, 0);
   }
+  scene.setCamera(parent);
+}
+
+function level(parent) {
+  var id = window.setInterval(function() {
+    if (parent.rotation[1] != degToRad(180)){
+      parent.rotateObject(0, -1, 0);
+      scene.setCamera(parent);
+    } else {
+      window.clearInterval(id);
+    }
+  }, 100)
 }
 
 /**
@@ -163,7 +206,7 @@ function moveLeft(parent) {
 function generateScene() {
   var scene = new Scene();
 
-  var plane = scene
+  plane = scene
     .addObject("Objects/plane.json", false, "Textures/camo.png")
     .setLocation([0, 0, 0])
     .setRotation([degToRad(90), degToRad(180), 0])
