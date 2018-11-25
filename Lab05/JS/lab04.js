@@ -56,8 +56,6 @@ function onDocumentMouseMove(event) {
   var diffX = mouseX - lastMouseX;
   var diffY = mouseY - lastMouseY;
 
-  scene.rotateCamera(diffX, diffY);
-
   lastMouseX = mouseX;
   lastMouseY = mouseY;
 
@@ -143,7 +141,6 @@ function scheduleDraw(scene) {
 function animate(parent) {
   window.setInterval(function(){
     parent.moveObject(0, 0, -.01);
-    parent.rotateObject(0, 1, 0);
     scene.setCamera(parent);
   }.bind(this), 100);
 }

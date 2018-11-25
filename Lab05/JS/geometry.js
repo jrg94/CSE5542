@@ -71,18 +71,6 @@ function Scene() {
   }
 
   /**
-   * Rotates the scene camera.
-   *
-   * @param diffX some x delta
-   * @param diffZ some z delta
-   */
-  this.rotateCamera = function(diffX, diffY) {
-    for (var i = 0; i < this.objects.length; i++) {
-      this.objects[i].rotateCamera(diffX, diffY);
-    }
-  }
-
-  /**
    * Draws the scene.
    */
   this.draw = function() {
