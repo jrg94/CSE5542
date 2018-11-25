@@ -181,7 +181,6 @@ function animate(parent) {
 function moveLeft(parent) {
   if (parent.location[0] > -1) {
     parent.moveObject(-.01, 0, 0);
-
     if (parent.rotation[1] < degToRad(200)) {
       parent.rotateObject(0, 1, 0);
     }
@@ -189,15 +188,22 @@ function moveLeft(parent) {
   scene.setCamera(parent);
 }
 
+/**
+ * Levels the plane.
+ */
 function level(parent) {
   var id = window.setInterval(function() {
-    if (parent.rotation[1] != degToRad(180)){
+    if (parent.rotation[1] > degToRad(180)){
       parent.rotateObject(0, -1, 0);
+      parent.moveObject(-.005, 0, 0);
+      scene.setCamera(parent);
+    } else if (parent.rotation[1] < degToRad(180)) {
+      parent.rotateObject(0, 1, 0);
       scene.setCamera(parent);
     } else {
       window.clearInterval(id);
     }
-  }, 100)
+  }, 40)
 }
 
 /**
