@@ -67,12 +67,8 @@ function onDocumentMouseMove(event) {
  * A keyboard event which manipulates the matrices for translation and
  * scaling depending on the key pressed.
  *
- * d: translates the light by +0.1 on the local x-axis
- * a: translates the light by -0.1 on the local x-axis
- * w: translates the light by +0.1 on the local y-axis
- * s: translates the light by -0.1 on the local y-axis
- * e: translates the light by +0.1 on the local z-axis
- * q: translates the light by -0.1 on the local z-axis
+ * d: translates the plane right
+ * a: translates the plane left
  *
  * @param event some keyboard event
  */
