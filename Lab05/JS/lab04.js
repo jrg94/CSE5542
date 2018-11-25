@@ -76,7 +76,6 @@ function onDocumentMouseMove(event) {
  */
 function onKeyDown(event) {
   keys.set(event.keyCode, true);
-  executeCurrentKeys(getTrueMap());
 }
 
 /**
@@ -84,20 +83,11 @@ function onKeyDown(event) {
  */
 function onKeyUp(event) {
   keys.set(event.keyCode, false);
-
-  var trueMap = getTrueMap();
-  if (trueMap.size == 0) {
-    switch (event.keyCode) {
-      case 32:
-        break;
-      default:
-        level(plane);
-    }
-  } else {
-    executeCurrentKeys(trueMap);
-  }
 }
 
+/**
+ * Filters a map for all keys which have a true value
+ */
 function getTrueMap() {
   const trueMap = new Map(
     [...keys]
@@ -109,21 +99,31 @@ function getTrueMap() {
 /**
  * Executes all functionality based on current keys pressed.
  */
-function executeCurrentKeys(trueMap) {
-  for (var key of trueMap.keys()) {
-    console.log(key);
-    switch (key) {
-      case 68: // d
-        moveRight(plane);
-        break;
-      case 65: // a
-        moveLeft(plane);
-        break;
-      case 32: // space
-        console.log("pew");
-        break;
+function executeCurrentKeys() {
+  var id = window.setInterval( function() {
+    var trueMap = getTrueMap();
+
+    if (trueMap.size != 0) {
+      for (var key of trueMap.keys()) {
+        console.log(key);
+        switch (key) {
+          case 68: // d
+            moveRight(plane);
+            break;
+          case 65: // a
+            moveLeft(plane);
+            break;
+          case 32: // space
+            console.log("pew");
+            break;
+        }
+      }
+    } else {
+      level(plane);
     }
-  }
+
+  }, 50)
+
 }
 
 /**
@@ -231,7 +231,6 @@ function moveRight(parent) {
  * Levels the plane.
  */
 function level(parent) {
-  var id = window.setInterval(function() {
     if (parent.rotation[1] > degToRad(180)){
       parent.rotateObject(0, -1, 0);
       parent.moveObject(-.005, 0, 0);
@@ -240,10 +239,7 @@ function level(parent) {
       parent.rotateObject(0, 1, 0);
       parent.moveObject(.005, 0, 0);
       scene.setCamera(parent);
-    } else {
-      window.clearInterval(id);
     }
-  }, 40)
 }
 
 /**
@@ -290,6 +286,7 @@ function generateScene() {
     .setScale([4, 4, 4]);
 
   scene.setCamera(plane);
+  executeCurrentKeys();
 
   return scene;
 }
