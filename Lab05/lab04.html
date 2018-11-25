@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <title>Jeremy Grifski &mdash; Lab 04 Texture Mapping </title>
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+  <script type="text/javascript" src="JS/geometry.js"></script>
+  <script type="text/javascript" src="JS/glMatrix-0.9.5.min.js"></script>
+  <script type="text/javascript" src="JS/shader_setup.js"></script>
+  <script type="text/javascript" src="JS/lab04.js"></script>
+  <script type="text/javascript" src="JS/shaders.js"></script>
+
+<body onload="webGLStart();">
+  <canvas id="code13-canvas" style="border:none;" width="700" height="700"></canvas>
+
+  <h4> Texture: </h4>
+  <button onclick="texture(0)"> NO </button>
+  <button onclick="texture(1)"> Regular </button>
+  <button onclick="texture(2)"> Cubemap </button>
+
+  <h4> Geometry: </h4>
+  <button onclick="drawType(0)"> POINTS</button>
+  <button onclick="drawType(1)"> LINEs</button>
+  <button onclick="drawType(2)"> FACES</button>
+
+  <h4> Background: </h4>
+  <button onclick="BG(1,0,0)"> Red</button>
+  <button onclick="BG(0,1,0)"> Green</button>
+  <button onclick="BG(0,0,1)"> Blue</button>
+  <button onclick="BG(0.5,0.5,0.5)"> Grey</button>
+  <button onclick="BG(0,0,0)"> Black</button>
+  <button onclick="BG(1,1,1)"> White</button>
+
+  <h4> Directions: </h4>
+  <p>
+    Click on the left mouse button and move the coursor to rotate the camera.
+  </p>
+
+</body>
+
+</html>
