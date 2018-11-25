@@ -8,8 +8,13 @@ function Scene() {
   /**
    * Moves the camera
    */
-  this.setCamera = function(position, look, view) {
+  this.setCamera = function(parent) {
     this.camera.perspective();
+
+    var position = [parent.location[0], parent.location[1] + .5, parent.location[2] + 1.5];
+    var look = [...parent.location];
+    var view = [0, 1, 0];
+
     this.camera.lookAt(position, look, view);
   }
 
@@ -63,19 +68,6 @@ function Scene() {
       geometry.children.push(child);
     }
     geometry.initialize();
-  }
-
-  /**
-   * Rotates all objects in scene.
-   *
-   * @param diffX some x delta
-   * @param diffY some y delta
-   * @param diffZ some z delta
-   */
-  this.rotateObjects = function(diffX, diffY, diffZ) {
-    for (var i = 0; i < this.objects.length; i++) {
-      this.objects[i].rotateObjects(diffX, diffY, diffZ);
-    }
   }
 
   /**
@@ -163,19 +155,6 @@ function Parent() {
   }
 
   /**
-   * Rotates all children by some x, y, z
-   *
-   * @param diffX some x delta
-   * @param diffY some y delta
-   * @param diffZ some z delta
-   */
-  this.rotateObjects = function(diffX, diffY, diffZ) {
-    for (var i = 0; i < this.children.length; i++) {
-      this.children[i].rotateObjects(diffX, diffY, diffZ);
-    }
-  }
-
-  /**
    * Applies scalling to all children.
    */
   this.expand = function() {
@@ -200,6 +179,9 @@ function Parent() {
     }
   }
 
+  /**
+   * Applies movement to all children.
+   */
   this.move = function() {
     for (var i = 0; i < this.children.length; i++) {
       this.children[i].position = this.location;
@@ -236,11 +218,15 @@ function Parent() {
    * @param diffZ some z delta
    */
   this.rotateObjects = function(diffX, diffY, diffZ) {
-    for (var i = 0; i < this.children.length; i++) {
-      this.children[i].rotation[0] += diffX / 500;
-      this.children[i].rotation[1] += diffY / 500;
-      this.children[i].rotation[2] += diffZ / 500;
-    }
+    this.rotation[0] += diffX / 50;
+    this.rotation[1] += diffY / 50;
+    this.rotation[2] += diffZ / 50;
+  }
+
+  this.moveObject = function(x, y, z) {
+    this.location[0] += x;
+    this.location[1] += y;
+    this.location[2] += z;
   }
 }
 

@@ -142,7 +142,8 @@ function scheduleDraw(scene) {
  */
 function animate(parent) {
   window.setInterval(function(){
-    parent.rotateObjects(1, 1, 0);
+    parent.moveObject(0, 0, -.01);
+    scene.setCamera(parent);
   }.bind(this), 100);
 }
 
@@ -151,12 +152,12 @@ function animate(parent) {
  */
 function generateScene() {
   var scene = new Scene();
-  scene.setCamera([-1, -1, -1], [1, 1, 1], [0, 1, 0]);
-  scene
+
+  var plane = scene
     .addObject("Objects/plane.json", false, "Textures/camo.png")
-    .setLocation([1, 1, 1])
+    .setLocation([0, 0, 0])
     .setRotation([degToRad(90), degToRad(180), 0])
-    .setScale([1 / 200, 1 / 200, 1 / 200])
+    .setScale([1 / 300, 1 / 300, 1 / 300])
     .setAnimation(animate);
   scene
     .addObject("Objects/quad.json", true, "Textures/morning_rt.png")
@@ -188,6 +189,9 @@ function generateScene() {
     .setLocation([0, 0, 2])
     .setRotation([0, degToRad(180), degToRad(180)])
     .setScale([4, 4, 4]);
+
+  scene.setCamera(plane);
+
   return scene;
 }
 
