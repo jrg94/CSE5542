@@ -287,7 +287,7 @@ function generateScene() {
     .setRotation([0, degToRad(180), degToRad(180)])
     .setScale([4, 4, 4]);
 
-  scene.populateBullets("Objects/quad.json", "Textures/camo.png");
+  scene.populateBullets("Objects/bullet.json", "Textures/camo.png");
   scene.setCamera(plane);
   executeCurrentKeys();
 

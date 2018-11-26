@@ -12,6 +12,7 @@ function Scene() {
     var index = this.objects.indexOf(activeBullet);
     if (index < 0) {
       activeBullet.setLocation([...parent.location]);
+      activeBullet.setScale([1/500, 1/500, 1/500]);
       activeBullet.setAnimation(function() {
         var id = window.setInterval(function() {
           if (activeBullet.location[2] > -2.5) {
