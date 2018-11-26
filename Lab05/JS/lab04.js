@@ -9,6 +9,7 @@ var plane;
 var lastMouseX = 0;
 var lastMouseY = 0;
 
+var lastKeys = new Map();
 var keys = new Map();
 
 /**
@@ -75,6 +76,7 @@ function onDocumentMouseMove(event) {
  * @param event some keyboard event
  */
 function onKeyDown(event) {
+  lastKeys = new Map(keys);
   keys.set(event.keyCode, true);
 }
 
@@ -82,6 +84,7 @@ function onKeyDown(event) {
  * Sets the animation for lifting key.
  */
 function onKeyUp(event) {
+  lastKeys = new Map(keys);
   keys.set(event.keyCode, false);
 }
 
@@ -113,7 +116,9 @@ function executeCurrentKeys() {
             moveLeft(plane);
             break;
           case 32: // space
-            scene.fire(plane);
+            if (!lastKeys.get(32)) {
+              scene.fire(plane);
+            }
             break;
         }
       }

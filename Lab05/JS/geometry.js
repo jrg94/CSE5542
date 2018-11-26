@@ -9,23 +9,27 @@ function Scene() {
 
   this.fire = function(parent) {
     var activeBullet = this.bullets[this.currentBullet % this.bullets.length];
-    this.objects.push(activeBullet);
-    console.log(this.objects);
-    activeBullet.setLocation([...parent.location]);
-    activeBullet.setAnimation(function() {
-      var id = window.setInterval(function() {
-        if (activeBullet.location[2] > -2.5) {
-          activeBullet.moveObject(0, 0, -.05)
-        } else {
-          window.clearInterval(id);
-          var index = scene.objects.indexOf(activeBullet);
-          if (index > -1) {
-            scene.objects.splice(index, 1);
+    var index = this.objects.indexOf(activeBullet);
+    if (index < 0) {
+      this.objects.push(activeBullet);
+      activeBullet.setLocation([...parent.location]);
+      activeBullet.setAnimation(function() {
+        var id = window.setInterval(function() {
+          if (activeBullet.location[2] > -2.5) {
+            activeBullet.moveObject(0, 0, -.05)
+          } else {
+            window.clearInterval(id);
+            var index = scene.objects.indexOf(activeBullet);
+            if (index > -1) {
+              scene.objects.splice(index, 1);
+            }
           }
-        }
-      }, 50);
-    });
-    this.currentBullet++;
+        }, 50);
+      });
+      this.currentBullet++;
+    } else {
+      console.log("Bullet is already active");
+    }
   }
 
   /**
