@@ -26,8 +26,16 @@ function Scene() {
    * @param baseTecxture the default texture file
    */
   this.addObject = function(file, isStatic, baseTexture) {
-    var myObject = new Parent();
+    var myObject = this.createObject(file, isStatic, baseTexture);
     this.objects.push(myObject);
+    return myObject;
+  }
+
+  /**
+   * Creates an object but does not add it to the scene.
+   */
+  this.createObject = function(file, isStatic, baseTexture) {
+    var myObject = new Parent();
 
     var request = new XMLHttpRequest();
     request.open("GET", file);
