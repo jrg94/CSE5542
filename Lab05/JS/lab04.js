@@ -113,7 +113,7 @@ function executeCurrentKeys() {
             moveLeft(plane);
             break;
           case 32: // space
-            // TODO: shoot
+            shoot(plane);
             break;
         }
       }
@@ -123,6 +123,11 @@ function executeCurrentKeys() {
 
   }, 50)
 
+}
+
+function shoot(parent) {
+  scene
+    .addObject("Objects/bullet.json", false, "Textures/camo.png");
 }
 
 /**
