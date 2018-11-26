@@ -13,7 +13,7 @@ function Scene() {
     if (index < 0) {
       activeBullet.setLocation([...parent.location]);
       activeBullet.setScale([1/500, 1/500, 1/500]);
-      activeBullet.setRotation([0, degToRad(90), 0]);
+      activeBullet.setRotation([degToRad(-90), 0, 0]);
       activeBullet.setAnimation(function() {
         var id = window.setInterval(function() {
           if (activeBullet.location[2] > -2.5) {
