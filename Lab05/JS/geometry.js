@@ -10,6 +10,8 @@ function Scene() {
   this.fire = function(parent) {
     var activeBullet = this.bullets[this.currentBullet % this.bullets.length];
     this.objects.push(activeBullet);
+    console.log(this.objects);
+    activeBullet.setLocation([...parent.location]);
     activeBullet.setAnimation(function() {
       var id = window.setInterval(function() {
         if (activeBullet.location[2] > -2.5) {

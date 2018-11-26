@@ -100,7 +100,7 @@ function getTrueMap() {
  * Executes all functionality based on current keys pressed.
  */
 function executeCurrentKeys() {
-  var id = window.setInterval( function() {
+  var id = window.setInterval(function() {
     var trueMap = getTrueMap();
 
     if (trueMap.size != 0) {
@@ -195,7 +195,7 @@ function webGLStart() {
  * A periodic drawing function.
  */
 function scheduleDraw(scene) {
-  window.setInterval(function(){
+  window.setInterval(function() {
     scene.draw();
   }.bind(this), 50);
 }
@@ -230,15 +230,15 @@ function moveRight(parent) {
  * Levels the plane.
  */
 function level(parent) {
-    if (parent.rotation[1] > degToRad(180)){
-      parent.rotateObject(0, -1, 0);
-      parent.moveObject(-.005, 0, 0);
-      scene.setCamera(parent);
-    } else if (parent.rotation[1] < degToRad(180)) {
-      parent.rotateObject(0, 1, 0);
-      parent.moveObject(.005, 0, 0);
-      scene.setCamera(parent);
-    }
+  if (parent.rotation[1] > degToRad(180)) {
+    parent.rotateObject(0, -1, 0);
+    parent.moveObject(-.005, 0, 0);
+    scene.setCamera(parent);
+  } else if (parent.rotation[1] < degToRad(180)) {
+    parent.rotateObject(0, 1, 0);
+    parent.moveObject(.005, 0, 0);
+    scene.setCamera(parent);
+  }
 }
 
 /**
