@@ -5,6 +5,25 @@ function Scene() {
   this.objects = [];
   this.camera = new Camera();
   this.bullets = [];
+  this.currentBullet = 0;
+
+  this.fire = function(parent) {
+    var activeBullet = this.bullets[this.currentBullet % this.bullets.length];
+    this.objects.push(activeBullet);
+    activeBullet.setAnimation(function() {
+      var id = window.setInterval(function() {
+        if (activeBullet.location[2] > -2.5) {
+          bullet.moveObject(0, 0, -.05)
+        } else {
+          window.clearInterval(id);
+          var index = scene.objects.indexOf(bullet);
+          if (index > -1) {
+            scene.objects.splice(index, 1);
+          }
+        }
+      }, 50);
+    this.currentBullet++;
+  }
 
   /**
    * Moves the camera
