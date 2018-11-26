@@ -138,6 +138,10 @@ function shoot(parent) {
           bullet.moveObject(0, 0, -.05)
         } else {
           window.clearInterval(id);
+          var index = scene.objects.indexOf(bullet);
+          if (index > -1) {
+            scene.objects.splice(index, 1);
+          }
         }
       }, 50);
     });
