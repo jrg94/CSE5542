@@ -127,7 +127,8 @@ function executeCurrentKeys() {
 
 function shoot(parent) {
   scene
-    .addObject("Objects/bullet.json", false, "Textures/camo.png");
+    .addObject("Objects/bullet.json", false, "Textures/camo.png")
+    .setLocation([...parent.location]);
 }
 
 /**
