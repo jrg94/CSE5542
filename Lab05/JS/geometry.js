@@ -11,8 +11,10 @@ function Scene() {
     var activeBullet = this.bullets[this.currentBullet % this.bullets.length];
     var index = this.objects.indexOf(activeBullet);
     if (index < 0) {
-      activeBullet.setLocation([...parent.location]);
-      activeBullet.setScale([1/500, 1/500, 1/500]);
+      var location = [...parent.location];
+      location[2] -= .5;
+      activeBullet.setLocation(location);
+      activeBullet.setScale([1/2000, 1/2000, 1/2000]);
       activeBullet.setRotation([degToRad(-90), 0, 0]);
       activeBullet.setAnimation(function() {
         var id = window.setInterval(function() {
