@@ -125,6 +125,9 @@ function executeCurrentKeys() {
 
 }
 
+/**
+ * A shooting animation
+ */
 function shoot(parent) {
   var bullet = scene
     .addObject("Objects/quad.json", true, "Textures/camo.png")
