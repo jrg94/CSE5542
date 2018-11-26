@@ -13,15 +13,16 @@ function Scene() {
     activeBullet.setAnimation(function() {
       var id = window.setInterval(function() {
         if (activeBullet.location[2] > -2.5) {
-          bullet.moveObject(0, 0, -.05)
+          activeBullet.moveObject(0, 0, -.05)
         } else {
           window.clearInterval(id);
-          var index = scene.objects.indexOf(bullet);
+          var index = scene.objects.indexOf(activeBullet);
           if (index > -1) {
             scene.objects.splice(index, 1);
           }
         }
       }, 50);
+    });
     this.currentBullet++;
   }
 
@@ -40,8 +41,8 @@ function Scene() {
 
   this.populateBullets = function(json, texture) {
     for (var i = 0; i < 10; i++) {
-      var bullet = scene.createObject(json, true, texture);
-      scene.bullets.push(bullet);
+      var bullet = this.createObject(json, true, texture);
+      this.bullets.push(bullet);
     }
   }
 
