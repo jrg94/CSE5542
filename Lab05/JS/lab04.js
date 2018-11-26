@@ -126,12 +126,16 @@ function executeCurrentKeys() {
 }
 
 function shoot(parent) {
-  scene
-    .addObject("Objects/bullet.json", false, "Textures/camo.png")
+  var bullet = scene
+    .addObject("Objects/quad.json", true, "Textures/camo.png")
     .setLocation([...parent.location])
-    .animate(function() {
-      window.setInterval(function() {
-        console.log("pew");
+    .setAnimation(function() {
+      var id = window.setInterval(function() {
+        if (bullet.location[2] > -2.5) {
+          bullet.moveObject(0, 0, -.05)
+        } else {
+          window.clearInterval(id);
+        }
       }, 50);
     });
 }
