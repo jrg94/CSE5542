@@ -11,7 +11,6 @@ function Scene() {
     var activeBullet = this.bullets[this.currentBullet % this.bullets.length];
     var index = this.objects.indexOf(activeBullet);
     if (index < 0) {
-      this.objects.push(activeBullet);
       activeBullet.setLocation([...parent.location]);
       activeBullet.setAnimation(function() {
         var id = window.setInterval(function() {
@@ -26,9 +25,9 @@ function Scene() {
           }
         }, 50);
       });
+      activeBullet.initialize();
+      this.objects.push(activeBullet);
       this.currentBullet++;
-    } else {
-      console.log("Bullet is already active");
     }
   }
 
