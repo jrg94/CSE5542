@@ -128,7 +128,7 @@ function Parent() {
   this.location = [0, 0, 0];
   this.rotation = [0, 0, 0];
   this.scale = [1, 1, 1];
-  this.animation = function(){};
+  this.animation = function() {};
 
   /**
    * Initializes all children based on the Parent
@@ -551,7 +551,7 @@ function Geometry(isStatic, camera) {
     const border = 0;
     const srcFormat = gl.RGBA;
     const srcType = gl.UNSIGNED_BYTE;
-    const pixel = new Uint8Array([0, 0, 255, 255]);  // opaque blue
+    const pixel = new Uint8Array([0, 0, 255, 255]); // opaque blue
     if (type == gl.TEXTURE_CUBE_MAP) {
       gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
       gl.texParameteri(gl.TEXTURE_CUBE_MAP, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
@@ -600,10 +600,10 @@ function Geometry(isStatic, camera) {
       return function() {
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
         gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
-        gl.texImage2D(target, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image );
+        gl.texImage2D(target, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
         gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
       }
-    } (texture, target, img);
+    }(texture, target, img);
   }
 
   /**
