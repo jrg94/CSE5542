@@ -128,7 +128,12 @@ function executeCurrentKeys() {
 function shoot(parent) {
   scene
     .addObject("Objects/bullet.json", false, "Textures/camo.png")
-    .setLocation([...parent.location]);
+    .setLocation([...parent.location])
+    .animate(function() {
+      window.setInterval(function() {
+        console.log("pew");
+      }, 50);
+    });
 }
 
 /**
