@@ -142,6 +142,7 @@ function shoot(parent) {
           if (index > -1) {
             scene.objects.splice(index, 1);
           }
+          console.log(scene.objects);
         }
       }, 50);
     });
@@ -306,11 +307,14 @@ function generateScene() {
     .setRotation([0, degToRad(180), degToRad(180)])
     .setScale([4, 4, 4]);
 
+  scene.populateBullets("Objects/quad.json", "Textures/camo.png");
   scene.setCamera(plane);
   executeCurrentKeys();
 
   return scene;
 }
+
+
 
 /**
  * A function for setting the background color.

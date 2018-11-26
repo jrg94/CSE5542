@@ -4,6 +4,7 @@
 function Scene() {
   this.objects = [];
   this.camera = new Camera();
+  this.bullets = [];
 
   /**
    * Moves the camera
@@ -16,6 +17,13 @@ function Scene() {
     var view = [0, 1, 0];
 
     this.camera.lookAt(position, look, view);
+  }
+
+  this.populateBullets = function(json, texture) {
+    for (var i = 0; i < 10; i++) {
+      var bullet = scene.createObject(json, true, texture);
+      scene.bullets.push(bullet);
+    }
   }
 
   /**
