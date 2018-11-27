@@ -12,23 +12,26 @@ function Scene() {
     var index = this.objects.indexOf(activeBullet);
     if (index < 0) {
       var location = [...parent.location];
+      var rotation = (Math.random() * 10) - 5;
       location[2] -= .5;
-      activeBullet.setLocation(location);
-      activeBullet.setScale([1/2000, 1/2000, 1/2000]);
-      activeBullet.setRotation([degToRad(-90), 0, 0]);
-      activeBullet.setAnimation(function() {
-        var id = window.setInterval(function() {
-          if (activeBullet.location[2] > -2.5) {
-            activeBullet.moveObject(0, 0, -.05)
-          } else {
-            window.clearInterval(id);
-            var index = scene.objects.indexOf(activeBullet);
-            if (index > -1) {
-              scene.objects.splice(index, 1);
+      activeBullet
+        .setLocation(location)
+        .setScale([1/2000, 1/2000, 1/2000])
+        .setRotation([degToRad(-90), 0, 0])
+        .setAnimation(function() {
+          var id = window.setInterval(function() {
+            if (activeBullet.location[2] > -2.5) {
+              activeBullet.moveObject(0, 0, -.05);
+              activeBullet.rotateObject(0, rotation, 0);
+            } else {
+              window.clearInterval(id);
+              var index = scene.objects.indexOf(activeBullet);
+              if (index > -1) {
+                scene.objects.splice(index, 1);
+              }
             }
-          }
-        }, 50);
-      });
+          }, 50);
+        });
       activeBullet.initialize();
       this.objects.push(activeBullet);
       this.currentBullet++;
