@@ -191,7 +191,7 @@ async function webGLStart() {
   document.addEventListener('keyup', onKeyUp, false);
 
   scene = await generateScene();
-  console.log(scene);
+  scene.initialize();
   executeCurrentKeys();
   scheduleDraw(scene);
 }
@@ -202,7 +202,7 @@ async function webGLStart() {
 function scheduleDraw(scene) {
   window.setInterval(function() {
     scene.draw();
-  }.bind(this), 50);
+  }, 50);
 }
 
 /**
@@ -299,8 +299,6 @@ async function generateScene() {
 
   return scene;
 }
-
-
 
 /**
  * A function for setting the background color.

@@ -121,7 +121,7 @@ function Scene() {
    * @param baseTexture the baseTexture of the object
    * @param geometry the geometry object that holds all this data
    */
-  this.handleLoadedGeometry = function(geometryData, isStatic, baseTexture, geometry) {
+  this.handleLoadedGeometry = function(geometryData, isStatic, baseTexture) {
     var geometry = new Parent();
     for (var i = 0; i < geometryData.meshes.length; i++) {
       var child = new Geometry(isStatic, this.camera);
@@ -138,8 +138,16 @@ function Scene() {
       child.initBuffers(geometryData.meshes[i]);
       geometry.children.push(child);
     }
-    geometry.initialize();
     return geometry;
+  }
+
+  /**
+   * Initializes the scene.
+   */
+  this.initialize = function() {
+    for (var i = 0; i < scene.objects.length; i++) {
+      this.objects[i].initialize();
+    }
   }
 
   /**
