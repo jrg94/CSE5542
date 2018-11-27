@@ -191,6 +191,7 @@ async function webGLStart() {
   document.addEventListener('keyup', onKeyUp, false);
 
   scene = await generateScene();
+  console.log(scene);
   executeCurrentKeys();
   scheduleDraw(scene);
 }

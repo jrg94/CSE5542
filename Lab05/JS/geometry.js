@@ -38,20 +38,6 @@ function Scene() {
     }
   }
 
-  this.isLoaded = function() {
-    var promise = new Promise(function(resolve, reject) {
-      var i = 0;
-      while (i < this.objects.length) {
-        if (this.objects[i].isLoaded) {
-          i++;
-        }
-      }
-      resolve(true);
-    }.bind(this));
-
-    return promise;
-  }
-
   /**
    * Moves the camera
    */
@@ -177,7 +163,6 @@ function Parent() {
   this.rotation = [0, 0, 0];
   this.scale = [1, 1, 1];
   this.animation = function() {};
-  this.isLoaded = false;
 
   /**
    * Initializes all children based on the Parent
@@ -187,7 +172,6 @@ function Parent() {
     this.twist();
     this.expand();
     this.animate();
-    this.isLoaded = true;
   }
 
   /**
@@ -647,7 +631,6 @@ function Geometry(isStatic, camera) {
    */
   this.load = function(url, target, texture) {
     var img = new Image();
-    img.src = url;
     img.crossOrigin = "anonymous";
     img.onload = function(texture, target, image) {
       return function() {
@@ -657,6 +640,7 @@ function Geometry(isStatic, camera) {
         gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
       }
     }(texture, target, img);
+    img.src = url;
   }
 
   /**
