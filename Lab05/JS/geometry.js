@@ -38,6 +38,20 @@ function Scene() {
     }
   }
 
+  this.isLoaded = function() {
+    var promise = new Promise(function(resolve, reject) {
+      var i = 0;
+      while (i < this.objects.length) {
+        if (this.objects[i].isLoaded) {
+          i++;
+        }
+      }
+      resolve(true);
+    }.bind(this));
+
+    return promise;
+  }
+
   /**
    * Moves the camera
    */
@@ -54,9 +68,9 @@ function Scene() {
   /**
    * Sets up the collection of bullets
    */
-  this.populateBullets = function(json, texture) {
+  this.populateBullets = async function(json, texture) {
     for (var i = 0; i < 10; i++) {
-      var bullet = this.createObject(json, true, texture);
+      let bullet = await this.createObject(json, true, texture);
       this.bullets.push(bullet);
     }
   }
@@ -68,8 +82,8 @@ function Scene() {
    * @param isStatic the state of this object
    * @param baseTecxture the default texture file
    */
-  this.addObject = function(file, isStatic, baseTexture) {
-    var myObject = this.createObject(file, isStatic, baseTexture);
+  this.addObject = async function(file, isStatic, baseTexture) {
+    let myObject = await this.createObject(file, isStatic, baseTexture);
     this.objects.push(myObject);
     return myObject;
   }
@@ -77,21 +91,40 @@ function Scene() {
   /**
    * Creates an object but does not add it to the scene.
    */
-  this.createObject = function(file, isStatic, baseTexture) {
-    var myObject = new Parent();
-
-    var request = new XMLHttpRequest();
-    request.open("GET", file);
-    request.onreadystatechange =
-      function() {
-        if (request.readyState == 4) {
-          geometry = JSON.parse(request.responseText);
-          this.handleLoadedGeometry(geometry, isStatic, baseTexture, myObject);
-        }
-      }.bind(this);
-    request.send();
-
+  this.createObject = async function(file, isStatic, baseTexture) {
+    var jsonRequest = this.request(file).then(this.loadGeometry)
+    let json = await jsonRequest;
+    var myObject = this.handleLoadedGeometry(json, isStatic, baseTexture);
     return myObject;
+  }
+
+  /**
+   * Loads the json.
+   */
+  this.loadGeometry = function(json) {
+    return JSON.parse(json);
+  }
+
+  /**
+   * Makes a request for a JSON file.
+   */
+  this.request = function(file) {
+    var promise = new Promise (function (resolve, reject) {
+      var request = new XMLHttpRequest();
+      request.onreadystatechange =
+        function() {
+          if (request.readyState === 4) {
+            if (request.status === 200) {
+              resolve(request.response);
+            } else {
+              reject(request.status);
+            }
+          }
+        };
+      request.open("GET", file);
+      request.send();
+    });
+    return promise;
   }
 
   /**
@@ -103,6 +136,7 @@ function Scene() {
    * @param geometry the geometry object that holds all this data
    */
   this.handleLoadedGeometry = function(geometryData, isStatic, baseTexture, geometry) {
+    var geometry = new Parent();
     for (var i = 0; i < geometryData.meshes.length; i++) {
       var child = new Geometry(isStatic, this.camera);
       child.initTexture(baseTexture, false);
@@ -119,6 +153,7 @@ function Scene() {
       geometry.children.push(child);
     }
     geometry.initialize();
+    return geometry;
   }
 
   /**
@@ -142,6 +177,7 @@ function Parent() {
   this.rotation = [0, 0, 0];
   this.scale = [1, 1, 1];
   this.animation = function() {};
+  this.isLoaded = false;
 
   /**
    * Initializes all children based on the Parent
@@ -151,6 +187,7 @@ function Parent() {
     this.twist();
     this.expand();
     this.animate();
+    this.isLoaded = true;
   }
 
   /**

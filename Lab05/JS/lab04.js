@@ -149,7 +149,7 @@ function onDocumentMouseOut(event) {
 /**
  * Sets up the scene for drawing.
  */
-function webGLStart() {
+async function webGLStart() {
   var canvas = document.getElementById("code13-canvas");
   initGL(canvas);
   initShaders();
@@ -190,7 +190,8 @@ function webGLStart() {
   document.addEventListener('keydown', onKeyDown, false);
   document.addEventListener('keyup', onKeyUp, false);
 
-  scene = generateScene();
+  scene = await generateScene();
+  executeCurrentKeys();
   scheduleDraw(scene);
 }
 
@@ -247,49 +248,53 @@ function level(parent) {
 /**
  * A scene generation function.
  */
-function generateScene() {
+async function generateScene() {
   var scene = new Scene();
 
-  plane = scene
-    .addObject("Objects/plane.json", false, "Textures/camo.png")
+  plane = await scene.addObject("Objects/plane.json", false, "Textures/camo.png");
+  plane
     .setLocation([0, 0, 0])
     .setRotation([degToRad(90), degToRad(180), 0])
     .setScale([1 / 500, 1 / 500, 1 / 500]);
 
-  scene
-    .addObject("Objects/quad.json", true, "Textures/morning_rt.png")
+  let rightWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_rt.png");
+  rightWall
     .setLocation([2, 0, 0])
     .setRotation([0, degToRad(270), degToRad(180)])
     .setScale([4, 4, 4]);
-  scene
-    .addObject("Objects/quad.json", true, "Textures/morning_lf.png")
+
+  let leftWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_lf.png");
+  leftWall
     .setLocation([-2, 0, 0])
     .setRotation([0, degToRad(-270), degToRad(180)])
     .setScale([4, 4, 4]);
-  scene
-    .addObject("Objects/quad.json", true, "Textures/morning_up.png")
+
+  let topWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_up.png");
+  topWall
     .setLocation([0, 2, 0])
     .setRotation([degToRad(-270), 0, 0])
     .setScale([4, 4, 4]);
-  scene
-    .addObject("Objects/quad.json", true, "Textures/morning_dn.png")
+
+  let bottomWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_dn.png");
+  bottomWall
     .setLocation([0, -2, 0])
     .setRotation([degToRad(270), 0, 0])
     .setScale([4, 4, 4]);
-  scene
-    .addObject("Objects/quad.json", true, "Textures/morning_ft.png")
+
+  let frontWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_ft.png");
+  frontWall
     .setLocation([0, 0, -2])
     .setRotation([0, 0, degToRad(180)])
     .setScale([4, 4, 4]);
-  scene
-    .addObject("Objects/quad.json", true, "Textures/morning_bk.png")
+
+  let backWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_bk.png");
+  backWall
     .setLocation([0, 0, 2])
     .setRotation([0, degToRad(180), degToRad(180)])
     .setScale([4, 4, 4]);
 
-  scene.populateBullets("Objects/bullet.json", "Textures/fire.png");
+  await scene.populateBullets("Objects/bullet.json", "Textures/fire.png");
   scene.setCamera(plane);
-  executeCurrentKeys();
 
   return scene;
 }
