@@ -151,6 +151,7 @@ function onDocumentMouseOut(event) {
  */
 async function webGLStart() {
   var canvas = document.getElementById("code13-canvas");
+  var progressBar = document.getElementById("prog");
   initGL(canvas);
   initShaders();
 
@@ -190,7 +191,8 @@ async function webGLStart() {
   document.addEventListener('keydown', onKeyDown, false);
   document.addEventListener('keyup', onKeyUp, false);
 
-  scene = await generateScene();
+  scene = await generateScene(progressBar);
+  progressBar.parentNode.removeChild(progressBar);
   scene.initialize();
   executeCurrentKeys();
   scheduleDraw(scene);
@@ -249,7 +251,7 @@ function level(parent) {
 /**
  * A scene generation function.
  */
-async function generateScene() {
+async function generateScene(progressBar) {
   var scene = new Scene();
 
   plane = await scene.addObject("Objects/plane.json", false, "Textures/camo.png");
@@ -257,45 +259,54 @@ async function generateScene() {
     .setLocation([0, 0, 0])
     .setRotation([degToRad(90), degToRad(180), 0])
     .setScale([1 / 500, 1 / 500, 1 / 500]);
+  progressBar.value = 10;
 
   let rightWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_rt.png");
   rightWall
     .setLocation([2, 0, 0])
     .setRotation([0, degToRad(270), degToRad(180)])
     .setScale([4, 4, 4]);
+  progressBar.value = 20;
 
   let leftWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_lf.png");
   leftWall
     .setLocation([-2, 0, 0])
     .setRotation([0, degToRad(-270), degToRad(180)])
     .setScale([4, 4, 4]);
+  progressBar.value = 30;
 
   let topWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_up.png");
   topWall
     .setLocation([0, 2, 0])
     .setRotation([degToRad(-270), 0, 0])
     .setScale([4, 4, 4]);
+  progressBar.value = 40;
 
   let bottomWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_dn.png");
   bottomWall
     .setLocation([0, -2, 0])
     .setRotation([degToRad(270), 0, 0])
     .setScale([4, 4, 4]);
+  progressBar.value = 50;
 
   let frontWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_ft.png");
   frontWall
     .setLocation([0, 0, -2])
     .setRotation([0, 0, degToRad(180)])
     .setScale([4, 4, 4]);
+  progressBar.value = 60;
 
   let backWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_bk.png");
   backWall
     .setLocation([0, 0, 2])
     .setRotation([0, degToRad(180), degToRad(180)])
     .setScale([4, 4, 4]);
+  progressBar.value = 70;
 
   await scene.populateBullets("Objects/bullet.json", "Textures/fire.png");
+  progressBar.value = 85;
   scene.setCamera(plane);
+  progressBar.value = 100;
 
   return scene;
 }
