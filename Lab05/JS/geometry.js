@@ -48,6 +48,9 @@ function Scene() {
     this.camera.lookAt(position, look, view);
   }
 
+  /**
+   * Sets up the collection of bullets
+   */
   this.populateBullets = function(json, texture) {
     for (var i = 0; i < 10; i++) {
       var bullet = this.createObject(json, true, texture);
@@ -136,6 +139,18 @@ function Parent() {
   this.rotation = [0, 0, 0];
   this.scale = [1, 1, 1];
   this.animation = function() {};
+
+  this.clone = function() {
+    var parent = new Parent();
+    parent.location = [...this.location];
+    parent.rotation = [...this.rotation];
+    parent.scale = [...this.scale];
+    parent.animation = this.animation;
+    for (var i = 0; i < this.children.length; i++) {
+      parent.children.push(this.children[i].clone());
+    }
+    return parent;
+  }
 
   /**
    * Initializes all children based on the Parent
@@ -309,6 +324,29 @@ function Geometry(isStatic, camera) {
   this.light_diffuse = [.8, .8, .8, 1];
   this.light_specular = [1, 1, 1, 1];
   this.light_pos = [0, 0, 0, 1]; // eye space position
+
+  this.clone = function() {
+    console.log("cloning");
+    var geo = new Geometry(this.isStatic, this.camera);
+    geo.textures = [...this.textures];
+    geo.vertexIndices = [...this.vertexIndices];
+    geo.uvIndices = [...this.uvIndices];
+    geo.normalIndices = [...this.normalIndices];
+    geo.vertices = [...this.vertices];
+    geo.uvs = [...this.uvs];
+    geo.normals = [...this.normals];
+    geo.xMin = this.xMin;
+    geo.xMax = this.xMax;
+    geo.yMin = this.yMin;
+    geo.yMax = this.yMax;
+    geo.zMin = this.zMin;
+    geo.zMax = this.zMax;
+    geo.vertexBuffer = this.vertexBuffer;
+    geo.normalBuffer = this.normalBuffer;
+    geo.textureBuffer = this.textureBuffer;
+    geo.indexBuffer = this.indexBuffer;
+    return geo;
+  }
 
   /**
    * Draws the geometry.
