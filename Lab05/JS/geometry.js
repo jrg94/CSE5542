@@ -6,9 +6,10 @@ function Scene() {
   this.camera = new Camera();
   this.bullets = [];
   this.currentBullet = 0;
+  this.loadedObjects = {};
 
   /**
-   * Fires a bullet. 
+   * Fires a bullet.
    */
   this.fire = function(parent) {
     var activeBullet = this.bullets[this.currentBullet % this.bullets.length];
@@ -81,8 +82,12 @@ function Scene() {
    * Creates an object but does not add it to the scene.
    */
   this.createObject = async function(file, isStatic, baseTexture) {
-    var jsonRequest = this.request(file).then(this.loadGeometry)
-    let json = await jsonRequest;
+    var json = this.loadedObjects[file];
+    if (!json) {
+      var jsonRequest = this.request(file).then(this.loadGeometry)
+      json = await jsonRequest;
+      this.loadedObjects[file] = json;
+    } 
     var myObject = this.handleLoadedGeometry(json, isStatic, baseTexture);
     return myObject;
   }
