@@ -7,6 +7,9 @@ function Scene() {
   this.bullets = [];
   this.currentBullet = 0;
 
+  /**
+   * Fires a bullet. 
+   */
   this.fire = function(parent) {
     var activeBullet = this.bullets[this.currentBullet % this.bullets.length];
     var index = this.objects.indexOf(activeBullet);
