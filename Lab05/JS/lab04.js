@@ -248,65 +248,71 @@ function level(parent) {
   }
 }
 
+function setProgress(progressBar, progress, target) {
+  progressBar.children[0].style.width = progress + "%";
+  progressBar.setAttribute("data-label", "Loading " + target + "...");
+}
+
 /**
  * A scene generation function.
  */
 async function generateScene(progressBar) {
   var scene = new Scene();
 
+  setProgress(progressBar, 0, "plane");
   plane = await scene.addObject("Objects/plane.json", false, "Textures/camo.png");
   plane
     .setLocation([0, 0, 0])
     .setRotation([degToRad(90), degToRad(180), 0])
     .setScale([1 / 500, 1 / 500, 1 / 500]);
-  progressBar.value = 10;
 
+  setProgress(progressBar, 10, "right environment wall");
   let rightWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_rt.png");
   rightWall
     .setLocation([2, 0, 0])
     .setRotation([0, degToRad(270), degToRad(180)])
     .setScale([4, 4, 4]);
-  progressBar.value = 20;
 
+  setProgress(progressBar, 20, "left environment wall");
   let leftWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_lf.png");
   leftWall
     .setLocation([-2, 0, 0])
     .setRotation([0, degToRad(-270), degToRad(180)])
     .setScale([4, 4, 4]);
-  progressBar.value = 30;
 
+  setProgress(progressBar, 30, "top environment wall");
   let topWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_up.png");
   topWall
     .setLocation([0, 2, 0])
     .setRotation([degToRad(-270), 0, 0])
     .setScale([4, 4, 4]);
-  progressBar.value = 40;
 
+  setProgress(progressBar, 40, "bottom environment wall");
   let bottomWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_dn.png");
   bottomWall
     .setLocation([0, -2, 0])
     .setRotation([degToRad(270), 0, 0])
     .setScale([4, 4, 4]);
-  progressBar.value = 50;
 
+  setProgress(progressBar, 50, "front environment wall");
   let frontWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_ft.png");
   frontWall
     .setLocation([0, 0, -2])
     .setRotation([0, 0, degToRad(180)])
     .setScale([4, 4, 4]);
-  progressBar.value = 60;
 
+  setProgress(progressBar, 60, "back environment wall");
   let backWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_bk.png");
   backWall
     .setLocation([0, 0, 2])
     .setRotation([0, degToRad(180), degToRad(180)])
     .setScale([4, 4, 4]);
-  progressBar.value = 70;
 
+  setProgress(progressBar, 70, "projectiles");
   await scene.populateBullets("Objects/bullet.json", "Textures/fire.png");
-  progressBar.value = 85;
+  setProgress(progressBar, 85, "camera");
   scene.setCamera(plane);
-  progressBar.value = 100;
+  setProgress(progressBar, 100, "scene");
 
   return scene;
 }

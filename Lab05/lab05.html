@@ -7,6 +7,8 @@
   <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
 
+  <link rel="stylesheet" href="CSS/style.css">
+
   <script type="text/javascript" src="JS/geometry.js"></script>
   <script type="text/javascript" src="JS/glMatrix-0.9.5.min.js"></script>
   <script type="text/javascript" src="JS/shader_setup.js"></script>
@@ -14,7 +16,9 @@
   <script type="text/javascript" src="JS/shaders.js"></script>
 
 <body onload="webGLStart();">
-  <progress id="prog" value="0" max="100"></progress>
+  <div id="prog" class="progress" data-label="0% Complete">
+    <span class="value" style="width:0%;"></span>
+  </div>
   <canvas id="code13-canvas" style="border:none;" width="700" height="700"></canvas>
 
   <h2> Controls: </h2>
