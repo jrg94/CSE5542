@@ -144,7 +144,9 @@ function Scene() {
         ["Textures/morning_ft.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Z],
         ["Textures/morning_bk.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Z]
       ]
-      await child.initTexture(imageMap, true, this.loadedImages);
+      if (!isStatic) {
+        await child.initTexture(imageMap, true, this.loadedImages);
+      }
       child.initBuffers(geometryData.meshes[i]);
       geometry.children.push(child);
     }
@@ -405,7 +407,9 @@ function Geometry(isStatic, camera) {
    */
   this.setTextures = function() {
     this.setTexture(0, this.textures[0], gl.TEXTURE_2D, shaderProgram.textureUniform);
-    this.setTexture(1, this.textures[1], gl.TEXTURE_CUBE_MAP, shaderProgram.cube_map_textureUniform);
+    if (!isStatic) {
+      this.setTexture(1, this.textures[1], gl.TEXTURE_CUBE_MAP, shaderProgram.cube_map_textureUniform);
+    }
   }
 
   /**
