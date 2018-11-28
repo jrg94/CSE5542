@@ -248,11 +248,17 @@ function level(parent) {
   }
 }
 
+/**
+ * A function for controlling the progress bar.
+ */
 function setProgress(progressBar, progress, target) {
   progressBar.children[0].style.width = progress + "%";
   progressBar.setAttribute("data-label", "Loading " + target + "...");
 }
 
+/**
+ * An image loading function.
+ */
 function loadImage(url) {
   var promise = new Promise((resolve, reject) => {
     let img = new Image();
@@ -269,10 +275,11 @@ function loadImage(url) {
 /**
  * A helper method for preloading images.
  */
-async function loadImageProgressWrapper(urls) {
+async function loadImageProgressWrapper(urls, progressBar) {
   var images = {};
   for (var i = 0; i < urls.length; i++) {
-    setProgress(100 / i, urls[i]);
+    var progress = 100 - 100 / (i + 1);
+    setProgress(progressBar, progress, urls[i]);
     let image = await loadImage(urls[i]);
     images[urls[i]] = image;
   }
@@ -284,13 +291,19 @@ async function loadImageProgressWrapper(urls) {
  */
 async function generateScene(progressBar) {
   var scene = new Scene();
+
   var textureImages = [
     "Textures/camo.png",
     "Textures/fire.png",
-    "Textures/morning_rt.png"
+    "Textures/morning_rt.png",
+    "Textures/morning_lf.png",
+    "Textures/morning_up.png",
+    "Textures/morning_dn.png",
+    "Textures/morning_ft.png",
+    "Textures/morning_bk.png"
   ]
 
-  let images = await loadImageProgressWrapper(textureImages);
+  scene.loadedImages = await loadImageProgressWrapper(textureImages, progressBar);
 
   setProgress(progressBar, 0, "plane");
   plane = await scene.addObject("Objects/plane.json", false, "Textures/camo.png");

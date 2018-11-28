@@ -7,6 +7,7 @@ function Scene() {
   this.bullets = [];
   this.currentBullet = 0;
   this.loadedObjects = {};
+  this.loadedImages = {};
 
   /**
    * Fires a bullet.
@@ -133,7 +134,7 @@ function Scene() {
     var geometry = new Parent();
     for (var i = 0; i < geometryData.meshes.length; i++) {
       var child = new Geometry(isStatic, this.camera);
-      await child.initTexture(baseTexture, false);
+      await child.initTexture(baseTexture, false, this.loadedImages);
       var imageMap = [
         ["Textures/morning_rt.png", gl.TEXTURE_CUBE_MAP_POSITIVE_X],
         ["Textures/morning_lf.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_X],
@@ -142,7 +143,7 @@ function Scene() {
         ["Textures/morning_ft.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Z],
         ["Textures/morning_bk.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Z]
       ]
-      await child.initTexture(imageMap, true);
+      await child.initTexture(imageMap, true, this.loadedImages);
       child.initBuffers(geometryData.meshes[i]);
       geometry.children.push(child);
     }
@@ -558,23 +559,21 @@ function Geometry(isStatic, camera) {
    * @param {Image} image an image url
    * @param {boolean} isCube a boolean to determine if the texture is a cube map
    */
-  this.initTexture = async function(image, isCube) {
+  this.initTexture = async function(image, isCube, loadedImages) {
     var texture = gl.createTexture();
     if (isCube) {
       this.bindEmptyTexture(gl.TEXTURE_CUBE_MAP, texture, image);
       for (var i = 0; i < image.length; i++) {
-        let loadedImage = await this.load(image[i][0], image[i][1], texture);
+        let loadedImage = loadedImages[image[i][0]];
+        loadedImage.target = image[i][1];
+        loadedImage.texture = texture;
         this.setCubeMap(loadedImage);
       }
       this.textures.push(texture);
     } else {
       this.bindEmptyTexture(gl.TEXTURE_2D, texture);
-      texture.image = new Image();
-      texture.image.crossOrigin = "anonymous";
-      texture.image.onload = function() {
-        this.handleTextureLoaded(texture);
-      }.bind(this);
-      texture.image.src = image;
+      texture.image = loadedImages[image];
+      this.handleTextureLoaded(texture);
       this.textures.push(texture);
     }
     return texture;
@@ -636,28 +635,6 @@ function Geometry(isStatic, camera) {
         pixel
       );
     }
-  }
-
-  /**
-   * A helper method which loads Cube Map textures
-   *
-   * @param {string} url a path to a texture
-   * @param {number} texture face enum (i.e. gl.TEXTURE_CUBE_MAP_POSITIVE_X)
-   * @param {texture} texture a GL texture object
-   */
-  this.load = function(url, target, texture) {
-    var promise = new Promise((resolve, reject) => {
-      let img = new Image();
-      img.addEventListener('load', e => resolve(img));
-      img.addEventListener('error', () => {
-        reject(new Error(`Failed to load image's URL: ${url}`));
-      });
-      img.crossOrigin = "anonymous";
-      img.src = url;
-      img.target = target;
-      img.texture = texture;
-    });
-    return promise;
   }
 
   /**
