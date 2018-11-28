@@ -331,12 +331,6 @@ function Geometry(isStatic, camera) {
   this.vertices = [];
   this.uvs = [];
   this.normals = [];
-  this.xMin;
-  this.xMax;
-  this.yMin;
-  this.yMax;
-  this.zMin;
-  this.zMax;
   this.vertexBuffer;
   this.normalBuffer;
   this.textureBuffer;
@@ -556,8 +550,6 @@ function Geometry(isStatic, camera) {
     this.initArrayBuffer(this.textureBuffer, this.uvs, 2);
     this.indexBuffer = gl.createBuffer();
     this.initElementArrayBuffer(this.indexBuffer, this.vertexIndices, 1);
-
-    this.find_range(this.vertices);
   }
 
   /**
@@ -679,38 +671,5 @@ function Geometry(isStatic, camera) {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.bindTexture(gl.TEXTURE_2D, null);
-  }
-
-  /**
-   * Determines the range of the model.
-   *
-   * @param {!Array[number]} positions a list of positions in x, y, z format
-   */
-  this.find_range = function(positions) {
-    this.xMin = this.xMax = positions[0];
-    this.yMin = this.yMax = positions[1];
-    this.zMin = this.zMax = positions[2];
-    for (i = 0; i < positions.length / 3; i++) {
-      if (positions[i * 3] < this.xMin) {
-        this.xMin = positions[i * 3];
-      }
-      if (positions[i * 3] > this.xMax) {
-        this.xMax = positions[i * 3];
-      }
-
-      if (positions[i * 3 + 1] < this.yMin) {
-        this.yMin = positions[i * 3 + 1];
-      }
-      if (positions[i * 3 + 1] > this.yMax) {
-        this.yMax = positions[i * 3 + 1];
-      }
-
-      if (positions[i * 3 + 2] < this.zMin) {
-        this.zMin = positions[i * 3 + 2];
-      }
-      if (positions[i * 3 + 2] > this.zMax) {
-        this.zMax = positions[i * 3 + 2];
-      }
-    }
   }
 }
