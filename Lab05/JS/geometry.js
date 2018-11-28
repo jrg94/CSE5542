@@ -6,9 +6,11 @@ function Scene() {
   this.camera = new Camera();
   this.bullets = [];
   this.currentBullet = 0;
+  this.loadedObjects = {};
+  this.loadedImages = {};
 
   /**
-   * Fires a bullet. 
+   * Fires a bullet.
    */
   this.fire = function(parent) {
     var activeBullet = this.bullets[this.currentBullet % this.bullets.length];
@@ -81,8 +83,12 @@ function Scene() {
    * Creates an object but does not add it to the scene.
    */
   this.createObject = async function(file, isStatic, baseTexture) {
-    var jsonRequest = this.request(file).then(this.loadGeometry)
-    let json = await jsonRequest;
+    var json = this.loadedObjects[file];
+    if (!json) {
+      var jsonRequest = this.request(file).then(this.loadGeometry)
+      json = await jsonRequest;
+      this.loadedObjects[file] = json;
+    }
     var myObject = this.handleLoadedGeometry(json, isStatic, baseTexture);
     return myObject;
   }
@@ -98,6 +104,7 @@ function Scene() {
    * Makes a request for a JSON file.
    */
   this.request = function(file) {
+    console.log(`Loading ${file}`);
     var promise = new Promise (function (resolve, reject) {
       var request = new XMLHttpRequest();
       request.onreadystatechange =
@@ -124,11 +131,11 @@ function Scene() {
    * @param baseTexture the baseTexture of the object
    * @param geometry the geometry object that holds all this data
    */
-  this.handleLoadedGeometry = function(geometryData, isStatic, baseTexture) {
+  this.handleLoadedGeometry = async function(geometryData, isStatic, baseTexture) {
     var geometry = new Parent();
     for (var i = 0; i < geometryData.meshes.length; i++) {
       var child = new Geometry(isStatic, this.camera);
-      child.initTexture(baseTexture, false);
+      await child.initTexture(baseTexture, false, this.loadedImages);
       var imageMap = [
         ["Textures/morning_rt.png", gl.TEXTURE_CUBE_MAP_POSITIVE_X],
         ["Textures/morning_lf.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_X],
@@ -137,7 +144,9 @@ function Scene() {
         ["Textures/morning_ft.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Z],
         ["Textures/morning_bk.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Z]
       ]
-      child.initTexture(imageMap, true);
+      if (!isStatic) {
+        await child.initTexture(imageMap, true, this.loadedImages);
+      }
       child.initBuffers(geometryData.meshes[i]);
       geometry.children.push(child);
     }
@@ -326,12 +335,6 @@ function Geometry(isStatic, camera) {
   this.vertices = [];
   this.uvs = [];
   this.normals = [];
-  this.xMin;
-  this.xMax;
-  this.yMin;
-  this.yMax;
-  this.zMin;
-  this.zMax;
   this.vertexBuffer;
   this.normalBuffer;
   this.textureBuffer;
@@ -404,7 +407,9 @@ function Geometry(isStatic, camera) {
    */
   this.setTextures = function() {
     this.setTexture(0, this.textures[0], gl.TEXTURE_2D, shaderProgram.textureUniform);
-    this.setTexture(1, this.textures[1], gl.TEXTURE_CUBE_MAP, shaderProgram.cube_map_textureUniform);
+    if (!isStatic) {
+      this.setTexture(1, this.textures[1], gl.TEXTURE_CUBE_MAP, shaderProgram.cube_map_textureUniform);
+    }
   }
 
   /**
@@ -551,8 +556,6 @@ function Geometry(isStatic, camera) {
     this.initArrayBuffer(this.textureBuffer, this.uvs, 2);
     this.indexBuffer = gl.createBuffer();
     this.initElementArrayBuffer(this.indexBuffer, this.vertexIndices, 1);
-
-    this.find_range(this.vertices);
   }
 
   /**
@@ -561,25 +564,31 @@ function Geometry(isStatic, camera) {
    * @param {Image} image an image url
    * @param {boolean} isCube a boolean to determine if the texture is a cube map
    */
-  this.initTexture = function(image, isCube) {
+  this.initTexture = async function(image, isCube, loadedImages) {
     var texture = gl.createTexture();
     if (isCube) {
       this.bindEmptyTexture(gl.TEXTURE_CUBE_MAP, texture, image);
       for (var i = 0; i < image.length; i++) {
-        this.load(image[i][0], image[i][1], texture);
+        let loadedImage = loadedImages[image[i][0]];
+        loadedImage.target = image[i][1];
+        loadedImage.texture = texture;
+        this.setCubeMap(loadedImage);
       }
       this.textures.push(texture);
     } else {
       this.bindEmptyTexture(gl.TEXTURE_2D, texture);
-      texture.image = new Image();
-      texture.image.src = image;
-      texture.image.crossOrigin = "anonymous";
-      texture.image.onload = function() {
-        this.handleTextureLoaded(texture);
-      }.bind(this);
+      texture.image = loadedImages[image];
+      this.handleTextureLoaded(texture);
       this.textures.push(texture);
     }
     return texture;
+  }
+
+  this.setCubeMap = function (image) {
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP, image.texture);
+    gl.texImage2D(image.target, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
   }
 
   /**
@@ -634,27 +643,6 @@ function Geometry(isStatic, camera) {
   }
 
   /**
-   * A helper method which loads Cube Map textures
-   *
-   * @param {string} url a path to a texture
-   * @param {number} texture face enum (i.e. gl.TEXTURE_CUBE_MAP_POSITIVE_X)
-   * @param {texture} texture a GL texture object
-   */
-  this.load = function(url, target, texture) {
-    var img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = function(texture, target, image) {
-      return function() {
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
-        gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
-        gl.texImage2D(target, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-        gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
-      }
-    }(texture, target, img);
-    img.src = url;
-  }
-
-  /**
    * Handles loaded 2D texture.
    *
    * @param {Texture} texture a GL texture object
@@ -665,38 +653,5 @@ function Geometry(isStatic, camera) {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.bindTexture(gl.TEXTURE_2D, null);
-  }
-
-  /**
-   * Determines the range of the model.
-   *
-   * @param {!Array[number]} positions a list of positions in x, y, z format
-   */
-  this.find_range = function(positions) {
-    this.xMin = this.xMax = positions[0];
-    this.yMin = this.yMax = positions[1];
-    this.zMin = this.zMax = positions[2];
-    for (i = 0; i < positions.length / 3; i++) {
-      if (positions[i * 3] < this.xMin) {
-        this.xMin = positions[i * 3];
-      }
-      if (positions[i * 3] > this.xMax) {
-        this.xMax = positions[i * 3];
-      }
-
-      if (positions[i * 3 + 1] < this.yMin) {
-        this.yMin = positions[i * 3 + 1];
-      }
-      if (positions[i * 3 + 1] > this.yMax) {
-        this.yMax = positions[i * 3 + 1];
-      }
-
-      if (positions[i * 3 + 2] < this.zMin) {
-        this.zMin = positions[i * 3 + 2];
-      }
-      if (positions[i * 3 + 2] > this.zMax) {
-        this.zMax = positions[i * 3 + 2];
-      }
-    }
   }
 }

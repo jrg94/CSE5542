@@ -151,6 +151,7 @@ function onDocumentMouseOut(event) {
  */
 async function webGLStart() {
   var canvas = document.getElementById("code13-canvas");
+  var progressBar = document.getElementById("prog");
   initGL(canvas);
   initShaders();
 
@@ -190,7 +191,8 @@ async function webGLStart() {
   document.addEventListener('keydown', onKeyDown, false);
   document.addEventListener('keyup', onKeyUp, false);
 
-  scene = await generateScene();
+  scene = await generateScene(progressBar);
+  progressBar.parentNode.removeChild(progressBar);
   scene.initialize();
   executeCurrentKeys();
   scheduleDraw(scene);
@@ -247,55 +249,117 @@ function level(parent) {
 }
 
 /**
+ * A function for controlling the progress bar.
+ */
+function setProgress(progressBar, progress, target) {
+  progressBar.children[0].style.width = progress + "%";
+  progressBar.setAttribute("data-label", "Loading " + target + "...");
+}
+
+/**
+ * An image loading function.
+ */
+function loadImage(url) {
+  console.log(`Loading ${url}`);
+  var promise = new Promise((resolve, reject) => {
+    let img = new Image();
+    img.addEventListener('load', e => resolve(img));
+    img.addEventListener('error', () => {
+      reject(new Error(`Failed to load image's URL: ${url}`));
+    });
+    img.crossOrigin = "anonymous";
+    img.src = url;
+  });
+  return promise;
+}
+
+/**
+ * A helper method for preloading images.
+ */
+async function loadImageProgressWrapper(urls, progressBar) {
+  var images = {};
+  for (var i = 0; i < urls.length; i++) {
+    var progress = 100 - 100 / (i + 1);
+    setProgress(progressBar, progress, urls[i]);
+    let image = await loadImage(urls[i]);
+    images[urls[i]] = image;
+  }
+  return images;
+}
+
+/**
  * A scene generation function.
  */
-async function generateScene() {
+async function generateScene(progressBar) {
   var scene = new Scene();
 
+  var textureImages = [
+    "Textures/camo.png",
+    "Textures/fire.png",
+    "Textures/morning_rt.png",
+    "Textures/morning_lf.png",
+    "Textures/morning_up.png",
+    "Textures/morning_dn.png",
+    "Textures/morning_ft.png",
+    "Textures/morning_bk.png"
+  ]
+
+  scene.loadedImages = await loadImageProgressWrapper(textureImages, progressBar);
+
+  setProgress(progressBar, 0, "plane");
   plane = await scene.addObject("Objects/plane.json", false, "Textures/camo.png");
   plane
     .setLocation([0, 0, 0])
     .setRotation([degToRad(90), degToRad(180), 0])
     .setScale([1 / 500, 1 / 500, 1 / 500]);
 
+  setProgress(progressBar, 10, "right environment wall");
   let rightWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_rt.png");
   rightWall
     .setLocation([2, 0, 0])
     .setRotation([0, degToRad(270), degToRad(180)])
     .setScale([4, 4, 4]);
 
+  setProgress(progressBar, 20, "left environment wall");
   let leftWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_lf.png");
   leftWall
     .setLocation([-2, 0, 0])
     .setRotation([0, degToRad(-270), degToRad(180)])
     .setScale([4, 4, 4]);
 
+  setProgress(progressBar, 30, "top environment wall");
   let topWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_up.png");
   topWall
     .setLocation([0, 2, 0])
     .setRotation([degToRad(-270), 0, 0])
     .setScale([4, 4, 4]);
 
+  setProgress(progressBar, 40, "bottom environment wall");
   let bottomWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_dn.png");
   bottomWall
     .setLocation([0, -2, 0])
     .setRotation([degToRad(270), 0, 0])
     .setScale([4, 4, 4]);
 
+  setProgress(progressBar, 50, "front environment wall");
   let frontWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_ft.png");
   frontWall
     .setLocation([0, 0, -2])
     .setRotation([0, 0, degToRad(180)])
     .setScale([4, 4, 4]);
 
+  setProgress(progressBar, 60, "back environment wall");
   let backWall = await scene.addObject("Objects/quad.json", true, "Textures/morning_bk.png");
   backWall
     .setLocation([0, 0, 2])
     .setRotation([0, degToRad(180), degToRad(180)])
     .setScale([4, 4, 4]);
 
+  setProgress(progressBar, 70, "projectiles");
   await scene.populateBullets("Objects/bullet.json", "Textures/fire.png");
+  setProgress(progressBar, 85, "camera");
   scene.setCamera(plane);
+  setProgress(progressBar, 100, "scene");
 
   return scene;
 }
