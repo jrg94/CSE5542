@@ -87,7 +87,7 @@ function Scene() {
       var jsonRequest = this.request(file).then(this.loadGeometry)
       json = await jsonRequest;
       this.loadedObjects[file] = json;
-    } 
+    }
     var myObject = this.handleLoadedGeometry(json, isStatic, baseTexture);
     return myObject;
   }
@@ -571,20 +571,29 @@ function Geometry(isStatic, camera) {
     if (isCube) {
       this.bindEmptyTexture(gl.TEXTURE_CUBE_MAP, texture, image);
       for (var i = 0; i < image.length; i++) {
-        this.load(image[i][0], image[i][1], texture);
+        this.load(image[i][0], image[i][1], texture)
+          .then(this.setCubeMap)
+          .catch(error => console.error(error));
       }
       this.textures.push(texture);
     } else {
       this.bindEmptyTexture(gl.TEXTURE_2D, texture);
       texture.image = new Image();
-      texture.image.src = image;
       texture.image.crossOrigin = "anonymous";
       texture.image.onload = function() {
         this.handleTextureLoaded(texture);
       }.bind(this);
+      texture.image.src = image;
       this.textures.push(texture);
     }
     return texture;
+  }
+
+  this.setCubeMap = function (image) {
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP, image.texture);
+    gl.texImage2D(image.target, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+    gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
   }
 
   /**
@@ -646,17 +655,18 @@ function Geometry(isStatic, camera) {
    * @param {texture} texture a GL texture object
    */
   this.load = function(url, target, texture) {
-    var img = new Image();
-    img.crossOrigin = "anonymous";
-    img.onload = function(texture, target, image) {
-      return function() {
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
-        gl.bindTexture(gl.TEXTURE_CUBE_MAP, texture);
-        gl.texImage2D(target, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
-        gl.bindTexture(gl.TEXTURE_CUBE_MAP, null);
-      }
-    }(texture, target, img);
-    img.src = url;
+    var promise = new Promise((resolve, reject) => {
+      let img = new Image();
+      img.addEventListener('load', e => resolve(img));
+      img.addEventListener('error', () => {
+        reject(new Error(`Failed to load image's URL: ${url}`));
+      });
+      img.crossOrigin = "anonymous";
+      img.src = url;
+      img.target = target;
+      img.texture = texture;
+    });
+    return promise;
   }
 
   /**
