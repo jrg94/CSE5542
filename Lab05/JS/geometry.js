@@ -104,6 +104,7 @@ function Scene() {
    * Makes a request for a JSON file.
    */
   this.request = function(file) {
+    console.log(`Loading ${file}`);
     var promise = new Promise (function (resolve, reject) {
       var request = new XMLHttpRequest();
       request.onreadystatechange =

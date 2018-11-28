@@ -260,6 +260,7 @@ function setProgress(progressBar, progress, target) {
  * An image loading function.
  */
 function loadImage(url) {
+  console.log(`Loading ${url}`);
   var promise = new Promise((resolve, reject) => {
     let img = new Image();
     img.addEventListener('load', e => resolve(img));
