@@ -129,11 +129,11 @@ function Scene() {
    * @param baseTexture the baseTexture of the object
    * @param geometry the geometry object that holds all this data
    */
-  this.handleLoadedGeometry = function(geometryData, isStatic, baseTexture) {
+  this.handleLoadedGeometry = async function(geometryData, isStatic, baseTexture) {
     var geometry = new Parent();
     for (var i = 0; i < geometryData.meshes.length; i++) {
       var child = new Geometry(isStatic, this.camera);
-      child.initTexture(baseTexture, false);
+      await child.initTexture(baseTexture, false);
       var imageMap = [
         ["Textures/morning_rt.png", gl.TEXTURE_CUBE_MAP_POSITIVE_X],
         ["Textures/morning_lf.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_X],
@@ -142,7 +142,7 @@ function Scene() {
         ["Textures/morning_ft.png", gl.TEXTURE_CUBE_MAP_NEGATIVE_Z],
         ["Textures/morning_bk.png", gl.TEXTURE_CUBE_MAP_POSITIVE_Z]
       ]
-      child.initTexture(imageMap, true);
+      await child.initTexture(imageMap, true);
       child.initBuffers(geometryData.meshes[i]);
       geometry.children.push(child);
     }
@@ -566,14 +566,13 @@ function Geometry(isStatic, camera) {
    * @param {Image} image an image url
    * @param {boolean} isCube a boolean to determine if the texture is a cube map
    */
-  this.initTexture = function(image, isCube) {
+  this.initTexture = async function(image, isCube) {
     var texture = gl.createTexture();
     if (isCube) {
       this.bindEmptyTexture(gl.TEXTURE_CUBE_MAP, texture, image);
       for (var i = 0; i < image.length; i++) {
-        this.load(image[i][0], image[i][1], texture)
-          .then(this.setCubeMap)
-          .catch(error => console.error(error));
+        let loadedImage = await this.load(image[i][0], image[i][1], texture);
+        this.setCubeMap(loadedImage);
       }
       this.textures.push(texture);
     } else {
