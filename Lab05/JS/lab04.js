@@ -253,11 +253,44 @@ function setProgress(progressBar, progress, target) {
   progressBar.setAttribute("data-label", "Loading " + target + "...");
 }
 
+function loadImage(url) {
+  var promise = new Promise((resolve, reject) => {
+    let img = new Image();
+    img.addEventListener('load', e => resolve(img));
+    img.addEventListener('error', () => {
+      reject(new Error(`Failed to load image's URL: ${url}`));
+    });
+    img.crossOrigin = "anonymous";
+    img.src = url;
+  });
+  return promise;
+}
+
+/**
+ * A helper method for preloading images.
+ */
+async function loadImageProgressWrapper(urls) {
+  var images = {};
+  for (var i = 0; i < urls.length; i++) {
+    setProgress(100 / i, urls[i]);
+    let image = await loadImage(urls[i]);
+    images[urls[i]] = image;
+  }
+  return images;
+}
+
 /**
  * A scene generation function.
  */
 async function generateScene(progressBar) {
   var scene = new Scene();
+  var textureImages = [
+    "Textures/camo.png",
+    "Textures/fire.png",
+    "Textures/morning_rt.png"
+  ]
+
+  let images = await loadImageProgressWrapper(textureImages);
 
   setProgress(progressBar, 0, "plane");
   plane = await scene.addObject("Objects/plane.json", false, "Textures/camo.png");
