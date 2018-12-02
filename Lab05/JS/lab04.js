@@ -357,6 +357,7 @@ async function generateScene(progressBar) {
     .setRotation([0, degToRad(180), degToRad(180)])
     .setScale([4, 4, 4]);
 
+  setProgress(progressBar, 70, "boat");
   let boat = await scene.addObject("Objects/boat.json", true, "Textures/wood.png");
   boat
     .setLocation([0, -2, -1.5])
@@ -364,9 +365,9 @@ async function generateScene(progressBar) {
     .setRotation([0, degToRad(-90), 0])
     .setAnimation(boatAnimation);
 
-  setProgress(progressBar, 70, "projectiles");
+  setProgress(progressBar, 80, "projectiles");
   await scene.populateBullets("Objects/bullet.json", "Textures/fire.png");
-  setProgress(progressBar, 85, "camera");
+  setProgress(progressBar, 90, "camera");
   scene.setCamera(plane);
   setProgress(progressBar, 100, "scene");
 
