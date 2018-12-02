@@ -78,6 +78,7 @@ function onKeyDown(event) {
   keys.set(event.keyCode, true);
   switch(event.keyCode) {
     case 32: // space
+    case 83: // s
       keys.set(event.keyCode, false);
       scene.fire(plane);
       break;
