@@ -297,6 +297,7 @@ async function generateScene(progressBar) {
   var textureImages = [
     "Textures/camo.png",
     "Textures/fire.png",
+    "Textures/wood.png",
     "Textures/morning_rt.png",
     "Textures/morning_lf.png",
     "Textures/morning_up.png",
@@ -356,10 +357,11 @@ async function generateScene(progressBar) {
     .setRotation([0, degToRad(180), degToRad(180)])
     .setScale([4, 4, 4]);
 
-  let boat = await scene.addObject("Objects/boat.json", true, "Textures/camo.png");
+  let boat = await scene.addObject("Objects/boat.json", true, "Textures/wood.png");
   boat
     .setLocation([0, -2, -1.5])
-    .setScale([1/9, 1/9, 1/9]);
+    .setScale([1/9, 1/9, 1/9])
+    .setAnimation(boatAnimation);
 
   setProgress(progressBar, 70, "projectiles");
   await scene.populateBullets("Objects/bullet.json", "Textures/fire.png");
@@ -368,6 +370,30 @@ async function generateScene(progressBar) {
   setProgress(progressBar, 100, "scene");
 
   return scene;
+}
+
+function boatAnimation(object) {
+  boatMove(object, .005);
+}
+
+function boatMove(object, dir) {
+  var id = window.setInterval(function() {
+    if (dir > 0) {
+      if (object.location[0] < 1) {
+        object.moveObject(dir, 0, 0);
+      } else {
+        boatMove(object, -.005);
+        window.clearInterval(id);
+      }
+    } else {
+      if (object.location[0] > -1) {
+        object.moveObject(dir, 0, 0);
+      } else {
+        boatMove(object, .005);
+        window.clearInterval(id);
+      }
+    }
+  }, 50);
 }
 
 /**
