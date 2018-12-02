@@ -28,6 +28,19 @@ The solution should render as follows:
 
 ![Sample Scene][1]
 
+## Features
+
+This solution features several changes to Lab 04. In addition to texture mapping
+and environment mapping, this project has the following features:
+
+1. Camera locks onto plane and follows plane wherever it geos
+2. Plane strafes left and right
+  - Strafe includes a rotation to improve realism
+  - Plane always rotates to level when not strafing
+3. Plane fires projectiles
+  - Projectiles have random rotation associated with them
+  - Projectiles are cached (only 10 at a time) and recycled when they leave the scene
+
 ## References
 
 Source credit goes to Dr. Han-Wei Shen who provided the template code via their
