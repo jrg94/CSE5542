@@ -40,6 +40,12 @@ and environment mapping, this project has the following features:
 3. Plane fires projectiles
   - Projectiles have random rotation associated with them
   - Projectiles are cached (only 10 at a time) and recycled when they leave the scene
+4. All assets are loaded only once
+  - Queries are never made more than once as all assets are saved in the scene
+  - Added a loading bar to demonstrate querying of assets
+
+All-in-all there were a lot of additions to this scene that should cover
+all the bases for this project.
 
 ## References
 
