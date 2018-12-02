@@ -361,6 +361,7 @@ async function generateScene(progressBar) {
   boat
     .setLocation([0, -2, -1.5])
     .setScale([1/9, 1/9, 1/9])
+    .setRotation([0, degToRad(-90), 0])
     .setAnimation(boatAnimation);
 
   setProgress(progressBar, 70, "projectiles");
@@ -372,24 +373,53 @@ async function generateScene(progressBar) {
   return scene;
 }
 
+/**
+ * Animates the boat in the scene.
+ */
 function boatAnimation(object) {
   boatMove(object, .005);
 }
 
+/**
+ * Moves the boat in some direction
+ */
 function boatMove(object, dir) {
   var id = window.setInterval(function() {
     if (dir > 0) {
       if (object.location[0] < 1) {
         object.moveObject(dir, 0, 0);
       } else {
-        boatMove(object, -.005);
+        boatRotate(object, -.005)
         window.clearInterval(id);
       }
     } else {
       if (object.location[0] > -1) {
         object.moveObject(dir, 0, 0);
       } else {
-        boatMove(object, .005);
+        boatRotate(object, .005);
+        window.clearInterval(id);
+      }
+    }
+  }, 50);
+}
+
+/**
+ * Rotates the boat in some direction
+ */
+function boatRotate(object, dir) {
+  var id = window.setInterval(function() {
+    if (dir < 0) {
+      if (object.rotation[1] < degToRad(90)) {
+        object.rotateObject(0, 5, 0);
+      } else {
+        boatMove(object, dir);
+        window.clearInterval(id);
+      }
+    } else {
+      if (object.rotation[1] > degToRad(-90)) {
+        object.rotateObject(0, -5, 0);
+      } else {
+        boatMove(object, dir);
         window.clearInterval(id);
       }
     }
