@@ -28,6 +28,27 @@ The solution should render as follows:
 
 ![Sample Scene][1]
 
+## Features
+
+This solution features several changes to Lab 04. In addition to texture mapping
+and environment mapping, this project has the following features:
+
+1. Camera locks onto plane and follows plane wherever it geos
+2. Plane strafes left and right
+  - Strafe includes a rotation to improve realism
+  - Plane always rotates to level when not strafing
+3. Plane fires projectiles
+  - Projectiles have random rotation associated with them
+  - Projectiles are cached (only 10 at a time) and recycled when they leave the scene
+4. All assets are loaded only once
+  - Queries are never made more than once as all assets are saved in the scene
+  - Added a loading bar to demonstrate querying of assets
+5. Added animated boat to the water
+  - Boat travels left and right with rotation when it reaches the furthest bounds
+
+All-in-all there were a lot of additions to this scene that should cover
+all the bases for this project.
+
 ## References
 
 Source credit goes to Dr. Han-Wei Shen who provided the template code via their
@@ -54,4 +75,4 @@ Solution is freely available under the MIT license.
 [4]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/code12.js
 [7]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/shaders_setup_5.js
 [8]: https://github.com/jrg94/CSE5542/blob/master/Lab05/shaders.js
-[9]: https://cdn.rawgit.com/jrg94/CSE5542/v5.1.0/Lab05/lab05.html
+[9]: https://cdn.rawgit.com/jrg94/CSE5542/v5.2.0/Lab05/lab05.html

@@ -78,6 +78,7 @@ function onKeyDown(event) {
   keys.set(event.keyCode, true);
   switch(event.keyCode) {
     case 32: // space
+    case 83: // s
       keys.set(event.keyCode, false);
       scene.fire(plane);
       break;
@@ -296,6 +297,7 @@ async function generateScene(progressBar) {
   var textureImages = [
     "Textures/camo.png",
     "Textures/fire.png",
+    "Textures/wood.png",
     "Textures/morning_rt.png",
     "Textures/morning_lf.png",
     "Textures/morning_up.png",
@@ -355,13 +357,74 @@ async function generateScene(progressBar) {
     .setRotation([0, degToRad(180), degToRad(180)])
     .setScale([4, 4, 4]);
 
-  setProgress(progressBar, 70, "projectiles");
+  setProgress(progressBar, 70, "boat");
+  let boat = await scene.addObject("Objects/boat.json", true, "Textures/wood.png");
+  boat
+    .setLocation([0, -2, -1.5])
+    .setScale([1/9, 1/9, 1/9])
+    .setRotation([0, degToRad(-90), 0])
+    .setAnimation(boatAnimation);
+
+  setProgress(progressBar, 80, "projectiles");
   await scene.populateBullets("Objects/bullet.json", "Textures/fire.png");
-  setProgress(progressBar, 85, "camera");
+  setProgress(progressBar, 90, "camera");
   scene.setCamera(plane);
   setProgress(progressBar, 100, "scene");
 
   return scene;
+}
+
+/**
+ * Animates the boat in the scene.
+ */
+function boatAnimation(object) {
+  boatMove(object, .005);
+}
+
+/**
+ * Moves the boat in some direction
+ */
+function boatMove(object, dir) {
+  var id = window.setInterval(function() {
+    if (dir > 0) {
+      if (object.location[0] < 1) {
+        object.moveObject(dir, 0, 0);
+      } else {
+        boatRotate(object, -.005)
+        window.clearInterval(id);
+      }
+    } else {
+      if (object.location[0] > -1) {
+        object.moveObject(dir, 0, 0);
+      } else {
+        boatRotate(object, .005);
+        window.clearInterval(id);
+      }
+    }
+  }, 50);
+}
+
+/**
+ * Rotates the boat in some direction
+ */
+function boatRotate(object, dir) {
+  var id = window.setInterval(function() {
+    if (dir < 0) {
+      if (object.rotation[1] < degToRad(90)) {
+        object.rotateObject(0, 5, 0);
+      } else {
+        boatMove(object, dir);
+        window.clearInterval(id);
+      }
+    } else {
+      if (object.rotation[1] > degToRad(-90)) {
+        object.rotateObject(0, -5, 0);
+      } else {
+        boatMove(object, dir);
+        window.clearInterval(id);
+      }
+    }
+  }, 50);
 }
 
 /**
