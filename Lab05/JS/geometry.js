@@ -335,8 +335,10 @@ function Geometry(isStatic, camera) {
   this.vertices = [];
   this.uvs = [];
   this.normals = [];
+  this.tangents = [];
   this.vertexBuffer;
   this.normalBuffer;
+  this.tangentBuffer;
   this.textureBuffer;
   this.indexBuffer;
   this.mMatrix = mat4.create(); // model matrix
@@ -548,11 +550,14 @@ function Geometry(isStatic, camera) {
     this.vertices = geometry.vertices;
     this.uvs = geometry.texturecoords[0];
     this.normals = geometry.normals;
+    this.tangents = geometry.tangents;
 
     this.vertexBuffer = gl.createBuffer(); // 0
     this.initArrayBuffer(this.vertexBuffer, this.vertices, 3);
     this.normalBuffer = gl.createBuffer(); // 1
     this.initArrayBuffer(this.normalBuffer, this.normals, 3);
+    this.tangentBuffer = gl.createBuffer();
+    this.initArrayBuffer(this.tangentBuffer, this.tangents, 3);
     this.textureBuffer = gl.createBuffer(); // 2
     this.initArrayBuffer(this.textureBuffer, this.uvs, 2);
     this.indexBuffer = gl.createBuffer();
