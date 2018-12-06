@@ -164,6 +164,9 @@ async function webGLStart() {
   shaderProgram.vertexNormalAttribute = gl.getAttribLocation(shaderProgram, "aVertexNormal");
   gl.enableVertexAttribArray(shaderProgram.vertexNormalAttribute);
 
+  shaderProgram.vertexTangentAttribute = gl.getAttribLocation(shaderProgram, "aVertexTangent");
+  gl.enableVertexAttribArray(shaderProgram.vertexTangentAttribute);
+
   shaderProgram.vertexTexCoordsAttribute = gl.getAttribLocation(shaderProgram, "aVertexTexCoords");
   gl.enableVertexAttribArray(shaderProgram.vertexTexCoordsAttribute);
 
@@ -184,6 +187,7 @@ async function webGLStart() {
   shaderProgram.light_specularUniform = gl.getUniformLocation(shaderProgram, "light_specular");
 
   shaderProgram.textureUniform = gl.getUniformLocation(shaderProgram, "myTexture");
+  shaderProgram.textureNormalUniform = gl.getUniformLocation(shaderProgram, "myNormal");
   shaderProgram.cube_map_textureUniform = gl.getUniformLocation(shaderProgram, "cubeMap");
   shaderProgram.use_textureUniform = gl.getUniformLocation(shaderProgram, "use_texture");
 
@@ -303,7 +307,9 @@ async function generateScene(progressBar) {
     "Textures/morning_up.png",
     "Textures/morning_dn.png",
     "Textures/morning_ft.png",
-    "Textures/morning_bk.png"
+    "Textures/morning_bk.png",
+    "Textures/camo_normal_map.png",
+    "Textures/fire_normal_map.png"
   ]
 
   scene.loadedImages = await loadImageProgressWrapper(textureImages, progressBar);
