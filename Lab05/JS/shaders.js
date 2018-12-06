@@ -116,7 +116,7 @@ var fragmentShaderSrc = `
        ref = vec3(uV2WMatrix * vec4(ref,0));   // convert to world space
        env_color = textureCube(cubeMap, ref);
        gl_FragColor = env_color;
-     } else {
+     } else { // Phong lighting
        vec3 normal = normalize(v_normal);
        vec3 lightDir = normalize(vec3(light_pos - v_pos));
        vec3 reflectDir = reflect(-lightDir, v_normal);

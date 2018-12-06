@@ -354,7 +354,7 @@ function Geometry(isStatic, camera) {
   this.light_ambient = [0, 0, 0, 1];
   this.light_diffuse = [.8, .8, .8, 1];
   this.light_specular = [1, 1, 1, 1];
-  this.light_pos = [0, 0, 0, 1]; // eye space position
+  this.light_pos = [0, 20, 20]; // eye space position
 
   /**
    * Draws the geometry.
@@ -489,6 +489,7 @@ function Geometry(isStatic, camera) {
     gl.uniform4f(shaderProgram.light_ambientUniform, this.light_ambient[0], this.light_ambient[1], this.light_ambient[2], 1.0);
     gl.uniform4f(shaderProgram.light_diffuseUniform, this.light_diffuse[0], this.light_diffuse[1], this.light_diffuse[2], 1.0);
     gl.uniform4f(shaderProgram.light_specularUniform, this.light_specular[0], this.light_specular[1], this.light_specular[2], 1.0);
+    gl.uniform4f(shaderProgram.light_posUniform, this.light_pos[0], this.light_pos[1], this.light_pos[2], 1.0);
   }
 
   /**
