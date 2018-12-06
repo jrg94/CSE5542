@@ -34,8 +34,9 @@ var vertexShaderSrc = `
 
   void main(void) {
 
+    //
+
     // transform light pos from local to eye space
-    // vec4 light_pos_in_eye = uVMatrix * uMMatrix * light_pos;
     vec4 light_pos_in_eye = light_pos;
 
     // transform normal from local to eye space: normal matrix is the inverse transpose of the modelview matrix
@@ -50,17 +51,18 @@ var vertexShaderSrc = `
     // eye vector V = e-p, where e is (0,0,0)
     vec3 eye_vector = normalize(-vec3(eye_pos));
 
+    // ambient light calculation
     vec4 ambient = ambient_coef * light_ambient;
     float ndotl = max(dot(v_normal, light_vector), 0.0);
 
+    // diffuse light calculation
     vec4 diffuse = diffuse_coef * light_diffuse* ndotl;
 
-    //      both lines below are okay. One is to use the reflect function the other is to compute by yourself
-    //      vec3 R= normalize(vec3(reflect(-light_vector, v_normal)));
+    // reflection vector calculation
     vec3 R = normalize(2.0 * ndotl *v_normal-light_vector);
     float rdotv = max(dot(R, eye_vector), 0.0);
 
-
+    // specular light calculation
     vec4 specular;
     if (ndotl > 0.0) {
       specular = specular_coef* light_specular*pow(rdotv, mat_shininess);
@@ -68,12 +70,11 @@ var vertexShaderSrc = `
       specular = vec4(0,0,0,1);
     }
 
-    vColor = ambient+diffuse+specular;
+    vColor = ambient + diffuse + specular;
 
     FtexCoord = aVertexTexCoords;
 
-    gl_Position = uPMatrix*uVMatrix*uMMatrix*vec4(aVertexPosition, 1.0);
-
+    gl_Position = uPMatrix * uVMatrix * uMMatrix * vec4(aVertexPosition, 1.0);
 }
 `;
 
@@ -116,14 +117,12 @@ var fragmentShaderSrc = `
     if ( use_texture == 1 ) {
       texcolor = texture2D(myTexture, FtexCoord);
       gl_FragColor = texcolor;
-      // gl_FragColor = vColor*texcolor;
     } else if (use_texture == 2) {
        view_vector = normalize(vec3(vec4(0,0,0,1)-eye_pos));
        ref = normalize(reflect(-view_vector, v_normal));  // in eye space
        ref = vec3(uV2WMatrix*vec4(ref,0));   // convert to world space
        env_color = textureCube(cubeMap, ref);
        gl_FragColor = env_color;
-       // gl_FragColor = vec4(ref, 1.0);
      } else {
        gl_FragColor = vColor;
      }
