@@ -125,19 +125,14 @@ var fragmentShaderSrc = `
   }
 
   void main(void) {
-
-    vec4 texcolor;
-    vec3 view_vector, ref;
-    vec4 env_color = vec4(1,0,0,1);
-
     if ( use_texture == 1 ) {
-      texcolor = texture2D(myTexture, FtexCoord);
+      vec4 texcolor = texture2D(myTexture, FtexCoord);
       gl_FragColor = texcolor;
     } else if (use_texture == 2) {
-       view_vector = normalize(vec3(vec4(0,0,0,1) - v_pos));
-       ref = normalize(reflect(-view_vector, v_normal));  // in eye space
+       vec3 view_vector = normalize(vec3(vec4(0,0,0,1) - v_pos));
+       vec3 ref = normalize(reflect(-view_vector, v_normal));  // in eye space
        ref = vec3(uV2WMatrix * vec4(ref,0));   // convert to world space
-       env_color = textureCube(cubeMap, ref);
+       vec4 env_color = textureCube(cubeMap, ref);
        gl_FragColor = env_color;
      } else { // Phong lighting
        vec3 normal = normalize(v_normal);
