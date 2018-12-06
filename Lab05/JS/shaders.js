@@ -54,17 +54,20 @@ var vertexShaderSrc = `
       v_tangent.z, binormal.z, v_normal.z
     );
 
-    // light direction calculation
-    vec3 LightDir = normalize(toObjectLocal * vec3(light_pos));
-
     // transform the vertex position to eye space
     eye_pos = uVMatrix*uMMatrix*vec4(aVertexPosition, 1.0);
 
+    // light direction calculation
+    vec3 light_vector = normalize(toObjectLocal * vec3(light_pos_in_eye - eye_pos));
+
+    // view direction calculation
+    vec3 eye_vector = toObjectLocal * vec3(normalize(-eye_pos));
+
     // light vector L = l-p
-    vec3 light_vector = normalize(vec3(light_pos_in_eye - eye_pos));
+    //vec3 light_vector = normalize(vec3(light_pos_in_eye - eye_pos));
 
     // eye vector V = e-p, where e is (0,0,0)
-    vec3 eye_vector = normalize(-vec3(eye_pos));
+    //vec3 eye_vector = normalize(-vec3(eye_pos));
 
     // ambient light calculation
     vec4 ambient = ambient_coef * light_ambient;
