@@ -164,6 +164,9 @@ async function webGLStart() {
   shaderProgram.vertexNormalAttribute = gl.getAttribLocation(shaderProgram, "aVertexNormal");
   gl.enableVertexAttribArray(shaderProgram.vertexNormalAttribute);
 
+  shaderProgram.vertexTangentAttribute = gl.getAttribLocation(shaderProgram, "aVertexTangent");
+  gl.enableVertexAttribArray(shaderProgram.vertexTangentAttribute);
+
   shaderProgram.vertexTexCoordsAttribute = gl.getAttribLocation(shaderProgram, "aVertexTexCoords");
   gl.enableVertexAttribArray(shaderProgram.vertexTexCoordsAttribute);
 
