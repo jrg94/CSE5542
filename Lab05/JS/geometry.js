@@ -457,6 +457,7 @@ function Geometry(isStatic, camera) {
   this.setVertexAttributes = function() {
     this.setVertexAttribute(this.vertexBuffer, shaderProgram.vertexPositionAttribute, this.vertexBuffer.itemSize);
     this.setVertexAttribute(this.normalBuffer, shaderProgram.vertexNormalAttribute, this.normalBuffer.itemSize);
+    this.setVertexAttribute(this.tangentBuffer, shaderProgram.vertexTangentAttribute, this.tangentBuffer.itemSize);
     this.setVertexAttribute(this.textureBuffer, shaderProgram.vertexTexCoordsAttribute, this.textureBuffer.itemSize);
   }
 
