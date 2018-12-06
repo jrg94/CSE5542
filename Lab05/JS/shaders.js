@@ -54,6 +54,9 @@ var vertexShaderSrc = `
       v_tangent.z, binormal.z, v_normal.z
     );
 
+    // light direction calculation
+    vec3 LightDir = normalize(toObjectLocal * vec3(light_pos));
+
     // transform the vertex position to eye space
     eye_pos = uVMatrix*uMMatrix*vec4(aVertexPosition, 1.0);
 
