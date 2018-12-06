@@ -26,6 +26,7 @@ var vertexShaderSrc = `
 
   uniform int use_texture;
   uniform sampler2D myTexture;
+  uniform sampler2D myNormal;
 
   varying vec4 v_pos;  //vertex position in eye space
   varying vec3 v_normal;  // vertex normal
@@ -96,6 +97,7 @@ var fragmentShaderSrc = `
   uniform int use_texture;
   uniform sampler2D myTexture;
   uniform samplerCube cubeMap;
+  uniform sampler2D myNormal;
 
   varying vec4 v_pos;
   varying vec3 v_normal;
@@ -133,7 +135,7 @@ var fragmentShaderSrc = `
       vec4 env_color = textureCube(cubeMap, ref);
       gl_FragColor = env_color;
     } else if (use_texture == 3) { // Bump map
-      vec3 normal = 2.0 * texture2D(myTexture, FtexCoord).rgb - 1.0;
+      vec3 normal = 2.0 * texture2D(myNormal, FtexCoord).rgb - 1.0;
       normal = normalize (normal);
       vec4 material = texture2D(myTexture, FtexCoord);
       gl_FragColor = phongShading(normal, light_pos, v_pos, material, v_light, v_view);

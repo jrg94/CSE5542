@@ -8,6 +8,7 @@ function Scene() {
   this.currentBullet = 0;
   this.loadedObjects = {};
   this.loadedImages = {};
+  this.normalMap = "Textures/camo_normal_map.png";
 
   /**
    * Fires a bullet.
@@ -146,6 +147,7 @@ function Scene() {
       ]
       if (!isStatic) {
         await child.initTexture(imageMap, true, this.loadedImages);
+        await child.initTexture(this.normalMap, false, this.loadedImages);
       }
       child.initBuffers(geometryData.meshes[i]);
       geometry.children.push(child);
@@ -350,11 +352,11 @@ function Geometry(isStatic, camera) {
   this.mat_ambient = [0, 0, 0, 1];
   this.mat_diffuse = [1, 1, 0, 1];
   this.mat_specular = [.9, .9, .9, 1];
-  this.mat_shine = [50];
-  this.light_ambient = [0, 0, 0, 1];
+  this.mat_shine = [10];
+  this.light_ambient = [.1, .1, .1, 1];
   this.light_diffuse = [.8, .8, .8, 1];
   this.light_specular = [1, 1, 1, 1];
-  this.light_pos = [0, 20, 20]; // eye space position
+  this.light_pos = [0, 1, 0]; // eye space position
 
   /**
    * Draws the geometry.
@@ -411,6 +413,7 @@ function Geometry(isStatic, camera) {
     this.setTexture(0, this.textures[0], gl.TEXTURE_2D, shaderProgram.textureUniform);
     if (!isStatic) {
       this.setTexture(1, this.textures[1], gl.TEXTURE_CUBE_MAP, shaderProgram.cube_map_textureUniform);
+      this.setTexture(2, this.textures[2], gl.TEXTURE_2D, shaderProgram.textureNormalUniform);
     }
   }
 
