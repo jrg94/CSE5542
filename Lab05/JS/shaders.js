@@ -5,6 +5,7 @@ var vertexShaderSrc = `
 
   attribute vec3 aVertexPosition;
   attribute vec3 aVertexNormal;
+  attribute vec3 aVertexTangent;
   attribute vec2 aVertexTexCoords;
 
   uniform mat4 uMMatrix;
@@ -34,13 +35,14 @@ var vertexShaderSrc = `
 
   void main(void) {
 
-    //
-
     // transform light pos from local to eye space
     vec4 light_pos_in_eye = light_pos;
 
     // transform normal from local to eye space: normal matrix is the inverse transpose of the modelview matrix
-    v_normal =normalize(vec3(uNMatrix*vec4(aVertexNormal,0.0)));
+    v_normal = normalize(vec3(uNMatrix*vec4(aVertexNormal, 0.0)));
+
+    // tangent vector calculation
+    vec4 tang = normalize(uNMatrix * vec4(aVertexTangent, 0.0));
 
     // transform the vertex position to eye space
     eye_pos = uVMatrix*uMMatrix*vec4(aVertexPosition, 1.0);
