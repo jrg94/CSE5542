@@ -103,10 +103,8 @@ var fragmentShaderSrc = `
   varying vec3 v_view;
   varying highp vec2 FtexCoord;
 
-  vec4 phongShading(vec3 normal, vec4 light_pos, vec4 v_pos, vec4 diffuse_coef) {
-    vec3 lightDir = normalize(vec3(light_pos - v_pos));
+  vec4 phongShading(vec3 normal, vec4 light_pos, vec4 v_pos, vec4 diffuse_coef, vec3 lightDir, vec3 viewDir) {
     vec3 reflectDir = reflect(-lightDir, normal);
-    vec3 viewDir = normalize(vec3(-v_pos));
 
     float lambertian = max(dot(lightDir, normal), 0.0);
     float spec = 0.0;
@@ -138,10 +136,12 @@ var fragmentShaderSrc = `
       vec3 normal = 2.0 * texture2D(myTexture, FtexCoord).rgb - 1.0;
       normal = normalize (normal);
       vec4 material = texture2D(myTexture, FtexCoord);
-      gl_FragColor = phongShading(normal, light_pos, v_pos, material);
+      gl_FragColor = phongShading(normal, light_pos, v_pos, material, v_light, v_view);
     } else { // Phong lighting
       vec3 normal = normalize(v_normal);
-      gl_FragColor = phongShading(normal, light_pos, v_pos, diffuse_coef);
+      vec3 lightDir = normalize(vec3(light_pos - v_pos));
+      vec3 viewDir = normalize(vec3(-v_pos));
+      gl_FragColor = phongShading(normal, light_pos, v_pos, diffuse_coef, lightDir, viewDir);
     }
 }
 `;
