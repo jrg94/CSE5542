@@ -103,6 +103,27 @@ var fragmentShaderSrc = `
   varying vec3 v_view;
   varying highp vec2 FtexCoord;
 
+  vec4 phongShading(vec3 normal, vec4 light_pos, vec4 v_pos) {
+    vec3 lightDir = normalize(vec3(light_pos - v_pos));
+    vec3 reflectDir = reflect(-lightDir, normal);
+    vec3 viewDir = normalize(vec3(-v_pos));
+
+    float lambertian = max(dot(lightDir, normal), 0.0);
+    float spec = 0.0;
+
+    if (lambertian > 0.0) {
+       float specAngle = max(dot(reflectDir, viewDir), 0.0);
+       spec = pow(specAngle, mat_shininess);
+    }
+
+    vec4 ambient = ambient_coef * light_ambient;
+    vec4 diffuse = diffuse_coef * light_diffuse;
+    vec4 specular = specular_coef * light_specular;
+    vec4 color = ambient + lambertian * diffuse + spec * specular;
+
+    return color;
+  }
+
   void main(void) {
 
     vec4 texcolor;
@@ -120,23 +141,7 @@ var fragmentShaderSrc = `
        gl_FragColor = env_color;
      } else { // Phong lighting
        vec3 normal = normalize(v_normal);
-       vec3 lightDir = normalize(vec3(light_pos - v_pos));
-       vec3 reflectDir = reflect(-lightDir, normal);
-       vec3 viewDir = normalize(vec3(-v_pos));
-
-       float lambertian = max(dot(lightDir, normal), 0.0);
-       float spec = 0.0;
-
-       if (lambertian > 0.0) {
-          float specAngle = max(dot(reflectDir, viewDir), 0.0);
-          spec = pow(specAngle, mat_shininess);
-       }
-
-       vec4 ambient = ambient_coef * light_ambient;
-       vec4 diffuse = diffuse_coef * light_diffuse;
-       vec4 specular = specular_coef * light_specular;
-       vec4 color = ambient + lambertian * diffuse + spec * specular;
-       gl_FragColor = color;
+       gl_FragColor = phongShading(normal, light_pos, v_pos);
      }
 }
 `;
