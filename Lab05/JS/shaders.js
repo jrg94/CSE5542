@@ -42,7 +42,17 @@ var vertexShaderSrc = `
     v_normal = normalize(vec3(uNMatrix*vec4(aVertexNormal, 0.0)));
 
     // tangent vector calculation
-    vec4 tang = normalize(uNMatrix * vec4(aVertexTangent, 0.0));
+    vec3 v_tangent = normalize(vec3(uNMatrix * vec4(aVertexTangent, 0.0)));
+
+    // binormal calculation
+    vec3 binormal = normalize(cross(v_normal, v_tangent));
+
+    // tangent space matrix
+    mat3 toObjectLocal = mat3(
+      v_tangent.x, binormal.x, v_normal.x,
+      v_tangent.y, binormal.y, v_normal.y,
+      v_tangent.z, binormal.z, v_normal.z
+    );
 
     // transform the vertex position to eye space
     eye_pos = uVMatrix*uMMatrix*vec4(aVertexPosition, 1.0);
