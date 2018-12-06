@@ -136,6 +136,8 @@ var fragmentShaderSrc = `
       gl_FragColor = env_color;
     } else { // Phong lighting
       vec3 normal = normalize(v_normal);
+      //vec3 normal = 2.0 * texture2D(myTexture, FtexCoord).rgb - 1.0;
+      //normal = normalize (normal);
       gl_FragColor = phongShading(normal, light_pos, v_pos);
     }
 }
