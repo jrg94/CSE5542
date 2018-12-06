@@ -47,6 +47,7 @@ and environment mapping, this project has the following features:
   - Boat travels left and right with rotation when it reaches the furthest bounds
 6. Plane has an attempt at a bump map
   - It's tough to tell if the shader is working; please check out the code to confirm
+  - Normal maps were generated using http://cpetry.github.io/NormalMap-Online/
 
 All-in-all there were a lot of additions to this scene that should cover
 all the bases for this project.
