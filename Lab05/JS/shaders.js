@@ -29,8 +29,8 @@ var vertexShaderSrc = `
 
   varying vec4 v_pos;  //vertex position in eye space
   varying vec3 v_normal;  // vertex normal
-  varying vec3 light_vector;
-  varying vec3 eye_vector;
+  varying vec3 v_light;
+  varying vec3 v_view;
   varying highp vec2 FtexCoord;
 
 
@@ -59,10 +59,10 @@ var vertexShaderSrc = `
     v_pos = uVMatrix * uMMatrix * vec4(aVertexPosition, 1.0);
 
     // light direction calculation
-    light_vector = normalize(toObjectLocal * vec3(light_pos_in_eye - v_pos));
+    v_light = normalize(toObjectLocal * vec3(light_pos_in_eye - v_pos));
 
     // view direction calculation
-    eye_vector = toObjectLocal * vec3(normalize(-v_pos));
+    v_view = toObjectLocal * vec3(normalize(-v_pos));
 
     // texture coordinates pass
     FtexCoord = aVertexTexCoords;
@@ -99,6 +99,8 @@ var fragmentShaderSrc = `
 
   varying vec4 v_pos;
   varying vec3 v_normal;
+  varying vec3 v_light;
+  varying vec3 v_view;
   varying highp vec2 FtexCoord;
 
   void main(void) {
@@ -119,7 +121,7 @@ var fragmentShaderSrc = `
      } else { // Phong lighting
        vec3 normal = normalize(v_normal);
        vec3 lightDir = normalize(vec3(light_pos - v_pos));
-       vec3 reflectDir = reflect(-lightDir, v_normal);
+       vec3 reflectDir = reflect(-lightDir, normal);
        vec3 viewDir = normalize(vec3(-v_pos));
 
        float lambertian = max(dot(lightDir, normal), 0.0);
