@@ -27,10 +27,11 @@ var vertexShaderSrc = `
   uniform int use_texture;
   uniform sampler2D myTexture;
 
-  varying vec4 eye_pos;  //vertex position in eye space
+  varying vec4 v_pos;  //vertex position in eye space
   varying vec3 v_normal;  // vertex normal
+  varying vec3 light_vector;
+  varying vec3 eye_vector;
   varying highp vec2 FtexCoord;
-  varying vec4 vColor;
 
 
   void main(void) {
@@ -39,7 +40,7 @@ var vertexShaderSrc = `
     vec4 light_pos_in_eye = light_pos;
 
     // transform normal from local to eye space: normal matrix is the inverse transpose of the modelview matrix
-    v_normal = normalize(vec3(uNMatrix*vec4(aVertexNormal, 0.0)));
+    v_normal = normalize(vec3(uNMatrix * vec4(aVertexNormal, 0.0)));
 
     // tangent vector calculation
     vec3 v_tangent = normalize(vec3(uNMatrix * vec4(aVertexTangent, 0.0)));
@@ -55,43 +56,18 @@ var vertexShaderSrc = `
     );
 
     // transform the vertex position to eye space
-    eye_pos = uVMatrix*uMMatrix*vec4(aVertexPosition, 1.0);
+    v_pos = uVMatrix * uMMatrix * vec4(aVertexPosition, 1.0);
 
     // light direction calculation
-    vec3 light_vector = normalize(toObjectLocal * vec3(light_pos_in_eye - eye_pos));
+    light_vector = normalize(toObjectLocal * vec3(light_pos_in_eye - v_pos));
 
     // view direction calculation
-    vec3 eye_vector = toObjectLocal * vec3(normalize(-eye_pos));
+    eye_vector = toObjectLocal * vec3(normalize(-v_pos));
 
-    // light vector L = l-p
-    //vec3 light_vector = normalize(vec3(light_pos_in_eye - eye_pos));
-
-    // eye vector V = e-p, where e is (0,0,0)
-    //vec3 eye_vector = normalize(-vec3(eye_pos));
-
-    // ambient light calculation
-    vec4 ambient = ambient_coef * light_ambient;
-    float ndotl = max(dot(v_normal, light_vector), 0.0);
-
-    // diffuse light calculation
-    vec4 diffuse = diffuse_coef * light_diffuse* ndotl;
-
-    // reflection vector calculation
-    vec3 R = normalize(2.0 * ndotl *v_normal-light_vector);
-    float rdotv = max(dot(R, eye_vector), 0.0);
-
-    // specular light calculation
-    vec4 specular;
-    if (ndotl > 0.0) {
-      specular = specular_coef* light_specular*pow(rdotv, mat_shininess);
-    } else {
-      specular = vec4(0,0,0,1);
-    }
-
-    vColor = ambient + diffuse + specular;
-
+    // texture coordinates pass
     FtexCoord = aVertexTexCoords;
 
+    // vertex position pass
     gl_Position = uPMatrix * uVMatrix * uMMatrix * vec4(aVertexPosition, 1.0);
 }
 `;
@@ -121,10 +97,9 @@ var fragmentShaderSrc = `
   uniform sampler2D myTexture;
   uniform samplerCube cubeMap;
 
-  varying vec4 eye_pos;
+  varying vec4 v_pos;
   varying vec3 v_normal;
   varying highp vec2 FtexCoord;
-  varying vec4 vColor;
 
   void main(void) {
 
@@ -136,13 +111,30 @@ var fragmentShaderSrc = `
       texcolor = texture2D(myTexture, FtexCoord);
       gl_FragColor = texcolor;
     } else if (use_texture == 2) {
-       view_vector = normalize(vec3(vec4(0,0,0,1)-eye_pos));
+       view_vector = normalize(vec3(vec4(0,0,0,1) - v_pos));
        ref = normalize(reflect(-view_vector, v_normal));  // in eye space
-       ref = vec3(uV2WMatrix*vec4(ref,0));   // convert to world space
+       ref = vec3(uV2WMatrix * vec4(ref,0));   // convert to world space
        env_color = textureCube(cubeMap, ref);
        gl_FragColor = env_color;
      } else {
-       gl_FragColor = vColor;
+       vec3 normal = normalize(v_normal);
+       vec3 lightDir = normalize(vec3(light_pos - v_pos));
+       vec3 reflectDir = reflect(-lightDir, v_normal);
+       vec3 viewDir = normalize(vec3(-v_pos));
+
+       float lambertian = max(dot(lightDir, normal), 0.0);
+       float spec = 0.0;
+
+       if (lambertian > 0.0) {
+          float specAngle = max(dot(reflectDir, viewDir), 0.0);
+          spec = pow(specAngle, mat_shininess);
+       }
+
+       vec4 ambient = ambient_coef * light_ambient;
+       vec4 diffuse = diffuse_coef * light_diffuse;
+       vec4 specular = specular_coef * light_specular;
+       vec4 color = ambient + lambertian * diffuse + spec * specular;
+       gl_FragColor = color;
      }
 }
 `;
