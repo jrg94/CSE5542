@@ -49,5 +49,5 @@ Solution is freely available under the MIT license.
 [3]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/code06.html
 [4]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/code06.js
 [7]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/shaders_setup_5.js
-[8]: https://github.com/jrg94/CSE5542/blob/master/Lab02/shaders.js
+[8]: shaders.js
 [9]: lab02.html
