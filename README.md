@@ -2,7 +2,7 @@
 
 Check out all of my solutions from OSU's Real Time Rendering Course:
 
-- [Lab 01][1]
+- [Lab 01][6]
 - [Lab 02][2]
 - [Lab 03][3]
 - [Lab 04][4]
@@ -13,3 +13,4 @@ Check out all of my solutions from OSU's Real Time Rendering Course:
 [3]: https://cdn.rawgit.com/jrg94/CSE5542/v3.1.0/Lab03/lab03.html
 [4]: https://cdn.rawgit.com/jrg94/CSE5542/v4.1.0/Lab04/lab04.html
 [5]: https://cdn.rawgit.com/jrg94/CSE5542/v5.3.0/Lab05/lab05.html
+[6]: Lab01/lab01.html
