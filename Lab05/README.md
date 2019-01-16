@@ -5,7 +5,7 @@ Welcome to Lab 05!
 ## Directions
 
 Since all this code is hosted on GitHub, you can run this solution
-using the [RawGit tool][9]. Beware that this link may not work. I
+using [GitHub Pages][9]. Beware that this link may not work. I
 had questionable performance from it (cross-origin errors).
 
 Alternatively, you can open the solution locally by double-clicking the
@@ -77,5 +77,5 @@ Solution is freely available under the MIT license.
 [3]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/code12.html
 [4]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/code12.js
 [7]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/shaders_setup_5.js
-[8]: https://github.com/jrg94/CSE5542/blob/master/Lab05/shaders.js
-[9]: https://cdn.rawgit.com/jrg94/CSE5542/v5.3.0/Lab05/lab05.html
+[8]: JS/shaders.js
+[9]: lab05.html
