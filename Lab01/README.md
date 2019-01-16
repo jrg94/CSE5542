@@ -1,7 +1,7 @@
 # CSE 5542 Lab 01 Directions
 
 Since all this code is hosted on GitHub, you can run this solution
-using the [RawGit tool][9].
+using the [GitHub Pages][9].
 
 Alternatively, you can open the solution locally by double-clicking the 
 HTML file to run the solution in your browser. Personally, 
@@ -29,7 +29,7 @@ Changes to these templates included:
 
 Solution is freely available under the MIT license.
 
-[1]: https://github.com/jrg94/CSE5542/blob/master/Lab01/sample-graph.JPG
+[1]: sample-graph.JPG
 [2]: http://www.cse.ohio-state.edu/~shen.94/5542
 [3]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/code05.html
 [4]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/code05.js
@@ -37,4 +37,4 @@ Solution is freely available under the MIT license.
 [6]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/read-csv.js
 [7]: http://web.cse.ohio-state.edu/~shen.94/5542/Site/WebGL_files/shaders_setup_5.js
 [8]: https://github.com/jrg94/CSE5542/blob/master/Lab01/shaders.js
-[9]: https://cdn.rawgit.com/jrg94/CSE5542/v1.1.0/Lab01/lab01.html
+[9]: lab01.html
